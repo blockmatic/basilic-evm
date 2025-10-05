@@ -1,0 +1,54 @@
+---
+description: Web3 integration patterns using Wagmi v2
+globs: *.ts,*.tsx,**/hooks/**/*.tsx,**/hooks/**/*.ts
+alwaysApply: false
+---
+# Wagmi v2 Rules
+
+## Core Principles
+- Use Wagmi v2.x hooks and configurations consistently
+- Handle wallet connection states properly
+
+## Custom Hooks
+- Create specialized hooks for specific contract interactions
+
+```tsx
+import { UniswapV3QuoterV2Abi } from '@repo/core/abis'
+import type {
+  AbiParametersToPrimitiveTypes,
+  Address,
+  ExtractAbiFunction,
+} from 'abitype'
+import { useAccount, useWriteContract } from 'wagmi'
+
+export function useUniswapQuote({ quoterAddress }: { quoterAddress: Address }) {
+  const { address: account } = useAccount()
+  const { writeContract, ...o } = useWriteContract()
+
+  const getQuote = async (args: QuoteInputType) => {
+    if (!account) throw new Error('Wallet not connected')
+
+    const result = await writeContract({
+      address: quoterAddress,
+      abi: UniswapV3QuoterV2Abi,
+      functionName: 'quoteExactInput',
+      args,
+      account,
+      chain: undefined, // Let wagmi infer the current chain
+    })
+    return result
+  }
+
+  return {
+    getQuote,
+    ...o,
+  }
+}
+
+export type QuoteInputType = AbiParametersToPrimitiveTypes<
+  ExtractAbiFunction<typeof UniswapV3QuoterV2Abi, 'quoteExactInput'>['inputs']
+>
+```
+
+## Error Handling
+- Consider network conditions and gas price fluctuations

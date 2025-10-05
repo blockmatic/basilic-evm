@@ -1,18 +1,19 @@
 ---
-description: Tailwind CSS and UI component guidelines
-globs: .tsx
+description: ShadcnUI component guidelines and patterns
+globs: *.tsx
 alwaysApply: false
 ---
-
-# Tailwind & UI Rules
+# ShadcnUI Rules
 
 ## Core Principles
-- Use mobile-first responsive design
-- Use Shadcn UI components from @repo/ui
-- Follow design system tokens
-- Use lucide-react icons
+- Install ShadcnUI components in /packages/ui
+- Always import components from @repo/ui, never directly from packages/ui
+- Update the Tailwind preset or tokens in packages/ui (not per app)
 
 ## Component Patterns
+- Use the class-variance-authority (cva) pattern for variants
+- Use the cn utility for merging class names
+
 ```tsx
 import { cn } from '@repo/utils'
 import { cva } from 'class-variance-authority'
@@ -31,17 +32,7 @@ const buttonVariants = cva(
     }
   }
 )
+```
 
-function Button({ 
-  className, 
-  variant, 
-  ...props 
-}: ButtonProps) {
-  return (
-    <button 
-      className={cn(buttonVariants({ variant }), className)}
-      {...props}
-    />
-  )
-}
-``` 
+## Design System Organization
+- Keep all core UI components in @repo/ui

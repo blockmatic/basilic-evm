@@ -1,0 +1,48 @@
+---
+description: Next.js development standards and patterns
+globs: *.tsx,*.ts
+alwaysApply: false
+---
+# Next.js Rules
+
+## Core Principles
+- Default to Server Components for better performance
+- Minimize `'use client'` directives to leverage SSR benefits
+- Use `nuqs` for URL search parameter state management
+
+## Server vs Client Components
+- Favor Server Components and Next.js SSR
+- Use client components only when necessary (interactive UI, browser APIs)
+
+## Performance Optimization
+- Implement streaming with `Suspense` for progressive loading
+- Optimize Core Web Vitals:
+  - Largest Contentful Paint (LCP) < 2.5s
+  - First Input Delay (FID) < 100ms
+  - Cumulative Layout Shift (CLS) < 0.1
+- Optimize images:
+  - Use WebP format
+  - Include proper size data
+  - Implement lazy loading for below-fold images
+
+## Server Actions
+```tsx
+'use server'
+import { type ActionResult, success, failure } from '@repo/next'
+import { createSafeActionClient } from 'next-safe-action'
+
+export const saveAction = createSafeActionClient()
+  .schema(actionSchema)
+  .action(async ({ parsedInput }): Promise<ActionResult<T>> => {
+    try {
+      // Happy path
+      return success(result)
+    } catch (error) {
+      return failure({
+        code: 'UNEXPECTED_ERROR',
+        error,
+        label: 'saveAction'
+      })
+    }
+  })
+```

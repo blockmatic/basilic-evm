@@ -1,5 +1,7 @@
-import { RootLayout } from '@/components/layout'
+// Server API mocks - must be first import for SSR
+import './server-mocks.js'
 import type { Metadata } from 'next'
+import { RootLayout } from '@/components/layout'
 
 export default function Layout({ children }: LayoutProps) {
   return (

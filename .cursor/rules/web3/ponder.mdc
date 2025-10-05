@@ -1,0 +1,66 @@
+---
+description: Ponder indexing standards and best practices
+globs: "**/ponder/**/*.ts"
+alwaysApply: false
+---
+# Ponder Rules
+
+## Core Principles
+- Use the latest Ponder package (no `@ponder/core`)
+- Define clear indexing strategies tailored to your use case
+
+## Ponder Configuration
+- Define networks and transports using `http()` from `viem`
+- Specify contracts with proper start blocks
+
+```ts
+import { createConfig } from "ponder";
+import { http } from "viem";
+
+import { UniswapV3FactoryAbi } from "./abis/UniswapV3Factory";
+
+export default createConfig({
+  networks: {
+    mainnet: {
+      chainId: 1,
+      transport: http(process.env.MAINNET_RPC_URL!),
+    },
+    polygon: {
+      chainId: 137,
+      transport: http(process.env.POLYGON_RPC_URL!),
+    },
+  },
+  contracts: {
+    UniswapV3Factory: {
+      abi: UniswapV3FactoryAbi,
+      network: "mainnet",
+      address: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+      startBlock: 12369621,
+    },
+  },
+});
+```
+
+## Schema Design
+- Define tables with `onchainTable()` and use meaningful primary keys
+
+```ts
+import { onchainTable, primaryKey, index } from "ponder";
+
+export const allowances = onchainTable(
+  "allowances",
+  (t) => ({
+    owner: t.hex(),
+    spender: t.hex(),
+    amount: t.bigint(),
+  }),
+  (table) => ({
+    pk: primaryKey({ columns: [table.owner, table.spender] }),
+    ownerIdx: index().on(table.owner),
+  })
+);
+```
+
+## Performance Optimization
+- Cache frequently accessed data to avoid redundant queries
+- Batch database operations to reduce execution time

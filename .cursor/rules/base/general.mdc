@@ -1,0 +1,13 @@
+---
+description: General Agent Rules
+alwaysApply: true
+---
+
+# General Agent Rules
+
+## Code Quality
+- Organize code logically with related functionality grouped together, aka "collocation"
+
+## Agent Behavior
+- Provide executive summaries when finishing tasks
+- Suggest improvements proactively when spotting issues
