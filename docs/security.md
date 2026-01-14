@@ -39,80 +39,21 @@ If gitleaks is installed, staged files are scanned for:
 
 ## Required Tools
 
-### gitleaks
+Install all required security tools automatically:
 
-**macOS:**
 ```bash
-brew install gitleaks
+pnpm run setup
 ```
 
-**Linux:**
-```bash
-wget -O /tmp/gitleaks.tar.gz https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks_$(uname -s)_$(uname -m).tar.gz
-tar -xzf /tmp/gitleaks.tar.gz -C /tmp
-sudo mv /tmp/gitleaks /usr/local/bin/
-```
+This command will:
+1. Install project dependencies
+2. Set up git hooks
+3. Install and configure security tools (gitleaks, osv-scanner)
 
-**Windows:**
-```bash
-# Using Chocolatey
-choco install gitleaks
-
-# Using Scoop
-scoop install gitleaks
-```
-
-**Manual installation:** https://github.com/gitleaks/gitleaks#installation
-
-### osv-scanner (CI only, optional locally)
-
-**macOS:**
-```bash
-brew install osv-scanner
-```
-
-**Linux:**
-```bash
-wget -O /tmp/osv-scanner.tar.gz https://github.com/google/osv-scanner/releases/latest/download/osv-scanner_$(uname -s)_$(uname -m).tar.gz
-tar -xzf /tmp/osv-scanner.tar.gz -C /tmp
-sudo mv /tmp/osv-scanner /usr/local/bin/
-```
-
-**Windows:**
-```bash
-# Using Chocolatey
-choco install osv-scanner
-
-# Using Scoop
-scoop install osv-scanner
-```
-
-**Manual installation:** https://google.github.io/osv-scanner/installation/
-
-### trufflehog (CI only, optional locally)
-
-**macOS:**
-```bash
-brew install trufflesecurity/trufflehog/trufflehog
-```
-
-**Linux:**
-```bash
-wget -O /tmp/trufflehog.tar.gz https://github.com/trufflesecurity/trufflehog/releases/latest/download/trufflehog_$(uname -s)_$(uname -m).tar.gz
-tar -xzf /tmp/trufflehog.tar.gz -C /tmp
-sudo mv /tmp/trufflehog /usr/local/bin/
-```
-
-**Windows:**
-```bash
-# Using Chocolatey
-choco install trufflehog
-
-# Using Scoop
-scoop install trufflehog
-```
-
-**Manual installation:** https://github.com/trufflesecurity/trufflehog#installation
+**Manual installation:** If you prefer to install tools manually, see:
+- [gitleaks installation](https://github.com/gitleaks/gitleaks#installation)
+- [osv-scanner installation](https://google.github.io/osv-scanner/installation/)
+- [trufflehog installation](https://github.com/trufflesecurity/trufflehog#installation)
 
 ## Manual Scanning
 

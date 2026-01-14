@@ -10,13 +10,17 @@ const TOOLS = {
     repo: 'gitleaks/gitleaks',
     macos: {
       brew: 'brew install gitleaks',
-      getDownloadUrl: (version, arch) =>
-        `https://github.com/gitleaks/gitleaks/releases/download/v${version}/gitleaks_${version}_darwin_${arch === 'x64' ? 'x64' : 'arm64'}.tar.gz`,
+      getDownloadUrl: (version, arch) => {
+        const normalizedArch = normalizeArchForGitleaks(arch)
+        return `https://github.com/gitleaks/gitleaks/releases/download/v${version}/gitleaks_${version}_darwin_${normalizedArch}.tar.gz`
+      },
       manual: 'https://github.com/gitleaks/gitleaks#macos',
     },
     linux: {
-      getDownloadUrl: (version, arch) =>
-        `https://github.com/gitleaks/gitleaks/releases/download/v${version}/gitleaks_${version}_linux_${arch === 'x86_64' ? 'x64' : arch}.tar.gz`,
+      getDownloadUrl: (version, arch) => {
+        const normalizedArch = normalizeArchForGitleaks(arch)
+        return `https://github.com/gitleaks/gitleaks/releases/download/v${version}/gitleaks_${version}_linux_${normalizedArch}.tar.gz`
+      },
       manual: 'https://github.com/gitleaks/gitleaks#linux',
     },
     win32: {
@@ -30,13 +34,17 @@ const TOOLS = {
     repo: 'google/osv-scanner',
     macos: {
       brew: 'brew install osv-scanner',
-      getDownloadUrl: (version, arch) =>
-        `https://github.com/google/osv-scanner/releases/download/v${version}/osv-scanner_darwin_${arch === 'x64' ? 'amd64' : 'arm64'}`,
+      getDownloadUrl: (version, arch) => {
+        const normalizedArch = normalizeArchForOSV(arch)
+        return `https://github.com/google/osv-scanner/releases/download/v${version}/osv-scanner_darwin_${normalizedArch}`
+      },
       manual: 'https://google.github.io/osv-scanner/installation/',
     },
     linux: {
-      getDownloadUrl: (version, arch) =>
-        `https://github.com/google/osv-scanner/releases/download/v${version}/osv-scanner_linux_${arch === 'x86_64' ? 'amd64' : arch}`,
+      getDownloadUrl: (version, arch) => {
+        const normalizedArch = normalizeArchForOSV(arch)
+        return `https://github.com/google/osv-scanner/releases/download/v${version}/osv-scanner_linux_${normalizedArch}`
+      },
       manual: 'https://google.github.io/osv-scanner/installation/',
     },
     win32: {
@@ -112,6 +120,18 @@ function getArchitecture() {
   } catch {
     return 'x86_64'
   }
+}
+
+function normalizeArchForGitleaks(arch) {
+  if (arch === 'x86_64') return 'x64'
+  if (arch === 'aarch64') return 'arm64'
+  return arch === 'x64' || arch === 'arm64' ? arch : 'x64'
+}
+
+function normalizeArchForOSV(arch) {
+  if (arch === 'x86_64') return 'amd64'
+  if (arch === 'aarch64') return 'arm64'
+  return arch === 'amd64' || arch === 'arm64' ? arch : 'amd64'
 }
 
 function installTool(toolName, toolConfig) {

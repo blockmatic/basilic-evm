@@ -55,7 +55,9 @@ jobs:
 
       - name: Install TruffleHog
         run: |
-          wget -O /tmp/trufflehog.tar.gz https://github.com/trufflesecurity/trufflehog/releases/latest/download/trufflehog_$(uname -s)_$(uname -m).tar.gz
+          ARCH=$(uname -m)
+          if [ "$ARCH" = "x86_64" ]; then ARCH="amd64"; elif [ "$ARCH" = "aarch64" ]; then ARCH="arm64"; fi
+          wget -O /tmp/trufflehog.tar.gz https://github.com/trufflesecurity/trufflehog/releases/latest/download/trufflehog_linux_${ARCH}.tar.gz
           tar -xzf /tmp/trufflehog.tar.gz -C /tmp
           sudo mv /tmp/trufflehog /usr/local/bin/
           trufflehog version
@@ -86,8 +88,10 @@ jobs:
 
       - name: Install OSV Scanner
         run: |
-          wget -O /tmp/osv-scanner.tar.gz https://github.com/google/osv-scanner/releases/latest/download/osv-scanner_$(uname -s)_$(uname -m).tar.gz
-          tar -xzf /tmp/osv-scanner.tar.gz -C /tmp
+          ARCH=$(uname -m)
+          if [ "$ARCH" = "x86_64" ]; then ARCH="amd64"; elif [ "$ARCH" = "aarch64" ]; then ARCH="arm64"; fi
+          wget -O /tmp/osv-scanner https://github.com/google/osv-scanner/releases/latest/download/osv-scanner_linux_${ARCH}
+          chmod +x /tmp/osv-scanner
           sudo mv /tmp/osv-scanner /usr/local/bin/
           osv-scanner --version
 
