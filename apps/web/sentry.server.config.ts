@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/nextjs'
+import { env as appEnv } from './lib/env'
 
 /**
  * Initializes Sentry for server-side error tracking.
@@ -7,7 +8,7 @@ import * as Sentry from '@sentry/nextjs'
 export function initSentry({ dsn, environment }: { dsn?: string; environment?: string }) {
   if (!dsn) return { initialized: false }
 
-  const env = environment || process.env.NODE_ENV || 'development'
+  const env = environment ?? appEnv.NODE_ENV
 
   Sentry.init({
     dsn,
