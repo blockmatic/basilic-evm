@@ -68,8 +68,8 @@ const client = createClient({
 **4. Client Usage** (`apps/web`)
 
 ```typescript
-import { createApi } from '@namespace/core'
-import { useHealthCheck } from '@namespace/react'
+import { createApi } from '@repo/core'
+import { useHealthCheck } from '@repo/react'
 
 const api = createApi({
   baseUrl: process.env.NEXT_PUBLIC_API_URL!,
@@ -96,8 +96,8 @@ const { data } = useHealthCheck()
 Clients consume the API through generated TypeScript clients:
 
 ```typescript
-import { createApi } from '@namespace/core'
-import { useHealthCheck } from '@namespace/react'
+import { createApi } from '@repo/core'
+import { useHealthCheck } from '@repo/react'
 
 // Runtime-agnostic client
 const api = createApi({

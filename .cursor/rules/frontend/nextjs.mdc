@@ -104,8 +104,8 @@ export const saveAction = createSafeActionClient()
 
 ## API Client with Generated Clients
 ```tsx
-import { createApi } from '@namespace/core'
-import { useWallet } from '@namespace/react'
+import { createApi } from '@repo/core'
+import { useWallet } from '@repo/react'
 
 // Runtime-agnostic client
 const api = createApi({
