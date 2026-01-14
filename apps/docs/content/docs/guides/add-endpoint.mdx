@@ -1,16 +1,16 @@
 ---
 title: "Add API Endpoint"
-description: "Step-by-step guide for adding a new API endpoint using OpenAPI-first development."
+description: "Step-by-step guide for adding a new API endpoint with Fastify and OpenAPI."
 ---
 
 Complete walkthrough for adding a new API endpoint with full type safety.
 
 ## Overview
 
-Adding an endpoint follows the OpenAPI-first pattern:
-1. Update OpenAPI spec
-2. Generate TypeScript clients
-3. Implement server route
+Adding an endpoint:
+1. Define Fastify route with Zod schemas
+2. Generate OpenAPI spec from routes
+3. Generate TypeScript clients from OpenAPI
 4. Use generated typed clients
 
 ## Step 1: Update OpenAPI Specification
@@ -149,5 +149,5 @@ const { data } = useUser({ id: '123' })
 
 ## Related Documentation
 
-- [Code-First APIs](/docs/contracts) - Understanding contracts
+- [API Development](/docs/api-development) - REST API with OpenAPI and client generation
 - [Package Conventions](/docs/architecture/package-conventions) - Package architecture

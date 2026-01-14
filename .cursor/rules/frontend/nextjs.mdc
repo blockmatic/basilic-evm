@@ -102,20 +102,24 @@ export const saveAction = createSafeActionClient()
   })
 ```
 
-## API Client with ts-rest
+## API Client with Generated Clients
 ```tsx
-import { initClient } from '@ts-rest/core'
-import { apiContract } from '@basilic/contracts'
+import { createApi } from '@namespace/core'
+import { useWallet } from '@namespace/react'
 
-const client = initClient(apiContract, {
+// Runtime-agnostic client
+const api = createApi({
   baseUrl: process.env.NEXT_PUBLIC_API_URL!,
-  baseHeaders: {},
+  getAuthToken: async () => session?.token,
 })
 
 // Type-safe API calls
-const result = await client.getWallet({ params: { id: '123' } })
-if (result.status === 200) {
-  // result.body is fully typed
+const wallet = await api.wallets.getWallet({ params: { id: '123' } })
+
+// Or use generated React Query hooks
+function WalletComponent({ id }: { id: string }) {
+  const { data, isLoading } = useWallet({ params: { id } })
+  // data is fully typed from OpenAPI spec
 }
 ```
 
