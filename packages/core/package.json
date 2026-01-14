@@ -18,9 +18,6 @@
     "postpack": "node ../../scripts/restore-publish.mjs",
     "generate": "openapi-ts"
   },
-  "dependencies": {
-    "@hey-api/client-fetch": "^0.13.1"
-  },
   "devDependencies": {
     "@basilic/eslint-config": "workspace:*",
     "@basilic/typescript-config": "workspace:*",
