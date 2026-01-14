@@ -34,7 +34,7 @@ export function ErrorBoundary({ children }: { children: React.ReactNode }) {
     const dsn = zEnv.NEXT_PUBLIC_SENTRY_DSN
     const environment = zEnv.NEXT_PUBLIC_SENTRY_ENVIRONMENT || 'development'
 
-    if (dsn && !Sentry.getCurrentHub().getClient()) {
+    if (dsn && !Sentry.getClient()) {
       import('../sentry.client.config').then(({ initSentry }) => {
         initSentry({ dsn, environment })
       })
@@ -47,7 +47,7 @@ export function ErrorBoundary({ children }: { children: React.ReactNode }) {
       onReset={() => window.location.reload()}
       onError={error => {
         // Report error to Sentry if initialized
-        if (Sentry.getCurrentHub().getClient()) {
+        if (Sentry.getClient()) {
           Sentry.captureException(error)
         }
       }}
