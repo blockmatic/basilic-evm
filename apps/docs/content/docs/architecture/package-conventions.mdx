@@ -296,7 +296,7 @@ import { createClient, type CoreClientOptions } from "@acme/core";
 
 export function createReactApi(opts: CoreClientOptions) {
   const client = createClient(opts);
-  const tsr = initQueryClient(appContract, client);
+  const tsr = initQueryClient(appContract, opts);
   return { client, tsr };
 }
 ```

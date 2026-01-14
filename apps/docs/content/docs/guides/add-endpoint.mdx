@@ -36,6 +36,7 @@ Add the route to your contract in `packages/contracts/src/contracts/`:
 ```typescript
 // packages/contracts/src/contracts/app.contract.ts
 import { initContract } from '@ts-rest/core'
+import { z } from 'zod'
 import { UserSchema } from '../schemas/user.schema'
 
 const c = initContract()
