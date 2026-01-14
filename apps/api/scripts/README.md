@@ -34,8 +34,6 @@ This script ensures the OpenAPI spec stays in sync with route implementations, e
 
 ## Related Documentation
 
-- **[API README](../README.md)** - General API documentation and setup
 - **[Deployment Guide](https://basilic-docs.vercel.app/docs/guides/deployment)** - Deployment options and strategies
 - **[Backend Stack](https://basilic-docs.vercel.app/docs/architecture/backend-stack)** - Technology choices and architecture
 - **[API Development](https://basilic-docs.vercel.app/docs/api-development)** - REST API with OpenAPI and hey-api client generation
-- **[Root Scripts](../../../scripts/README.md)** - Publishing and security scripts for the monorepo

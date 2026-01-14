@@ -13,66 +13,72 @@ Adding an endpoint:
 3. Generate TypeScript clients from OpenAPI
 4. Use generated typed clients
 
-## Step 1: Update OpenAPI Specification
+## Step 1: Implement Server Route
 
-Add the endpoint to your OpenAPI spec in `apps/api/openapi/openapi.json`:
+Define Zod schemas and implement the Fastify route in `apps/api/src/routes/`:
 
-```json
-{
-  "paths": {
-    "/users/{id}": {
-      "get": {
-        "operationId": "getUser",
-        "summary": "Get user by id",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "string" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "User found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": { "type": "string" },
-                    "email": { "type": "string" },
-                    "name": { "type": "string" }
-                  },
-                  "required": ["id", "email", "name"]
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "User not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "code": { "type": "string" },
-                    "message": { "type": "string" }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+```typescript
+// apps/api/src/routes/users.ts
+import { FastifyInstance } from 'fastify'
+import { z } from 'zod'
+
+// Define Zod schemas
+const UserParamsSchema = z.object({
+  id: z.string(),
+})
+
+const UserSchema = z.object({
+  id: z.string(),
+  email: z.string().email(),
+  name: z.string(),
+})
+
+const ErrorSchema = z.object({
+  code: z.string(),
+  message: z.string(),
+})
+
+export async function userRoutes(fastify: FastifyInstance) {
+  fastify.get('/users/:id', {
+    schema: {
+      params: UserParamsSchema,
+      response: {
+        200: UserSchema,
+        404: ErrorSchema,
+      },
+    },
+  }, async (request, reply) => {
+    const { id } = request.params
+    
+    // Your implementation here
+    const user = await getUserById(id)
+    
+    if (!user) {
+      return reply.code(404).send({
+        code: 'NOT_FOUND',
+        message: 'User not found',
+      })
     }
-  }
+    
+    return reply.send(user)
+  })
 }
 ```
 
-## Step 2: Generate TypeScript Clients
+## Step 2: Generate OpenAPI Spec
 
-Run hey-api to generate TypeScript clients:
+Generate the OpenAPI specification from your Fastify routes:
+
+```bash
+# Generate OpenAPI spec from routes
+pnpm --filter @repo/api gen:openapi
+```
+
+This runs `generate-openapi.ts` which scans your Fastify route definitions and automatically generates the OpenAPI 3.0 spec at `apps/api/openapi/openapi.json`.
+
+## Step 3: Generate TypeScript Clients
+
+Run hey-api to generate TypeScript clients from the OpenAPI spec:
 
 ```bash
 # Generate clients for core and react packages
@@ -83,37 +89,6 @@ pnpm --filter @repo/react gen
 This generates type-safe client code in:
 - `packages/core/src/gen/` - Runtime-agnostic client
 - `packages/react/src/gen/` - React Query hooks
-
-## Step 3: Implement Server Route
-
-Implement the route in `apps/api/src/routes/`:
-
-```typescript
-// apps/api/src/routes/users.ts
-import type { FastifyPluginAsync } from 'fastify'
-
-const users: FastifyPluginAsync = async (fastify) => {
-  fastify.get<{
-    Params: { id: string }
-  }>('/users/:id', async (request, reply) => {
-    const { id } = request.params
-    
-    // Your implementation here
-    const user = await getUserById(id)
-    
-    if (!user) {
-      return reply.status(404).send({
-        code: 'NOT_FOUND',
-        message: 'User not found',
-      })
-    }
-    
-    return reply.send(user)
-  })
-}
-
-export default users
-```
 
 ## Step 4: Use Generated Typed Client
 
@@ -141,11 +116,10 @@ const { data } = useUser({ id: '123' })
 
 ## Checklist
 
-- [ ] OpenAPI spec updated in `apps/api/openapi/openapi.json`
-- [ ] Clients regenerated with hey-api
-- [ ] Server route implemented
-- [ ] Route matches OpenAPI spec
-- [ ] Client usage tested
+- [ ] Server route implemented with Zod schemas
+- [ ] OpenAPI spec generated from routes
+- [ ] Clients generated with hey-api
+- [ ] Generated client usage tested in frontend
 
 ## Related Documentation
 

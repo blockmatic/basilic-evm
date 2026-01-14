@@ -25,8 +25,6 @@ Starts Fastify server with hot reload at [http://localhost:3000](http://localhos
 - `pnpm test` - Run tests
 - `pnpm generate:openapi` - Generate OpenAPI specification from Fastify routes
 
-See [API Scripts](scripts/README.md) for details on development scripts.
-
 ## Environment Variables
 
 The API uses environment variables for configuration. See [Environment Setup Guide](https://basilic-docs.vercel.app/docs/guides/environment-setup) for complete details.

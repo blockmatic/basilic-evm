@@ -23,7 +23,7 @@
       "description": "Vercel MCP for @repo/docs"
     },
     "vercel-api": {
-      "url": "https://mcp.vercel.comgaboesquivel/basilic-api",
+      "url": "https://mcp.vercel.com/gaboesquivel/basilic-api",
       "description": "Vercel MCP for @repo/api"
     }
   }

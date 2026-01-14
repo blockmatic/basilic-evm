@@ -71,10 +71,6 @@ function App() {
 }
 ```
 
-## Related Packages
-
-- [@repo/ui](../ui/README.md) - Shared UI components (dev tools may integrate with UI components)
-
 ## License
 
 PROPRIETARY
