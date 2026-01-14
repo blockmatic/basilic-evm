@@ -22,6 +22,7 @@ Add the endpoint to your OpenAPI spec in `apps/api/openapi/openapi.json`:
   "paths": {
     "/users/{id}": {
       "get": {
+        "operationId": "getUser",
         "summary": "Get user by id",
         "parameters": [
           {
