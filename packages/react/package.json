@@ -19,8 +19,7 @@
     "generate": "openapi-ts"
   },
   "dependencies": {
-    "@basilic/core": "workspace:*",
-    "@hey-api/client-fetch": "^0.13.0"
+    "@basilic/core": "workspace:*"
   },
   "devDependencies": {
     "@basilic/eslint-config": "workspace:*",

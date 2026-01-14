@@ -16,6 +16,7 @@ export function initSentry({ dsn, environment }: { dsn?: string; environment?: s
     debug: env === 'development',
     replaysOnErrorSampleRate: 1.0,
     replaysSessionSampleRate: env === 'production' ? 0.1 : 1.0,
+    integrations: [Sentry.replayIntegration({ maskAllText: false })],
   })
 
   return { initialized: true }
