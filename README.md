@@ -46,5 +46,5 @@ Full documentation: [https://basilic-docs.vercel.app/docs](https://basilic-docs.
 - [Cursor Rules](https://basilic-docs.vercel.app/docs/cursor-rules) - Coding standards
 
 ### Deep Dives
-- [Architecture](https://basilic-docs.vercel.app/docs/architecture) - Technical stack details
 - [Architecture](https://basilic-docs.vercel.app/docs/architecture) - Architecture overview
+- [Architecture Decisions](https://basilic-docs.vercel.app/docs/adrs) - ADRs documenting key technical decisions

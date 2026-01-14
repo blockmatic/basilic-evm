@@ -4,7 +4,8 @@
   "tasks": {
     "generate": {
       "dependsOn": [],
-      "inputs": ["$TURBO_DEFAULT$", "../../apps/api/openapi/openapi.json"]
+      "inputs": ["$TURBO_DEFAULT$", "../../apps/api/openapi/openapi.json"],
+      "outputs": ["src/gen/**"]
     },
     "build": {
       "dependsOn": ["^build", "generate"],

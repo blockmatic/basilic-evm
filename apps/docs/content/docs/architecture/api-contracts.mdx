@@ -39,7 +39,7 @@ sequenceDiagram
   Generator->>Client: Type-safe client code
   Frontend->>Client: Typed API calls
   Client->>API: HTTP request
-  API->>OpenAPI: Validates against OpenAPI spec
+  API->>API: Validates via Zod schemas
   API-->>Client: Typed response
   Client-->>Frontend: Type-safe data
   OpenAPI->>MCP: AI/MCP integration
@@ -164,4 +164,3 @@ REST endpoints with OpenAPI specs enable AI agents to discover, call, and valida
 
 - [Backend Stack](/docs/architecture/backend-stack) - Fastify implementation
 - [Package Conventions](/docs/architecture/package-conventions) - Package architecture and client generation
-- [API Contracts](/docs/architecture/api-contracts) - Full architecture details

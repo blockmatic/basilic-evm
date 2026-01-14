@@ -197,8 +197,8 @@ importers:
         specifier: ^1.0.7
         version: 1.0.7
       zod:
-        specifier: 3.25.76
-        version: 3.25.76
+        specifier: ^4.3.5
+        version: 4.3.5
     devDependencies:
       '@basilic/eslint-config':
         specifier: workspace:*
@@ -351,9 +351,6 @@ importers:
       '@basilic/core':
         specifier: workspace:*
         version: link:../core
-      '@hey-api/client-fetch':
-        specifier: ^0.13.0
-        version: 0.13.1(@hey-api/openapi-ts@0.90.3(magicast@0.5.1)(typescript@5.9.3))
       react:
         specifier: ^19.0.0
         version: 19.2.3
@@ -7020,9 +7017,6 @@ packages:
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
-
-  zod@3.25.76:
-    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
   zod@4.3.5:
     resolution: {integrity: sha512-k7Nwx6vuWx1IJ9Bjuf4Zt1PEllcwe7cls3VNzm4CQ1/hgtFUK2bRNG3rvnpPUhFjmqJKAKtjV576KnUkHocg/g==}
@@ -14404,8 +14398,6 @@ snapshots:
   yn@3.1.1: {}
 
   yocto-queue@0.1.0: {}
-
-  zod@3.25.76: {}
 
   zod@4.3.5: {}
 

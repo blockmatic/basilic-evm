@@ -9,8 +9,6 @@ Provides React Query hooks generated from OpenAPI specs via hey-api.
 ## Usage
 
 ```ts
-import { createReactApi } from '@basilic/react'
-
 import { ReactApiProvider } from '@basilic/react'
 import { useHealthCheck } from '@basilic/react'
 

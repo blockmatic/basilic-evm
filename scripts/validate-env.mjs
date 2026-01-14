@@ -22,8 +22,23 @@ function validateProductionEnv() {
     const lines = content.split('\n')
 
     for (const line of lines) {
-      if (line.startsWith('NEXT_PUBLIC_API_URL=')) {
-        const value = line.split('=')[1]?.trim()
+      // Skip comments and empty lines
+      const trimmedLine = line.trim()
+      if (!trimmedLine || trimmedLine.startsWith('#')) {
+        continue
+      }
+
+      if (trimmedLine.startsWith('NEXT_PUBLIC_API_URL=')) {
+        // Extract value, handling quotes and comments
+        // Use indexOf to only split on the first '=' to preserve values containing '='
+        const equalsIndex = trimmedLine.indexOf('=')
+        const value = trimmedLine
+          .substring(equalsIndex + 1)
+          .trim()
+          .replace(/^["']|["']$/g, '') // Remove surrounding quotes
+          .split('#')[0]
+          ?.trim() // Remove inline comments
+
         if (!value || value === PLACEHOLDER_URL) {
           console.error(
             `❌ ERROR: NEXT_PUBLIC_API_URL in .env.production is set to placeholder "${PLACEHOLDER_URL}" or is empty.`,
@@ -49,9 +64,16 @@ function validateProductionEnv() {
   }
 }
 
-// Only validate in CI/CD environments or when explicitly requested
-if (process.env.CI || process.env.VALIDATE_ENV === 'true') {
+// Always validate in production builds or CI/CD environments
+// Skip only in development unless explicitly requested
+const isProduction = process.env.NODE_ENV === 'production'
+const isCI = process.env.CI === 'true'
+const shouldValidate = process.env.VALIDATE_ENV === 'true'
+
+if (isProduction || isCI || shouldValidate) {
   validateProductionEnv()
 } else {
-  console.log('ℹ️  Skipping env validation (set CI=true or VALIDATE_ENV=true to enable)')
+  console.log(
+    'ℹ️  Skipping env validation (set NODE_ENV=production, CI=true, or VALIDATE_ENV=true to enable)',
+  )
 }
