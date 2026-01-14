@@ -292,8 +292,8 @@ export function useHealthCheck() {
 Then in the web app:
 
 ```tsx
-import { ReactApiProvider } from '@basilic/react'
-import { useHealthCheck } from '@basilic/react'
+import { ReactApiProvider } from '@repo/react'
+import { useHealthCheck } from '@repo/react'
 
 function App() {
   return (
@@ -481,7 +481,7 @@ import type { UserDTO } from "@acme/contracts";
 When you add a new endpoint:
 
 1. Update OpenAPI spec in `apps/api/openapi/openapi.json`
-2. Regenerate clients: `pnpm --filter @basilic/core gen` and `pnpm --filter @basilic/react gen`
+2. Regenerate clients: `pnpm --filter @repo/core gen` and `pnpm --filter @repo/react gen`
 3. Implement route handler in `apps/api/src/routes/`
 4. Use generated client via `packages/core`
 5. Use generated React Query hooks via `packages/react` or directly in apps
@@ -545,7 +545,7 @@ export default health
 **4. Client Usage** (`apps/web` or other consumers)
 
 ```tsx
-import { useHealthCheck } from '@basilic/react'
+import { useHealthCheck } from '@repo/react'
 
 function MyComponent() {
   const { data } = useHealthCheck()

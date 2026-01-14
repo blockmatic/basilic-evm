@@ -31,7 +31,7 @@ alwaysApply: false
 **All Fastify tests run in ESM mode** - Vitest is ESM-native and tests TypeScript source directly:
 - Tests run against TypeScript source files (ESM), not built output
 - Vitest config uses `vitest.config.ts` with ESM syntax
-- Path aliases configured in Vitest config for `@basilic/*` imports
+- Path aliases configured in Vitest config for `@repo/*` imports
 - Test utilities available in `src/test/utils/fastify.ts` for route testing
 
 ## Fastify Route Testing Pattern

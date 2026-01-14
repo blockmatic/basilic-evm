@@ -76,8 +76,8 @@ Run hey-api to generate TypeScript clients:
 
 ```bash
 # Generate clients for core and react packages
-pnpm --filter @basilic/core gen
-pnpm --filter @basilic/react gen
+pnpm --filter @repo/core gen
+pnpm --filter @repo/react gen
 ```
 
 This generates type-safe client code in:
@@ -121,8 +121,8 @@ The generated client is fully typed:
 
 ```typescript
 // In your frontend or other client
-import { createApi } from '@basilic/core'
-import { useUser } from '@basilic/react' // Generated React Query hook
+import { createApi } from '@repo/core'
+import { useUser } from '@repo/react' // Generated React Query hook
 
 // Runtime-agnostic client
 const api = createApi({
