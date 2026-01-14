@@ -23,7 +23,7 @@ const fastify = Fastify({
   logger: {
     level: env.NODE_ENV === 'production' ? 'info' : 'debug',
   },
-  trustProxy: true, // Always trust proxy in Vercel environment
+  trustProxy: env.TRUST_PROXY,
   bodyLimit: env.BODY_LIMIT,
   requestIdHeader: 'x-request-id',
   requestIdLogLabel: 'reqId',
