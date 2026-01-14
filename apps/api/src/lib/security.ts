@@ -77,7 +77,6 @@ export const sanitizeInput = (input: string): string => {
     sanitized = sanitized.replace(/<[^>]*>/g, '').replace(/[<>]/g, '')
 
     // Step 6: Remove null bytes and other control characters
-    // biome-ignore lint/suspicious/noControlCharactersInRegex: intentional control character removal for security
     sanitized = sanitized.replace(/\0/g, '')
     // biome-ignore lint/suspicious/noControlCharactersInRegex: intentional control character removal for security
     sanitized = sanitized.replace(/[\x00-\x1F\x7F]/g, '') // eslint-disable-line no-control-regex
