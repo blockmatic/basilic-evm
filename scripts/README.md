@@ -36,7 +36,7 @@ Runs during the `postpack` lifecycle hook (after packing):
 
 ## Usage
 
-These scripts are automatically invoked via npm/pnpm lifecycle hooks in package `package.json`:
+These scripts are automatically invoked via npm/pnpm lifecycle hooks in `package.json`:
 
 ```json
 {
