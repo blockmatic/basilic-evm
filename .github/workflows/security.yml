@@ -10,8 +10,6 @@ jobs:
   security:
     name: Security Checks
     runs-on: ubuntu-latest
-    env:
-      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -57,7 +55,7 @@ jobs:
           fail: true
 
       - name: Run TruffleHog OSS (filesystem scan)
-        uses: trufflesecurity/trufflehog@main
+        uses: trufflesecurity/trufflehog@821e8b9e5cdf8dc484dd23e06f78941fcf6b9191
         with:
           path: ./
 
@@ -73,8 +71,10 @@ jobs:
       - name: Run OSV Scanner
         run: |
           echo "🔍 Scanning dependencies for known vulnerabilities..."
+          set +e
           osv-scanner --lockfile=pnpm-lock.yaml
           EXIT_CODE=$?
+          set -e
           if [ $EXIT_CODE -ne 0 ]; then
             echo ""
             echo "❌ SECURITY ISSUE: OSV Scanner found known vulnerabilities in dependencies"
