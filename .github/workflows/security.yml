@@ -60,7 +60,6 @@ jobs:
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          extra_args: --only-verified=false
 
       - name: Install OSV Scanner
         run: |
