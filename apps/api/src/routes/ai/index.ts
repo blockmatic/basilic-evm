@@ -131,25 +131,14 @@ const aiRoutes: FastifyPluginAsync = async (fastify, _opts) => {
           messages,
         })
 
-        const stream = result.toTextStreamResponse()
-
         reply.header('Content-Type', 'text/event-stream')
         reply.header('Cache-Control', 'no-cache')
         reply.header('Connection', 'keep-alive')
 
-        const reader = stream.body?.getReader()
-        if (!reader) {
-          throw new Error('Failed to get stream reader')
-        }
-
-        const decoder = new TextDecoder()
+        const stream: ReadableStream<string> = result.textStream
         let fullResponse = ''
 
-        while (true) {
-          const { done, value } = await reader.read()
-          if (done) break
-
-          const chunk = decoder.decode(value, { stream: true })
+        for await (const chunk of stream) {
           fullResponse += chunk
           reply.raw.write(chunk)
         }

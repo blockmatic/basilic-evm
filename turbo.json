@@ -35,7 +35,8 @@
         "LOG_SERVICE",
         "VERCEL_ENV",
         "NEXT_PUBLIC_LOG_ENABLED",
-        "NEXT_PUBLIC_LOG_LEVEL"
+        "NEXT_PUBLIC_LOG_LEVEL",
+        "OPENAI_API_KEY"
       ]
     },
     "lint": {
