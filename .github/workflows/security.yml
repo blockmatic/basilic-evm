@@ -68,25 +68,35 @@ jobs:
       - name: Run TruffleHog (filesystem scan)
         run: |
           echo "🔍 Scanning filesystem for secrets..."
-          trufflehog filesystem . --fail --json || {
+          trufflehog filesystem . --fail --json
+          EXIT_CODE=$?
+          if [ $EXIT_CODE -eq 183 ]; then
             echo ""
             echo "❌ SECURITY ISSUE: TruffleHog found secrets in the filesystem"
             echo "Review the JSON output above for details about detected secrets"
             echo "Remove or rotate any exposed secrets immediately"
             exit 1
-          }
+          elif [ $EXIT_CODE -ne 0 ]; then
+            echo "❌ TruffleHog encountered an error (exit code: $EXIT_CODE)"
+            exit 1
+          fi
           echo "✅ No secrets found in filesystem"
 
       - name: Run TruffleHog (git history scan)
         run: |
           echo "🔍 Scanning git history for secrets..."
-          trufflehog git file://. --fail --json || {
+          trufflehog git file://. --fail --json
+          EXIT_CODE=$?
+          if [ $EXIT_CODE -eq 183 ]; then
             echo ""
             echo "❌ SECURITY ISSUE: TruffleHog found secrets in git history"
             echo "Review the JSON output above for details about detected secrets"
             echo "You may need to clean git history or rotate exposed secrets"
             exit 1
-          }
+          elif [ $EXIT_CODE -ne 0 ]; then
+            echo "❌ TruffleHog encountered an error (exit code: $EXIT_CODE)"
+            exit 1
+          fi
           echo "✅ No secrets found in git history"
 
       - name: Install OSV Scanner
@@ -101,13 +111,15 @@ jobs:
       - name: Run OSV Scanner
         run: |
           echo "🔍 Scanning dependencies for known vulnerabilities..."
-          osv-scanner --lockfile=pnpm-lock.yaml || {
+          osv-scanner --lockfile=./pnpm-lock.yaml
+          EXIT_CODE=$?
+          if [ $EXIT_CODE -ne 0 ]; then
             echo ""
             echo "❌ SECURITY ISSUE: OSV Scanner found known vulnerabilities in dependencies"
             echo "Review the output above for details about affected packages"
             echo "Update or replace vulnerable dependencies"
             exit 1
-          }
+          fi
           echo "✅ No known vulnerabilities found in dependencies"
 
       - name: Run pnpm audit
