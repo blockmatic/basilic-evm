@@ -19,7 +19,7 @@
       "import": "./dist/web3/index.js"
     },
     "./logger": {
-      "types": "./src/logger/client.ts",
+      "types": "./src/logger/index.ts",
       "browser": "./dist/logger/client.js",
       "node": "./dist/logger/server.js",
       "import": "./dist/logger/server.js",

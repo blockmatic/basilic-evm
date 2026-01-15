@@ -50,7 +50,7 @@
         }
       }
     },
-    "/ai/ai/chat": {
+    "/ai/chat": {
       "post": {
         "operationId": "chat",
         "summary": "Generate AI chat response",
@@ -59,16 +59,54 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {}
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "messages": {
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "role": {
+                          "type": "string",
+                          "enum": ["user", "assistant", "system"]
+                        },
+                        "content": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["role", "content"],
+                      "additionalProperties": false
+                    }
+                  },
+                  "model": {
+                    "default": "gpt-4o-mini",
+                    "type": "string"
+                  }
+                },
+                "required": ["messages"],
+                "additionalProperties": false
+              }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
             "description": "Default Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["text"],
+                  "additionalProperties": false
+                }
               }
             }
           },
@@ -76,7 +114,19 @@
             "description": "Default Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"],
+                  "additionalProperties": false
+                }
               }
             }
           },
@@ -84,14 +134,26 @@
             "description": "Default Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"],
+                  "additionalProperties": false
+                }
               }
             }
           }
         }
       }
     },
-    "/ai/ai/chat/stream": {
+    "/ai/chat/stream": {
       "post": {
         "operationId": "chatStream",
         "summary": "Stream AI chat response",
@@ -100,9 +162,38 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {}
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "messages": {
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "role": {
+                          "type": "string",
+                          "enum": ["user", "assistant", "system"]
+                        },
+                        "content": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["role", "content"],
+                      "additionalProperties": false
+                    }
+                  },
+                  "model": {
+                    "default": "gpt-4o-mini",
+                    "type": "string"
+                  }
+                },
+                "required": ["messages"],
+                "additionalProperties": false
+              }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
@@ -120,7 +211,19 @@
             "description": "Default Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"],
+                  "additionalProperties": false
+                }
               }
             }
           },
@@ -128,7 +231,19 @@
             "description": "Default Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": ["code", "message"],
+                  "additionalProperties": false
+                }
               }
             }
           }

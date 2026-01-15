@@ -3,8 +3,7 @@ import { getErrorMessage } from '@repo/utils/error'
 import { logger } from '@repo/utils/logger'
 import { generateText, streamText } from 'ai'
 import type { FastifyPluginAsync } from 'fastify'
-import { z } from 'zod/v4'
-import { zodToJsonSchema } from 'zod-to-json-schema'
+import { z } from 'zod'
 import { env } from '../../lib/env.js'
 
 const ChatMessageSchema = z.object({
@@ -26,12 +25,15 @@ const ErrorSchema = z.object({
   message: z.string(),
 })
 
-const toJsonSchema = (schema: unknown) =>
-  zodToJsonSchema(schema as Parameters<typeof zodToJsonSchema>[0])
-
-const ChatRequestJsonSchema = toJsonSchema(ChatRequestSchema)
-const ChatResponseJsonSchema = toJsonSchema(ChatResponseSchema)
-const ErrorJsonSchema = toJsonSchema(ErrorSchema)
+const ChatRequestJsonSchema = z.toJSONSchema(ChatRequestSchema, {
+  target: 'openapi-3.0',
+})
+const ChatResponseJsonSchema = z.toJSONSchema(ChatResponseSchema, {
+  target: 'openapi-3.0',
+})
+const ErrorJsonSchema = z.toJSONSchema(ErrorSchema, {
+  target: 'openapi-3.0',
+})
 
 const openai = createOpenAI({
   apiKey: env.OPENAI_API_KEY,
@@ -64,13 +66,8 @@ const aiRoutes: FastifyPluginAsync = async (fastify, _opts) => {
         requestLogger.debug({ messages: messages.length, model }, 'Processing chat request')
 
         const result = await generateText({
-          model: openai(model) as unknown as Parameters<typeof generateText>[0]['model'],
+          model: openai(model),
           messages,
-          providerOptions: {
-            openai: {
-              apiKey: env.OPENAI_API_KEY,
-            },
-          },
         })
 
         return reply.code(200).send({
@@ -127,7 +124,7 @@ const aiRoutes: FastifyPluginAsync = async (fastify, _opts) => {
         )
 
         const result = streamText({
-          model: openai(model) as unknown as Parameters<typeof streamText>[0]['model'],
+          model: openai(model),
           messages,
         })
 
@@ -135,18 +132,9 @@ const aiRoutes: FastifyPluginAsync = async (fastify, _opts) => {
         reply.header('Cache-Control', 'no-cache')
         reply.header('Connection', 'keep-alive')
 
-        const stream: ReadableStream<string> = result.textStream
-        let fullResponse = ''
-
-        for await (const chunk of stream) {
-          fullResponse += chunk
-          reply.raw.write(chunk)
-        }
-
-        reply.raw.end()
-
-        // Return the full response for testing purposes (fastify.inject captures this)
-        return fullResponse
+        // Use Fastify's native streaming support
+        // Fastify handles the stream and will close it when done
+        return reply.send(result.textStream)
       } catch (error) {
         const errorMessage = getErrorMessage(error)
         requestLogger.error(
@@ -154,6 +142,7 @@ const aiRoutes: FastifyPluginAsync = async (fastify, _opts) => {
           'Streaming chat request failed',
         )
 
+        // Error occurred before streaming started, send JSON error response
         if (error instanceof z.ZodError) {
           return reply.code(400).send({
             code: 'VALIDATION_ERROR',
@@ -171,3 +160,4 @@ const aiRoutes: FastifyPluginAsync = async (fastify, _opts) => {
 }
 
 export default aiRoutes
+export const prefixOverride = '/ai'

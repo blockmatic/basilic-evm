@@ -1,11 +1,44 @@
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
-import { z } from 'zod/v4'
+import { z } from 'zod'
 import { buildTestApp } from '../utils/fastify.js'
 
 vi.setConfig({
   testTimeout: 30000,
   hookTimeout: 30000,
+})
+
+// Mock the AI SDK to avoid real API calls in tests
+vi.mock('ai', async () => {
+  const actual = await vi.importActual<typeof import('ai')>('ai')
+
+  // Create a ReadableStream from an async generator for streaming tests
+  const createMockStream = () => {
+    const encoder = new TextEncoder()
+    return new ReadableStream({
+      async start(controller) {
+        const chunks = ['Mocked ', 'streaming ', 'response']
+        for (const chunk of chunks) {
+          controller.enqueue(encoder.encode(chunk))
+          // Small delay to simulate streaming
+          await new Promise(resolve => setTimeout(resolve, 10))
+        }
+        controller.close()
+      },
+    })
+  }
+
+  return {
+    ...actual,
+    generateText: vi.fn().mockResolvedValue({
+      text: 'Mocked AI response',
+      usage: { promptTokens: 10, completionTokens: 5 },
+      finishReason: 'stop' as const,
+    }),
+    streamText: vi.fn().mockReturnValue({
+      textStream: createMockStream(),
+    }),
+  }
 })
 
 const ChatResponseSchema = z.object({

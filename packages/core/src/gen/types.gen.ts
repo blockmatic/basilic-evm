@@ -38,47 +38,79 @@ export type GetResponses = {
 };
 
 export type ChatData = {
-    body?: unknown;
+    body: {
+        messages: Array<{
+            role: 'user' | 'assistant' | 'system';
+            content: string;
+        }>;
+        model?: string;
+    };
     path?: never;
     query?: never;
-    url: '/ai/ai/chat';
+    url: '/ai/chat';
 };
 
 export type ChatErrors = {
     /**
      * Default Response
      */
-    400: unknown;
+    400: {
+        code: string;
+        message: string;
+    };
     /**
      * Default Response
      */
-    500: unknown;
+    500: {
+        code: string;
+        message: string;
+    };
 };
+
+export type ChatError = ChatErrors[keyof ChatErrors];
 
 export type ChatResponses = {
     /**
      * Default Response
      */
-    200: unknown;
+    200: {
+        text: string;
+    };
 };
 
+export type ChatResponse = ChatResponses[keyof ChatResponses];
+
 export type ChatStreamData = {
-    body?: unknown;
+    body: {
+        messages: Array<{
+            role: 'user' | 'assistant' | 'system';
+            content: string;
+        }>;
+        model?: string;
+    };
     path?: never;
     query?: never;
-    url: '/ai/ai/chat/stream';
+    url: '/ai/chat/stream';
 };
 
 export type ChatStreamErrors = {
     /**
      * Default Response
      */
-    400: unknown;
+    400: {
+        code: string;
+        message: string;
+    };
     /**
      * Default Response
      */
-    500: unknown;
+    500: {
+        code: string;
+        message: string;
+    };
 };
+
+export type ChatStreamError = ChatStreamErrors[keyof ChatStreamErrors];
 
 export type ChatStreamResponses = {
     /**

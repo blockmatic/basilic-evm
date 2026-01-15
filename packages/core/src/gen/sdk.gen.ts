@@ -32,12 +32,12 @@ export const get = <ThrowOnError extends boolean = false>(options?: Options<GetD
  *
  * Chat with AI using OpenAI
  */
-export const chat = <ThrowOnError extends boolean = false>(options?: Options<ChatData, ThrowOnError>) => (options?.client ?? client).post<ChatResponses, ChatErrors, ThrowOnError>({
-    url: '/ai/ai/chat',
+export const chat = <ThrowOnError extends boolean = false>(options: Options<ChatData, ThrowOnError>) => (options.client ?? client).post<ChatResponses, ChatErrors, ThrowOnError>({
+    url: '/ai/chat',
     ...options,
     headers: {
         'Content-Type': 'application/json',
-        ...options?.headers
+        ...options.headers
     }
 });
 
@@ -46,11 +46,11 @@ export const chat = <ThrowOnError extends boolean = false>(options?: Options<Cha
  *
  * Stream AI chat response using OpenAI
  */
-export const chatStream = <ThrowOnError extends boolean = false>(options?: Options<ChatStreamData, ThrowOnError>) => (options?.client ?? client).post<ChatStreamResponses, ChatStreamErrors, ThrowOnError>({
-    url: '/ai/ai/chat/stream',
+export const chatStream = <ThrowOnError extends boolean = false>(options: Options<ChatStreamData, ThrowOnError>) => (options.client ?? client).post<ChatStreamResponses, ChatStreamErrors, ThrowOnError>({
+    url: '/ai/chat/stream',
     ...options,
     headers: {
         'Content-Type': 'application/json',
-        ...options?.headers
+        ...options.headers
     }
 });
