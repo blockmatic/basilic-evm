@@ -27,6 +27,8 @@ export const env = createEnv({
     LOG_ENABLED: z.coerce.boolean().optional(),
     LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error', 'silent']).optional(),
     LOG_SERVICE: z.string().optional(),
+    // AI configuration
+    OPENAI_API_KEY: z.string().min(1),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
