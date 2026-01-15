@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@repo/react": "workspace:*",
-    "@repo/types": "workspace:*",
+    "@repo/core": "workspace:*",
     "@repo/ui": "workspace:*",
     "@sentry/nextjs": "^10.34.0",
     "@t3-oss/env-nextjs": "^0.13.10",
