@@ -1,5 +1,5 @@
+import { Type } from '@sinclair/typebox'
 import type { FastifyPluginAsync } from 'fastify'
-import { Type } from 'typebox'
 
 export const HealthResponseSchema = Type.Object({
   ok: Type.Literal(true),

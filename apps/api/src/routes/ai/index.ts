@@ -1,9 +1,9 @@
 import { createOpenAI } from '@ai-sdk/openai'
 import { getErrorMessage } from '@repo/utils/error'
 import { logger } from '@repo/utils/logger'
+import { type Static, Type } from '@sinclair/typebox'
 import { generateText, streamText } from 'ai'
 import type { FastifyPluginAsync } from 'fastify'
-import { type Static, Type } from 'typebox'
 import { env } from '../../lib/env.js'
 
 const ChatMessageSchema = Type.Object({

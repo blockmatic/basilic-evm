@@ -111,7 +111,7 @@ jobs:
       - name: Run OSV Scanner
         run: |
           echo "🔍 Scanning dependencies for known vulnerabilities..."
-          osv-scanner --lockfile=./pnpm-lock.yaml
+          osv-scanner --lockfile=pnpm-lock.yaml
           EXIT_CODE=$?
           if [ $EXIT_CODE -ne 0 ]; then
             echo ""
@@ -125,12 +125,15 @@ jobs:
       - name: Run pnpm audit
         run: |
           echo "🔍 Running pnpm audit for dependency vulnerabilities..."
-          pnpm audit --audit-level=moderate || {
+          set +e
+          pnpm audit --audit-level=moderate
+          EXIT_CODE=$?
+          set -e
+          if [ $EXIT_CODE -ne 0 ]; then
             echo ""
             echo "❌ SECURITY ISSUE: pnpm audit found vulnerabilities with severity >= moderate"
             echo "Review the audit output above for details about vulnerable packages"
             echo "Run 'pnpm audit fix' or update affected packages"
             exit 1
-          }
+          fi
           echo "✅ No moderate or high severity vulnerabilities found"
-        continue-on-error: false

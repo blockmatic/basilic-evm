@@ -65,7 +65,7 @@ export default healthRoutes
 ### Complex Routes (multiple endpoints, shared logic)
 For complex routes, you can optionally extract schemas to a separate file within the route folder:
 
-```
+```text
 routes/
   └── ai/
       ├── index.ts        # Route definitions
