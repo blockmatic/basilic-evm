@@ -372,11 +372,14 @@ export async function POST(request: NextRequest) {
 'use client'
 
 import { logger } from '@repo/utils/logger'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 export function DataFetcher({ url }: { url: string }) {
   const [data, setData] = useState(null)
-  const componentLogger = logger.child({ component: 'DataFetcher', url })
+  const componentLogger = useMemo(
+    () => logger.child({ component: 'DataFetcher', url }),
+    [url]
+  )
   
   useEffect(() => {
     componentLogger.info('Fetching data')
@@ -393,7 +396,7 @@ export function DataFetcher({ url }: { url: string }) {
       .catch(error => {
         componentLogger.error({ error }, 'Failed to fetch data')
       })
-  }, [url])
+  }, [url, componentLogger])
   
   return <div>{/* render data */}</div>
 }
