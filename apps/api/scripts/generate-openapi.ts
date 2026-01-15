@@ -3,12 +3,17 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import swagger from '@fastify/swagger'
 import Fastify from 'fastify'
-import app from '../src/app.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 async function generateOpenAPI() {
+  if (!process.env.OPENAI_API_KEY) {
+    process.env.OPENAI_API_KEY = 'sk-test-dummy-key-for-openapi'
+  }
+
+  const { default: app } = await import('../src/app.js')
+
   // Create Fastify instance (same as production)
   const fastify = Fastify({
     logger: false, // Disable logging for generation

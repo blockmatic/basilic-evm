@@ -37,16 +37,54 @@ export type GetResponses = {
     200: unknown;
 };
 
-export type GetExampleData = {
-    body?: never;
+export type ChatData = {
+    body?: unknown;
     path?: never;
     query?: never;
-    url: '/example/';
+    url: '/ai/ai/chat';
 };
 
-export type GetExampleResponses = {
+export type ChatErrors = {
+    /**
+     * Default Response
+     */
+    400: unknown;
+    /**
+     * Default Response
+     */
+    500: unknown;
+};
+
+export type ChatResponses = {
     /**
      * Default Response
      */
     200: unknown;
 };
+
+export type ChatStreamData = {
+    body?: unknown;
+    path?: never;
+    query?: never;
+    url: '/ai/ai/chat/stream';
+};
+
+export type ChatStreamErrors = {
+    /**
+     * Default Response
+     */
+    400: unknown;
+    /**
+     * Default Response
+     */
+    500: unknown;
+};
+
+export type ChatStreamResponses = {
+    /**
+     * Streaming text response
+     */
+    200: string;
+};
+
+export type ChatStreamResponse = ChatStreamResponses[keyof ChatStreamResponses];

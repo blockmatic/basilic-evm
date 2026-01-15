@@ -1,5 +1,15 @@
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { createEnv } from '@t3-oss/env-core'
+import { config } from 'dotenv'
 import { z } from 'zod/v4'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+config({ path: resolve(__dirname, '../../.env') })
+
+const isProduction = process.env.NODE_ENV === 'production'
 
 export const env = createEnv({
   server: {
@@ -28,7 +38,9 @@ export const env = createEnv({
     LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error', 'silent']).optional(),
     LOG_SERVICE: z.string().optional(),
     // AI configuration
-    OPENAI_API_KEY: z.string().min(1),
+    OPENAI_API_KEY: isProduction
+      ? z.string().min(1)
+      : z.string().min(1).default('sk-test-dummy-key-for-dev'),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,

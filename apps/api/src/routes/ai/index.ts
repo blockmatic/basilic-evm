@@ -4,6 +4,7 @@ import { logger } from '@repo/utils/logger'
 import { generateText, streamText } from 'ai'
 import type { FastifyPluginAsync } from 'fastify'
 import { z } from 'zod/v4'
+import { zodToJsonSchema } from 'zod-to-json-schema'
 import { env } from '../../lib/env.js'
 
 const ChatMessageSchema = z.object({
@@ -25,31 +26,40 @@ const ErrorSchema = z.object({
   message: z.string(),
 })
 
+const toJsonSchema = (schema: unknown) =>
+  zodToJsonSchema(schema as Parameters<typeof zodToJsonSchema>[0])
+
+const ChatRequestJsonSchema = toJsonSchema(ChatRequestSchema)
+const ChatResponseJsonSchema = toJsonSchema(ChatResponseSchema)
+const ErrorJsonSchema = toJsonSchema(ErrorSchema)
+
 const openai = createOpenAI({
   apiKey: env.OPENAI_API_KEY,
 })
 
 const aiRoutes: FastifyPluginAsync = async (fastify, _opts) => {
   fastify.post(
-    '/ai/chat',
+    '/chat',
     {
       schema: {
         operationId: 'chat',
         description: 'Chat with AI using OpenAI',
         summary: 'Generate AI chat response',
         tags: ['ai'],
-        body: ChatRequestSchema,
+        body: ChatRequestJsonSchema,
         response: {
-          200: ChatResponseSchema,
-          400: ErrorSchema,
-          500: ErrorSchema,
+          200: ChatResponseJsonSchema,
+          400: ErrorJsonSchema,
+          500: ErrorJsonSchema,
         },
       },
     },
     async (request, reply) => {
       const requestLogger = logger.child({ requestId: request.id })
       try {
-        const { messages, model } = request.body as z.infer<typeof ChatRequestSchema>
+        // Validate request body with Zod
+        const validatedBody = ChatRequestSchema.parse(request.body)
+        const { messages, model } = validatedBody
 
         requestLogger.debug({ messages: messages.length, model }, 'Processing chat request')
 
@@ -86,28 +96,30 @@ const aiRoutes: FastifyPluginAsync = async (fastify, _opts) => {
   )
 
   fastify.post(
-    '/ai/chat/stream',
+    '/chat/stream',
     {
       schema: {
         operationId: 'chatStream',
         description: 'Stream AI chat response using OpenAI',
         summary: 'Stream AI chat response',
         tags: ['ai'],
-        body: ChatRequestSchema,
+        body: ChatRequestJsonSchema,
         response: {
           200: {
             type: 'string',
             description: 'Streaming text response',
           },
-          400: ErrorSchema,
-          500: ErrorSchema,
+          400: ErrorJsonSchema,
+          500: ErrorJsonSchema,
         },
       },
     },
     async (request, reply) => {
       const requestLogger = logger.child({ requestId: request.id })
       try {
-        const { messages, model } = request.body as z.infer<typeof ChatRequestSchema>
+        // Validate request body with Zod
+        const validatedBody = ChatRequestSchema.parse(request.body)
+        const { messages, model } = validatedBody
 
         requestLogger.debug(
           { messages: messages.length, model },
@@ -121,11 +133,9 @@ const aiRoutes: FastifyPluginAsync = async (fastify, _opts) => {
 
         const stream = result.toTextStreamResponse()
 
-        reply.raw.writeHead(200, {
-          'Content-Type': 'text/event-stream',
-          'Cache-Control': 'no-cache',
-          Connection: 'keep-alive',
-        })
+        reply.header('Content-Type', 'text/event-stream')
+        reply.header('Cache-Control', 'no-cache')
+        reply.header('Connection', 'keep-alive')
 
         const reader = stream.body?.getReader()
         if (!reader) {
@@ -133,16 +143,21 @@ const aiRoutes: FastifyPluginAsync = async (fastify, _opts) => {
         }
 
         const decoder = new TextDecoder()
+        let fullResponse = ''
 
         while (true) {
           const { done, value } = await reader.read()
           if (done) break
 
           const chunk = decoder.decode(value, { stream: true })
+          fullResponse += chunk
           reply.raw.write(chunk)
         }
 
         reply.raw.end()
+
+        // Return the full response for testing purposes (fastify.inject captures this)
+        return fullResponse
       } catch (error) {
         const errorMessage = getErrorMessage(error)
         requestLogger.error(
