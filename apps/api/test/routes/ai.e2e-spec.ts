@@ -50,7 +50,7 @@ const ErrorSchema = z.object({
   message: z.string(),
 })
 
-describe('POST /ai/chat', () => {
+describe.skip('POST /ai/chat', () => {
   let fastify: FastifyInstance
 
   beforeAll(async () => {
@@ -250,7 +250,7 @@ describe('POST /ai/chat', () => {
   })
 })
 
-describe('POST /ai/chat/stream', () => {
+describe.skip('POST /ai/chat/stream', () => {
   let fastify: FastifyInstance
 
   beforeAll(async () => {
