@@ -47,6 +47,9 @@ importers:
       '@fastify/swagger':
         specifier: ^9.6.1
         version: 9.6.1
+      '@fastify/type-provider-typebox':
+        specifier: ^6.1.0
+        version: 6.1.0(typebox@1.0.78)
       '@repo/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -71,6 +74,9 @@ importers:
       fastify-plugin:
         specifier: ^5.1.0
         version: 5.1.0
+      typebox:
+        specifier: ^1.0.13
+        version: 1.0.78
       zod:
         specifier: ^4.3.5
         version: 4.3.5
@@ -1136,6 +1142,11 @@ packages:
 
   '@fastify/swagger@9.6.1':
     resolution: {integrity: sha512-fKlpJqFMWoi4H3EdUkDaMteEYRCfQMEkK0HJJ0eaf4aRlKd8cbq0pVkOfXDXmtvMTXYcnx3E+l023eFDBsA1HA==}
+
+  '@fastify/type-provider-typebox@6.1.0':
+    resolution: {integrity: sha512-k29cOitDRcZhMXVjtRq0+caKxdWoArz7su+dQWGzGWnFG+fSKhevgiZ7nexHWuXOEEQzgJlh6cptIMu69beaTA==}
+    peerDependencies:
+      typebox: ^1.0.13
 
   '@floating-ui/core@1.7.3':
     resolution: {integrity: sha512-sGnvb5dmrJaKEZ+LDIpguvdX3bDlEllmv4/ClQ9awcmCZrlx5jQyyMWFM5kBI+EyNOCDDiKk8il0zeuX3Zlg/w==}
@@ -6880,6 +6891,9 @@ packages:
     resolution: {integrity: sha512-OZs6gsjF4vMp32qrCbiVSkrFmXtG/AZhY3t0iAMrMBiAZyV9oALtXO8hsrHbMXF9x6L3grlFuwW2oAz7cav+Gw==}
     engines: {node: '>= 0.6'}
 
+  typebox@1.0.78:
+    resolution: {integrity: sha512-xOPmaDSBCMa6vCHFguteJuOcq73HY2aKexdVUi+zE82dCcCp3FMKaM/SfT4fcNNgskLmjauuU8wr0/1fWNN1Og==}
+
   typed-array-buffer@1.0.3:
     resolution: {integrity: sha512-nAYYwfY3qnzX30IkA6AQZjVbtK6duGontcQm1WSG1MD94YLqK0515GNApXkoxKOWMusVssAHWLh9SeaoefYFGw==}
     engines: {node: '>= 0.4'}
@@ -7745,6 +7759,10 @@ snapshots:
       yaml: 2.8.2
     transitivePeerDependencies:
       - supports-color
+
+  '@fastify/type-provider-typebox@6.1.0(typebox@1.0.78)':
+    dependencies:
+      typebox: 1.0.78
 
   '@floating-ui/core@1.7.3':
     dependencies:
@@ -14321,6 +14339,8 @@ snapshots:
       content-type: 1.0.5
       media-typer: 1.1.0
       mime-types: 3.0.2
+
+  typebox@1.0.78: {}
 
   typed-array-buffer@1.0.3:
     dependencies:
