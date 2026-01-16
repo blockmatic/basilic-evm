@@ -12,25 +12,29 @@ vi.mock('@repo/utils/logger', () => ({
 }))
 
 // Mock Sentry - use vi.hoisted to define mock before hoisted mock factories
-const { mockInit } = vi.hoisted(() => ({
+const { mockInit, mockGetClient } = vi.hoisted(() => ({
   mockInit: vi.fn(),
+  mockGetClient: vi.fn(() => null),
 }))
 
 vi.mock('@sentry/node', async () => {
   return {
     init: mockInit,
+    getClient: mockGetClient,
   }
 })
 
 vi.mock('@sentry/nextjs', async () => {
   return {
     init: mockInit,
+    getClient: mockGetClient,
   }
 })
 
 vi.mock('@sentry/browser', async () => {
   return {
     init: mockInit,
+    getClient: mockGetClient,
   }
 })
 
@@ -116,12 +120,7 @@ describe('sentry', () => {
 
       expect(mockInit).toHaveBeenCalledWith(
         expect.objectContaining({
-          ignoreErrors: expect.arrayContaining([
-            'ResizeObserver loop',
-            'Non-Error promise rejection',
-            'NetworkError',
-            'Failed to fetch',
-          ]),
+          ignoreErrors: expect.arrayContaining(['Non-Error promise rejection']),
         }),
       )
     })

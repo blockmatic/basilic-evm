@@ -10,14 +10,16 @@ vi.mock('@repo/utils/logger', () => ({
 }))
 
 // Mock Sentry - use vi.hoisted to define mock before hoisted mock factory
-const { mockInit } = vi.hoisted(() => ({
+const { mockInit, mockGetClient } = vi.hoisted(() => ({
   mockInit: vi.fn(),
+  mockGetClient: vi.fn(() => null),
 }))
 
 vi.mock('@sentry/browser', async () => {
   return {
     default: {},
     init: mockInit,
+    getClient: mockGetClient,
   }
 })
 
