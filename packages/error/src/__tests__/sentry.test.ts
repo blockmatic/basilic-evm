@@ -11,43 +11,38 @@ vi.mock('@repo/utils/logger', () => ({
   },
 }))
 
-// Mock Sentry - use vi.hoisted to define mock before hoisted mock factories
+// Mock Sentry - use vi.hoisted to define mocks before hoisted mock factories
 const { mockInit, mockGetClient } = vi.hoisted(() => ({
   mockInit: vi.fn(),
-  mockGetClient: vi.fn(() => null),
+  mockGetClient: vi.fn<() => unknown>(() => null),
 }))
 
-vi.mock('@sentry/node', async () => {
-  return {
-    init: mockInit,
-    getClient: mockGetClient,
-  }
-})
+vi.mock('@sentry/node', () => ({
+  init: mockInit,
+  getClient: mockGetClient,
+}))
 
-vi.mock('@sentry/nextjs', async () => {
-  return {
-    init: mockInit,
-    getClient: mockGetClient,
-  }
-})
+vi.mock('@sentry/nextjs', () => ({
+  init: mockInit,
+  getClient: mockGetClient,
+}))
 
-vi.mock('@sentry/browser', async () => {
-  return {
-    init: mockInit,
-    getClient: mockGetClient,
-  }
-})
+vi.mock('@sentry/browser', () => ({
+  init: mockInit,
+  getClient: mockGetClient,
+}))
 
 describe('sentry', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockInit.mockClear()
   })
 
   describe.each([
     ['Node.js', initSentryNode],
     ['Next.js', initSentryNextjs],
     ['Browser', initSentryBrowser],
-  ])('initSentry (%s)', (_name, initSentry) => {
+  ])('initSentry (%s)', (name, initSentry) => {
     it('should initialize Sentry with default config', () => {
       initSentry({
         dsn: 'https://test@sentry.io/123',
@@ -118,11 +113,14 @@ describe('sentry', () => {
         dsn: 'https://test@sentry.io/123',
       })
 
-      expect(mockInit).toHaveBeenCalledWith(
-        expect.objectContaining({
-          ignoreErrors: expect.arrayContaining(['Non-Error promise rejection']),
-        }),
-      )
+      const lastCall = mockInit.mock.calls[mockInit.mock.calls.length - 1]?.[0]
+      if (name === 'Node.js') {
+        expect(lastCall?.ignoreErrors).toEqual(['Non-Error promise rejection'])
+      } else {
+        expect(lastCall?.ignoreErrors).toEqual(
+          expect.arrayContaining(['Non-Error promise rejection']),
+        )
+      }
     })
   })
 })

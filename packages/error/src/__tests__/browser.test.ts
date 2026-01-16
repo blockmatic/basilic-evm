@@ -12,16 +12,13 @@ vi.mock('@repo/utils/logger', () => ({
 // Mock Sentry - use vi.hoisted to define mock before hoisted mock factory
 const { mockInit, mockGetClient } = vi.hoisted(() => ({
   mockInit: vi.fn(),
-  mockGetClient: vi.fn(() => null),
+  mockGetClient: vi.fn<() => unknown>(() => null),
 }))
 
-vi.mock('@sentry/browser', async () => {
-  return {
-    default: {},
-    init: mockInit,
-    getClient: mockGetClient,
-  }
-})
+vi.mock('@sentry/browser', () => ({
+  init: mockInit,
+  getClient: mockGetClient,
+}))
 
 describe('browser sentry', () => {
   beforeEach(() => {
