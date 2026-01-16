@@ -81,7 +81,7 @@ Use `react-error-boundary` with `@repo/error` for error handling:
 
 ```tsx
 import { ErrorBoundary } from 'react-error-boundary'
-import { captureError, initSentry } from '@repo/error'
+import { captureError, initSentry } from '@repo/error/nextjs'
 import { useEffect } from 'react'
 
 function ErrorFallback({ error, resetErrorBoundary }: { 
@@ -129,7 +129,7 @@ export function AppErrorBoundary({ children }: { children: React.ReactNode }) {
 **Async errors in event handlers**:
 
 ```tsx
-import { captureError } from '@repo/error'
+import { captureError } from '@repo/error/nextjs'
 import { toast } from 'sonner'
 
 async function handleSubmit() {

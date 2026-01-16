@@ -7,8 +7,7 @@
     "module": "NodeNext",
     "target": "ES2022",
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "jsx": "preserve"
+    "skipLibCheck": true
   },
   "include": ["src/**/*.ts"]
 }

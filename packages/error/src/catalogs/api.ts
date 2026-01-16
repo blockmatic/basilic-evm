@@ -1,4 +1,4 @@
-import type { CatalogError } from '@repo/error'
+import type { CatalogError } from '../types.js'
 
 /**
  * API-specific error codes

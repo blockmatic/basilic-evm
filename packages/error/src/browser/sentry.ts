@@ -1,5 +1,6 @@
 import { logger } from '@repo/utils/logger'
-import type * as SentryTypes from '@sentry/node'
+import type { ErrorEvent, EventHint } from '@sentry/browser'
+import * as Sentry from '@sentry/browser'
 
 /**
  * Options for initializing Sentry
@@ -12,15 +13,12 @@ export interface InitSentryOptions {
   /** Release version */
   release?: string
   /** Optional custom beforeSend hook for domain-specific scrubbing */
-  beforeSend?: (
-    event: SentryTypes.ErrorEvent,
-    hint: SentryTypes.EventHint,
-  ) => SentryTypes.ErrorEvent | null
+  beforeSend?: (event: ErrorEvent, hint: EventHint) => ErrorEvent | null
 }
 
 /**
  * Initializes Sentry for error tracking
- * Supports both @sentry/node (for Fastify/Node.js) and @sentry/nextjs (for Next.js)
+ * Uses @sentry/browser for browser applications (TanStack Start, Vue, Svelte, etc.)
  * Uses Sentry's built-in PII scrubbing by default
  *
  * @param options - Sentry initialization options
@@ -29,24 +27,6 @@ export function initSentry(options: InitSentryOptions): void {
   if (!options.dsn) {
     logger.warn('Sentry DSN not configured - error reporting disabled')
     return
-  }
-
-  // Try to import @sentry/nextjs first (for Next.js apps)
-  // If that fails, fall back to @sentry/node (for Fastify/Node.js apps)
-  let Sentry: typeof SentryTypes
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    Sentry = require('@sentry/nextjs')
-  } catch {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      Sentry = require('@sentry/node')
-    } catch {
-      logger.warn(
-        'Sentry packages not found - error reporting disabled. Install @sentry/node or @sentry/nextjs',
-      )
-      return
-    }
   }
 
   Sentry.init({

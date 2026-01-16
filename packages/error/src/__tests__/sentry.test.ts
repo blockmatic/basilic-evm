@@ -1,6 +1,8 @@
 import { logger } from '@repo/utils/logger'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { initSentry } from '../sentry.js'
+import { initSentry as initSentryBrowser } from '../browser/sentry.js'
+import { initSentry as initSentryNextjs } from '../nextjs/sentry.js'
+import { initSentry as initSentryNode } from '../node/sentry.js'
 
 // Mock logger
 vi.mock('@repo/utils/logger', () => ({
@@ -9,23 +11,39 @@ vi.mock('@repo/utils/logger', () => ({
   },
 }))
 
-// Mock Sentry
-const mockInit = vi.fn()
-
-vi.mock('@sentry/node', () => ({
-  init: mockInit,
+// Mock Sentry - use vi.hoisted to define mock before hoisted mock factories
+const { mockInit } = vi.hoisted(() => ({
+  mockInit: vi.fn(),
 }))
 
-vi.mock('@sentry/nextjs', () => ({
-  init: mockInit,
-}))
+vi.mock('@sentry/node', async () => {
+  return {
+    init: mockInit,
+  }
+})
+
+vi.mock('@sentry/nextjs', async () => {
+  return {
+    init: mockInit,
+  }
+})
+
+vi.mock('@sentry/browser', async () => {
+  return {
+    init: mockInit,
+  }
+})
 
 describe('sentry', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
-  describe('initSentry', () => {
+  describe.each([
+    ['Node.js', initSentryNode],
+    ['Next.js', initSentryNextjs],
+    ['Browser', initSentryBrowser],
+  ])('initSentry (%s)', (_name, initSentry) => {
     it('should initialize Sentry with default config', () => {
       initSentry({
         dsn: 'https://test@sentry.io/123',

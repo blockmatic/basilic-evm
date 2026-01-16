@@ -1,5 +1,5 @@
 import { createOpenAI } from '@ai-sdk/openai'
-import { captureError, getErrorMessage } from '@repo/error'
+import { captureError, getErrorMessage } from '@repo/error/node'
 import { logger } from '@repo/utils/logger'
 import { type Static, Type } from '@sinclair/typebox'
 import { generateText, streamText } from 'ai'

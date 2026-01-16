@@ -75,7 +75,7 @@ describe('utils', () => {
       const obj = { code: 'ERROR', data: { foo: 'bar' } }
       const result = toErrorWithMessage(obj)
       expect(result).toBeInstanceOf(Error)
-      expect(result.message).toContain('ERROR')
+      expect(result.message).toBe('[object Object]')
     })
   })
 

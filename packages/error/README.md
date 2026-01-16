@@ -1,22 +1,45 @@
 # @repo/error
 
-Error handling utilities with Sentry integration and error catalog registry. Provides consistent, type-safe error handling across all monorepo applications.
+Error handling utilities with Sentry integration and centralized error catalog. Provides consistent, type-safe error handling across all monorepo applications.
 
 ## Features
 
-- ✅ **Registry Pattern**: Decentralized error catalogs registered at runtime
+- ✅ **Centralized Catalog**: All error codes defined in the package, pre-registered at build time
 - ✅ **Sentry Integration**: Async error capture with built-in PII scrubbing
-- ✅ **Type-Safe**: TypeScript-first with proper type guards
+- ✅ **Type-Safe**: TypeScript-first with proper type guards and union types for error codes
 - ✅ **Framework-Native**: Fastify handlers, React Error Boundaries, Next.js error pages
 - ✅ **Security-First**: Sentry built-in PII scrubbing, no internal leaks
 - ✅ **Performance**: Async Sentry capture, non-blocking, zero latency impact
+
+## Export Structure
+
+The package provides platform-specific exports (no root exports):
+
+- `@repo/error/core` - Core functionality (types, catalog, utils) - NO Sentry dependencies
+- `@repo/error/node` - Node.js/Fastify (uses `@sentry/node`)
+- `@repo/error/nextjs` - Next.js (uses `@sentry/nextjs`) - works for both client and server
+- `@repo/error/browser` - Browser frameworks (uses `@sentry/browser`) - TanStack Start, Vue, Svelte, etc.
+- `@repo/error/react` - React components
+
+**Import Rules:**
+- All imports must use platform-specific paths (no root `@repo/error` import)
+- Type imports (`CatalogError`, `CoreErrorCode`) → Use platform-specific path or `/core`
+- Runtime imports (`captureError`, `initSentry`) → Use `/node`, `/nextjs`, or `/browser`
+- Core utilities (`getError`, `mapHttpStatusToErrorCode`, `getErrorMessage`) → Available from all platform exports
 
 ## Quick Start
 
 ### Capture Error (Most Common)
 
 ```typescript
-import { captureError } from '@repo/error'
+// Node.js / Fastify applications
+import { captureError } from '@repo/error/node'
+
+// Next.js applications (works for both client and server)
+import { captureError } from '@repo/error/nextjs'
+
+// Browser frameworks (TanStack Start, Vue, Svelte, etc.)
+import { captureError } from '@repo/error/browser'
 
 const catalogError = captureError({
   code: 'NETWORK_ERROR',
@@ -29,33 +52,28 @@ const catalogError = captureError({
 // User sees safe message, Sentry gets full details
 ```
 
+**Important**: Import `captureError` from the platform-specific path:
+- Use `@repo/error/node` for Node.js/Fastify
+- Use `@repo/error/nextjs` for Next.js applications (client and server)
+- Use `@repo/error/browser` for browser-only frameworks
+
 ### Extract Error Message
 
 ```typescript
-import { getErrorMessage } from '@repo/error'
+// Core utilities available from all platform exports
+import { getErrorMessage } from '@repo/error/nextjs' // or '/node', '/browser', '/core'
 const message = getErrorMessage(error) // Type-safe!
-```
-
-### Register App-Specific Errors
-
-```typescript
-import { registerErrors } from '@repo/error'
-
-const appErrors = {
-  DASHBOARD_DATA_LOAD_FAILED: {
-    code: 'DASHBOARD_DATA_LOAD_FAILED',
-    message: 'Failed to load dashboard data',
-  },
-} as const
-
-// Register BEFORE any error handling code runs (in app entry point)
-registerErrors(appErrors)
 ```
 
 ### Initialize Sentry
 
 ```typescript
-import { initSentry } from '@repo/error'
+// For Next.js apps
+import { initSentry } from '@repo/error/nextjs'
+// For Node.js/Fastify apps
+// import { initSentry } from '@repo/error/node'
+// For browser frameworks
+// import { initSentry } from '@repo/error/browser'
 
 // Initialize BEFORE framework starts
 initSentry({
@@ -70,7 +88,7 @@ initSentry({
 
 When an error occurs, two separate things happen:
 
-1. **Sentry (Internal)** - REAL error with full stack trace and internal context for debugging
+1. **Sentry (Internal)** - REAL error with full-stack trace and internal context for debugging
 2. **API Response (External)** - SAFE catalog error with user-friendly message
 
 ```typescript
@@ -91,34 +109,17 @@ reply.status(500).send(catalogError)
 // ❌ User NEVER sees: stack traces, connection strings, internal IPs
 ```
 
-### Registry Pattern
+### Centralized Error Catalog
 
-Apps define and register their own error catalogs locally, then register them with `@repo/error`:
+All error codes are defined in `packages/error/src/catalogs/` and merged at build time:
 
-```typescript
-// apps/api/src/lib/error-catalog.ts
-export const apiErrors = {
-  AI_MODEL_ERROR: {
-    code: 'AI_MODEL_ERROR',
-    message: 'AI model error occurred',
-  },
-} as const
+- `server.ts` - Server-side HTTP errors
+- `client.ts` - Client-side validation and network errors
+- `common.ts` - Common errors used across both
+- `api.ts` - API-specific errors
+- `web.ts` - Web app-specific errors
 
-// apps/api/src/index.ts
-import { registerErrors, initSentry } from '@repo/error'
-import { apiErrors } from './lib/error-catalog'
-
-// 1. Register app errors FIRST (before any routes load)
-registerErrors(apiErrors)
-
-// 2. Initialize Sentry
-initSentry({ dsn: process.env.SENTRY_DSN })
-
-// 3. Start framework
-const app = fastify()
-```
-
-**Critical**: App errors MUST be registered during app startup BEFORE any error handling code runs.
+To add new error codes, add them to the appropriate catalog file and rebuild the package.
 
 ## API Reference
 
@@ -128,12 +129,12 @@ Captures an error to Sentry and returns a safe catalog error for API responses.
 
 ```typescript
 interface CaptureErrorOptions {
-  code: string // Error code (must be registered)
+  code: CoreErrorCode | string // Error code (must exist in catalog)
   error: unknown // Real error: sent to Sentry
   label: string // Component/feature label
   data?: Record<string, unknown> // Additional context (Sentry only)
   tags?: {
-    app: string // Required: 'api' | 'web' | 'mobile'
+    app: string // Required: 'api' | 'web' | 'mobile' | 'docs' | string
     package?: string // Optional: '@repo/auth'
     module?: string // Optional: 'user-service'
   }
@@ -143,17 +144,9 @@ interface CaptureErrorOptions {
 function captureError(options: CaptureErrorOptions): CatalogError
 ```
 
-### `registerErrors(errors)`
-
-Registers error codes in the catalog registry.
-
-```typescript
-function registerErrors(errors: Record<string, CatalogError>): void
-```
-
 ### `getError(code)`
 
-Retrieves an error from the registry by code.
+Retrieves an error from the catalog by code.
 
 ```typescript
 function getError(code: string): CatalogError | undefined
@@ -161,14 +154,14 @@ function getError(code: string): CatalogError | undefined
 
 ### `initSentry(options)`
 
-Initializes Sentry for error tracking. Supports both `@sentry/node` and `@sentry/nextjs`.
+Initializes Sentry for error tracking. Supports `@sentry/node`, `@sentry/nextjs`, and `@sentry/browser`.
 
 ```typescript
 interface InitSentryOptions {
   dsn?: string
   environment?: string
   release?: string
-  beforeSend?: (event: Sentry.Event) => Sentry.Event | null
+  beforeSend?: (event: ErrorEvent, hint: EventHint) => ErrorEvent | null
 }
 
 function initSentry(options: InitSentryOptions): void
@@ -176,11 +169,13 @@ function initSentry(options: InitSentryOptions): void
 
 ### `mapHttpStatusToErrorCode(statusCode)`
 
-Maps HTTP status codes to error catalog codes.
+Maps HTTP status codes to error catalog codes. Returns a type-safe `CoreErrorCode` union type.
 
 ```typescript
-function mapHttpStatusToErrorCode(statusCode?: number): string
+function mapHttpStatusToErrorCode(statusCode?: number): CoreErrorCode
 ```
+
+**Type Safety:** The return type is `CoreErrorCode`, ensuring compile-time guarantee that mapped codes are valid error codes.
 
 ### `getErrorMessage(error)`
 
@@ -196,7 +191,7 @@ function getErrorMessage(error: unknown): string
 
 ```typescript
 // apps/api/src/plugins/error-handler.ts
-import { captureError, mapHttpStatusToErrorCode } from '@repo/error'
+import { captureError, mapHttpStatusToErrorCode } from '@repo/error/node'
 
 fastify.setErrorHandler((error, request, reply) => {
   const catalogError = captureError({
@@ -212,23 +207,24 @@ fastify.setErrorHandler((error, request, reply) => {
 ### React Error Boundary
 
 ```typescript
-import { AppErrorBoundary } from '@repo/error'
+import { AppErrorBoundary } from '@repo/error/react'
+import { captureError } from '@repo/error/nextjs' // or /node, /browser
 
-<AppErrorBoundary app="web">
+<AppErrorBoundary app="web" captureError={captureError}>
   <App />
 </AppErrorBoundary>
 ```
+
+**Note**: `AppErrorBoundary` requires `captureError` as a prop. Import the appropriate implementation for your platform.
 
 ### Next.js
 
 ```typescript
 // apps/web/instrumentation.ts
-import { registerErrors, initSentry } from '@repo/error'
-import { webErrors } from './lib/error-catalog'
+import { initSentry } from '@repo/error/nextjs'
 
 export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
-    registerErrors(webErrors)
     initSentry({
       dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
       environment: process.env.NODE_ENV,
@@ -248,15 +244,19 @@ Error codes must be `UPPER_SNAKE_CASE`:
 - ❌ `NetworkError` (invalid)
 - ❌ `NETWORK_ERROR_` (invalid)
 
-## Core Error Catalogs
+## Error Catalogs
 
-The package includes core error catalogs that are auto-registered:
+The package includes the following error catalogs, all merged at build time:
 
 **Server Errors**: `SERVER_ERROR`, `BAD_REQUEST`, `NOT_FOUND`, `UNAUTHORIZED`, `FORBIDDEN`, `INVALID_INPUT`, `CONFLICT`, `RATE_LIMIT_EXCEEDED`, `BAD_GATEWAY`, `SERVICE_UNAVAILABLE`, `GATEWAY_TIMEOUT`
 
 **Client Errors**: `CLIENT_VALIDATION_ERROR`, `CLIENT_FORMAT_ERROR`, `NETWORK_ERROR`, `NETWORK_TIMEOUT`, `FETCH_ERROR`
 
 **Common**: `UNEXPECTED_ERROR`
+
+**API-Specific**: `AI_MODEL_ERROR`, `AI_RATE_LIMIT_EXCEEDED`, `BLOCKCHAIN_TRX_OP_FAILURE`, `BLOCKCHAIN_BLOCK_PROCESSING_ERROR`
+
+**Web-Specific**: `DASHBOARD_DATA_LOAD_FAILED`
 
 ## Security
 
@@ -267,9 +267,63 @@ The package includes core error catalogs that are auto-registered:
 
 ## Performance
 
-- Async Sentry capture via `setImmediate()` (non-blocking)
+- Async Sentry capture via `Promise.resolve().then()` (non-blocking)
 - Error extraction: < 1ms
 - Zero latency impact on API responses
+
+**Serverless Limitation**: In serverless environments (AWS Lambda, Vercel Functions), errors may be dropped if the function terminates before the promise executes. For critical paths, call `Sentry.flush()` explicitly:
+
+```typescript
+import * as Sentry from '@sentry/node' // or @sentry/nextjs, @sentry/browser
+
+// In critical serverless handler
+const catalogError = captureError({ /* ... */ })
+await Sentry.flush(2000) // Wait up to 2s for Sentry to send
+return reply.send(catalogError)
+```
+
+## Type Safety
+
+The package provides compile-time type safety for error codes:
+
+### CoreErrorCode Type
+
+`CoreErrorCode` is a union type of all error codes from the merged catalogs:
+
+```typescript
+import type { CoreErrorCode } from '@repo/error/core' // or platform-specific path
+
+// All codes get autocomplete and type checking
+const code: CoreErrorCode = 'NETWORK_ERROR' // ✅ Type-safe
+const code2: CoreErrorCode = 'AI_MODEL_ERROR' // ✅ Type-safe
+const code3: CoreErrorCode = 'INVALID_CODE' // ❌ Type error
+
+// mapHttpStatusToErrorCode returns CoreErrorCode
+const errorCode = mapHttpStatusToErrorCode(404) // Type: CoreErrorCode
+```
+
+### CaptureErrorOptions Type Safety
+
+```typescript
+import { captureError } from '@repo/error/nextjs'
+import type { CoreErrorCode } from '@repo/error/core'
+
+// All catalog codes get autocomplete
+captureError({
+  code: 'NETWORK_ERROR', // ✅ Autocomplete available
+  error: new Error('test'),
+  label: 'Test',
+  tags: { app: 'web' }, // ✅ Autocomplete for 'api' | 'web' | 'mobile' | 'docs'
+})
+```
+
+### Type Testing
+
+Run type tests to verify type safety:
+
+```bash
+pnpm test:types
+```
 
 ## Testing
 
@@ -296,8 +350,12 @@ Error utilities have been moved from `@repo/utils/error` to `@repo/error`:
 // Old
 import { getErrorMessage } from '@repo/utils/error'
 
-// New
-import { getErrorMessage, captureError } from '@repo/error'
+// New (for Next.js apps)
+import { getErrorMessage, captureError } from '@repo/error/nextjs'
+// For Node.js/Fastify apps
+// import { getErrorMessage, captureError } from '@repo/error/node'
+// For browser frameworks
+// import { getErrorMessage, captureError } from '@repo/error/browser'
 ```
 
 ## See Also

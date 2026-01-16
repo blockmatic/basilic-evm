@@ -2,12 +2,14 @@
 
 import type { ErrorInfo, ReactNode } from 'react'
 import { Component } from 'react'
-import { captureError } from '../capture.js'
+import type { CaptureErrorOptions, CatalogError } from '../types.js'
 
 export interface AppErrorBoundaryProps {
   children: ReactNode
   /** Application name for tagging (required) */
   app: string
+  /** Error capture function - import from @repo/error/node, @repo/error/nextjs, or @repo/error/browser */
+  captureError: (options: CaptureErrorOptions) => CatalogError
   /** Optional fallback component */
   fallback?: (props: { error: Error; resetErrorBoundary: () => void }) => ReactNode
   /** Optional onReset callback */
@@ -20,8 +22,8 @@ interface AppErrorBoundaryState {
 }
 
 /**
- * Error Boundary component that captures errors to Sentry
- * Uses react-error-boundary pattern with captureError integration
+ * Error Boundary component that captures errors via provided captureError function
+ * Platform-agnostic - works with Node.js, Next.js, and Browser Sentry implementations
  */
 export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorBoundaryState> {
   constructor(props: AppErrorBoundaryProps) {
@@ -34,7 +36,7 @@ export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorB
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-    captureError({
+    this.props.captureError({
       code: 'UNEXPECTED_ERROR',
       error,
       label: 'React Error Boundary',

@@ -1,14 +1,10 @@
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
-import { initSentry, registerErrors } from '@repo/error'
+import { initSentry } from '@repo/error/node'
 import Fastify from 'fastify'
 import app from './app.js'
 import { env } from './lib/env.js'
-import { apiErrors } from './lib/error-catalog.js'
 
-// 1. Register app errors FIRST (before any routes load)
-registerErrors(apiErrors)
-
-// 2. Initialize Sentry BEFORE Fastify instance creation
+// Initialize Sentry BEFORE Fastify instance creation
 initSentry({
   dsn: env.SENTRY_DSN,
   environment: env.SENTRY_ENVIRONMENT ?? env.NODE_ENV,

@@ -19,7 +19,10 @@ import { delay } from '@repo/utils/async'
 import { getChainMetadata } from '@repo/utils/web3'
 ```
 
-**Note**: Error handling utilities have been moved to `@repo/error`. Use `import { getErrorMessage, captureError } from '@repo/error'` instead.
+**Note**: Error handling utilities have been moved to `@repo/error`. Use platform-specific imports:
+- `import { getErrorMessage, captureError } from '@repo/error/node'` for Node.js/Fastify
+- `import { getErrorMessage, captureError } from '@repo/error/nextjs'` for Next.js
+- `import { getErrorMessage, captureError } from '@repo/error/browser'` for browser frameworks
 
 **Important**: Do not import from `@repo/utils` directly. Always use subpath imports.
 
@@ -132,7 +135,7 @@ import { getChainMetadata, getChainType, ChainType, chainTypeSchema } from '@rep
 
 **Error Handling**: Error utilities have been moved to `@repo/error`. Import from `@repo/error` instead:
 ```typescript
-import { getErrorMessage, captureError } from '@repo/error'
+import { getErrorMessage, captureError } from '@repo/error/node' // or '/nextjs', '/browser'
 ```
 
 ## Peer Dependencies
