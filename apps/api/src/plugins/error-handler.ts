@@ -92,12 +92,13 @@ export default fp<Record<string, never>>(async (fastify: FastifyInstance) => {
     const sanitizedHeaders = redactHeaders(request.headers as Record<string, unknown>)
     const sanitizedBody = redactBody(request.body)
 
-    // captureError handles logging via @repo/utils/logger
+    // captureError handles logging via Fastify's native logger (request.log)
     // Captures REAL error to Sentry with built-in PII scrubbing
-    // Note: request ID available via request.log automatically (requestIdLogLabel: 'reqId')
+    // Uses Fastify's native Pino logger with request context (requestId via requestIdLogLabel: 'reqId')
     const catalogError = captureError({
       code: mapHttpStatusToErrorCode(statusCode),
       error, // ← Full stack trace → Sentry
+      logger: request.log, // ← Use Fastify's native logger
       label: `${request.method} ${request.url}`,
       data: {
         method: request.method,
