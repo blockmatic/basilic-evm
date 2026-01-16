@@ -15,6 +15,12 @@ const security: FastifyPluginAsync<SecurityPluginOptions> = async fastify => {
   fastify.addHook('onRequest', async (request: FastifyRequest, reply: FastifyReply) => {
     // Detect suspicious patterns
     if (detectSuspiciousActivity(request)) {
+      logSecurityEvent(request, 'suspicious_activity_detected', {
+        method: request.method,
+        url: request.url,
+        ip: request.ip,
+        userAgent: request.headers['user-agent'],
+      })
       // Log but don't block - let rate limiting handle abuse
       // In production, you might want to block or add to blocklist
     }

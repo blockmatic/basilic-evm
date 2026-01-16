@@ -8,7 +8,7 @@ import fp from 'fastify-plugin'
  */
 export default fp<FastifySensibleOptions>(
   async fastify => {
-    fastify.register(sensible)
+    await fastify.register(sensible)
   },
   {
     name: 'sensible',

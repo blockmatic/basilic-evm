@@ -121,15 +121,13 @@ export const logSecurityEvent = (
 ): void => {
   const userAgent = request.headers['user-agent'] || ''
   const forwarded = request.headers['x-forwarded-for']
-  const realIp = forwarded
-    ? (Array.isArray(forwarded) ? forwarded[0] : forwarded).split(',')[0].trim()
-    : request.ip
 
   const logData = {
     event,
     timestamp: new Date().toISOString(),
     // Note: requestId automatically included via requestIdLogLabel: 'reqId'
-    ip: realIp,
+    ip: request.ip,
+    xForwardedFor: forwarded,
     method: request.method,
     url: request.url,
     userAgent,

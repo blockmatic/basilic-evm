@@ -18,7 +18,7 @@
     "build": "tsc",
     "build:ts": "tsc",
     "watch:ts": "tsc -w",
-    "dev": "node --env-file=.env --import tsx watch src/index.ts",
+    "dev": "node --env-file=.env --watch --import tsx src/index.ts",
     "dev:start": "pnpm run build:ts && node --env-file=.env dist/app.js",
     "lint:eslint": "eslint . --max-warnings 0",
     "lint:eslint:fix": "eslint . --fix --max-warnings 0",

@@ -51,6 +51,7 @@ The server loads `apps/api/.env` using Node.js native `--env-file` flag (Node.js
 - `SENTRY_TRACES_SAMPLE_RATE` - Sentry traces sample rate (default: `1`)
 - `SENTRY_REPLACES_HEADERS` - Replace headers with Sentry (default: `false`)
 - `SENTRY_REPLACES_PROD_ENV` - Replace production env with Sentry (default: `false`)
+- `REQUEST_TIMEOUT` - Request timeout in milliseconds (default: `30000`)
 
 ## Deployment
 
