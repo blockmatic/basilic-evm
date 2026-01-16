@@ -10,4 +10,5 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   outDir: 'dist',
+  external: ['@repo/utils', '@repo/utils/logger'],
 })
