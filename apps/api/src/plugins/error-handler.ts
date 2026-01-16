@@ -74,8 +74,19 @@ function redactBody(body: unknown): unknown {
 
 export default fp<Record<string, never>>(async (fastify: FastifyInstance) => {
   fastify.setErrorHandler((error: FastifyError, request, reply) => {
-    const routePath = (request as { routerPath?: string }).routerPath ?? request.url.split('?')[0]
+    // Type-safe route path extraction
+    const routePath: string =
+      'routerPath' in request && typeof request.routerPath === 'string'
+        ? request.routerPath
+        : (request.url.split('?')[0] ?? '/')
+
     const module = extractModuleFromRoute(routePath) ?? 'api-route'
+
+    // Type-safe status code handling
+    const statusCode: number =
+      typeof error.statusCode === 'number' && error.statusCode >= 100 && error.statusCode < 600
+        ? error.statusCode
+        : 500
 
     // Redact sensitive data before sending to Sentry
     const sanitizedHeaders = redactHeaders(request.headers as Record<string, unknown>)
@@ -83,12 +94,12 @@ export default fp<Record<string, never>>(async (fastify: FastifyInstance) => {
 
     // captureError handles logging via @repo/utils/logger
     // Captures REAL error to Sentry with built-in PII scrubbing
+    // Note: request ID available via request.log automatically (requestIdLogLabel: 'reqId')
     const catalogError = captureError({
-      code: mapHttpStatusToErrorCode(error.statusCode),
+      code: mapHttpStatusToErrorCode(statusCode),
       error, // ← Full stack trace → Sentry
       label: `${request.method} ${request.url}`,
       data: {
-        requestId: request.id,
         method: request.method,
         url: request.url,
         headers: sanitizedHeaders,
@@ -102,8 +113,8 @@ export default fp<Record<string, never>>(async (fastify: FastifyInstance) => {
       },
     })
 
-    // Return SAFE catalog error
-    reply.status(error.statusCode ?? 500).send({
+    // Return SAFE catalog error with type-safe status code
+    reply.status(statusCode).send({
       code: catalogError.code,
       message: catalogError.message,
     })
