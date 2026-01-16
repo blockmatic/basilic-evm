@@ -1,0 +1,151 @@
+---
+description: Error handling patterns with @repo/error
+globs: *.tsx,*.ts
+alwaysApply: false
+---
+
+# Error Handling Rules
+
+## Package: @repo/error
+
+All error handling uses `@repo/error` package with:
+- **Registry pattern** - Decentralized error catalogs
+- **Sentry integration** - Automatic error capture with PII scrubbing
+- **Two-track handling** - Real errors to Sentry, safe messages to users
+- **Framework-native** - Fastify handlers, React Error Boundaries, Next.js error pages
+
+## Core Patterns
+
+### Capture Error (Most Common)
+
+```typescript
+import { captureError } from '@repo/error'
+
+const catalogError = captureError({
+  code: 'NETWORK_ERROR',
+  error, // Real error → Sentry
+  label: 'API Call',
+  data: { endpoint: '/api/data' }, // Internal context
+  tags: { app: 'web' },
+})
+// Returns: { code: 'NETWORK_ERROR', message: 'A network error occurred' }
+```
+
+### Extract Error Message
+
+```typescript
+import { getErrorMessage } from '@repo/error'
+const message = getErrorMessage(error) // Type-safe
+```
+
+### Register App-Specific Errors
+
+```typescript
+// lib/error-catalog.ts
+export const appErrors = {
+  DASHBOARD_DATA_LOAD_FAILED: {
+    code: 'DASHBOARD_DATA_LOAD_FAILED',
+    message: 'Failed to load dashboard data',
+  },
+} as const
+
+// App entry point (index.ts, instrumentation.ts)
+import { registerErrors } from '@repo/error'
+registerErrors(appErrors) // BEFORE any error handling code
+```
+
+## Framework Integration
+
+### Fastify
+
+Global error handler plugin:
+
+```typescript
+// plugins/error-handler.ts
+import { captureError, mapHttpStatusToErrorCode } from '@repo/error'
+
+fastify.setErrorHandler((error, request, reply) => {
+  const catalogError = captureError({
+    code: mapHttpStatusToErrorCode(error.statusCode),
+    error,
+    label: `${request.method} ${request.url}`,
+    tags: { app: 'api' },
+  })
+  reply.status(error.statusCode ?? 500).send(catalogError)
+})
+```
+
+### React
+
+Error Boundary:
+
+```typescript
+import { ErrorBoundary } from 'react-error-boundary'
+import { captureError } from '@repo/error'
+
+<ErrorBoundary
+  FallbackComponent={ErrorFallback}
+  onError={(error) => {
+    captureError({
+      code: 'UNEXPECTED_ERROR',
+      error,
+      label: 'React Error Boundary',
+      tags: { app: 'web' },
+    })
+  }}
+>
+  <App />
+</ErrorBoundary>
+```
+
+### Next.js
+
+Error pages:
+
+```typescript
+// app/error.tsx
+'use client'
+import { captureError } from '@repo/error'
+
+export default function Error({ error }: { error: Error }) {
+  captureError({
+    code: 'UNEXPECTED_ERROR',
+    error,
+    label: 'Next.js Error Page',
+    tags: { app: 'web' },
+  })
+  return <div>Something went wrong</div>
+}
+```
+
+## Error Code Format
+
+Must be `UPPER_SNAKE_CASE`:
+
+- ✅ `NETWORK_ERROR`, `USER_NOT_FOUND`, `AI_MODEL_ERROR`
+- ❌ `network-error`, `NetworkError`, `NETWORK_ERROR_`
+
+## Core Error Catalogs
+
+**Server**: `SERVER_ERROR`, `BAD_REQUEST`, `NOT_FOUND`, `UNAUTHORIZED`, `FORBIDDEN`, `INVALID_INPUT`, `CONFLICT`, `RATE_LIMIT_EXCEEDED`
+
+**Client**: `NETWORK_ERROR`, `NETWORK_TIMEOUT`, `FETCH_ERROR`, `CLIENT_VALIDATION_ERROR`
+
+**Common**: `UNEXPECTED_ERROR`
+
+## Best Practices
+
+### Do
+
+- ✅ Use `captureError` for all error reporting
+- ✅ Register app errors during startup
+- ✅ Use `mapHttpStatusToErrorCode` in Fastify handlers
+- ✅ Return safe catalog errors to users
+- ✅ Include context in `data` field
+
+### Don't
+
+- ❌ Never use `console.*` (use `@repo/utils/logger`)
+- ❌ Never expose internal error details to users
+- ❌ Never call `captureError` without required fields
+- ❌ Never use unregistered error codes

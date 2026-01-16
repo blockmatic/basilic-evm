@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@repo/core": "workspace:*",
+    "@repo/error": "workspace:*",
     "@repo/react": "workspace:*",
     "@repo/ui": "workspace:*",
     "@sentry/nextjs": "^10.34.0",

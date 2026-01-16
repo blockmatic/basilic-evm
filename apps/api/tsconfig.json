@@ -6,7 +6,9 @@
     "moduleResolution": "NodeNext",
     "module": "NodeNext",
     "target": "ES2022",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "jsx": "preserve"
   },
   "include": ["src/**/*.ts"]
 }
