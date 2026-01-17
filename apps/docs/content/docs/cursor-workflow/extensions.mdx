@@ -1,4 +1,7 @@
-# Cursor Extensions
+---
+title: "Cursor Extensions"
+description: "VS Code/Cursor extensions for optimal development experience in this monorepo."
+---
 
 Currently installed VS Code extensions for optimal development experience in this monorepo.
 
@@ -26,8 +29,8 @@ This monorepo uses a **hybrid linting architecture** where Biome and ESLint have
 
 ### Workflow Integration
 
-- **CodeRabbit**: Used during [Phase 3: Execution](./cursor-flow.md#phase-3-execution) for pre-commit review and [Phase 4: Review](./cursor-flow.md#phase-4-review--refinement) for PR reviews
-- **Biome**: Run via `pnpm lint:biome` or `pnpm format` for formatting (see [Phase 3: Execution](./cursor-flow.md#phase-3-execution))
+- **CodeRabbit**: Used during [Phase 3: Execution](/docs/cursor-workflow/complete-workflow#phase-3-execution) for pre-commit review and [Phase 4: Review](/docs/cursor-workflow/complete-workflow#phase-4-review--refinement) for PR reviews
+- **Biome**: Run via `pnpm lint:biome` or `pnpm format` for formatting (see [Phase 3: Execution](/docs/cursor-workflow/complete-workflow#phase-3-execution))
 - **GitHub Actions**: Provides IntelliSense and validation for `.github/workflows/*.yml` files
 - **Tailwind IntelliSense**: Enhances productivity when working with Tailwind CSS classes
 - **Mermaid Extensions**: Enable diagram visualization in Markdown files and documentation
@@ -35,10 +38,10 @@ This monorepo uses a **hybrid linting architecture** where Biome and ESLint have
 ### Mermaid Diagram Support
 
 This project uses Mermaid diagrams extensively for:
-- Architecture documentation (see `.cursor/commands/diagrams.md`)
-- User journey visualization (`.cursor/commands/overview.md`)
-- Roadmap planning (`.cursor/commands/roadmap.md`)
-- Code visualization (`.cursor/commands/visualize.md`)
+- Architecture documentation
+- User journey visualization
+- Roadmap planning
+- Code visualization
 
 **Two Mermaid extensions work together:**
 - **Markdown Preview Mermaid Support**: Renders diagrams in VS Code's built-in Markdown preview
@@ -52,8 +55,8 @@ Install all recommended extensions via Extensions panel (Cmd/Ctrl + Shift + X) o
 
 ## Related Documentation
 
-- [Cursor Workflow](./cursor-flow.md) - Complete development workflow including extension usage in Phase 3 and Phase 4
-- [Quick Start](./quick-start.md) - Essential patterns for AI-assisted development
-- [Cursor Setup Guide](/docs/cursor-setup) - Complete IDE configuration
+- [Complete Workflow](/docs/cursor-workflow/complete-workflow) - Complete development workflow including extension usage in Phase 3 and Phase 4
+- [Quick Start](/docs/cursor-workflow/quick-start) - Essential patterns for AI-assisted development
+- [Cursor Setup](/docs/cursor-setup) - Complete IDE configuration
 - [Linting Architecture](/docs/adrs/006-linters) - Hybrid Biome + ESLint details
 - [AI Workflow](/docs/ai-workflow) - Development workflow with extensions

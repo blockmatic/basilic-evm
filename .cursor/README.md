@@ -6,9 +6,9 @@ AI-assisted development configuration for this codebase. Contains rules, command
 
 **New to this codebase?** Start here:
 
-1. Read [`guides/README.md`](guides/README.md) - Entry point with learning path
-2. Skim [`guides/quick-start.md`](guides/quick-start.md) - 5-minute reference card
-3. Explore [`guides/cursor-flow.md`](guides/cursor-flow.md) - Complete workflow reference
+1. Read [Cursor Workflow Overview](https://basilic-docs.vercel.app/docs/cursor-workflow) - Entry point with learning path
+2. Skim [Quick Start Guide](https://basilic-docs.vercel.app/docs/cursor-workflow/quick-start) - 5-minute reference card
+3. Explore [Complete Workflow](https://basilic-docs.vercel.app/docs/cursor-workflow/complete-workflow) - Comprehensive workflow reference
 
 **Experienced developer?** Jump to:
 - [`commands/`](commands/) - Task-specific commands (code review, git, testing, etc.)
@@ -16,16 +16,16 @@ AI-assisted development configuration for this codebase. Contains rules, command
 
 ## Directory Structure
 
-### Guides (`guides/`)
+### Workflow Documentation
 
-Human-facing workflow documentation for AI-assisted development.
+Human-facing workflow documentation for AI-assisted development is now in the [documentation site](https://basilic-docs.vercel.app/docs/cursor-workflow).
 
-**Start here:** [`guides/README.md`](guides/README.md)
+**Start here:** [Cursor Workflow Overview](https://basilic-docs.vercel.app/docs/cursor-workflow)
 
 Key guides:
-- `quick-start.md` - 5-minute reference card with essential patterns
-- `cursor-flow.md` - Complete development lifecycle (discovery → architecture → planning → execution → review)
-- `extensions.md` - VS Code/Cursor extensions and their roles
+- [Quick Start](https://basilic-docs.vercel.app/docs/cursor-workflow/quick-start) - 5-minute reference card with essential patterns
+- [Complete Workflow](https://basilic-docs.vercel.app/docs/cursor-workflow/complete-workflow) - Complete development lifecycle (discovery → architecture → planning → execution → review)
+- [Extensions](https://basilic-docs.vercel.app/docs/cursor-workflow/extensions) - VS Code/Cursor extensions and their roles
 
 ### Rules (`rules/`)
 
