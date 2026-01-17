@@ -34,6 +34,19 @@ Coding standards and best practices organized by domain:
 Please apply the TypeScript rules from .cursor/rules/base/typescript.mdc when refactoring this code.
 ```
 
+### Guides (`guides/`)
+
+Human-facing documentation for working with Cursor and AI-assisted development:
+
+- `README.md`: Navigation hub and overview of all guides (start here)
+- `quick-start.md`: 5-minute reference card with essential patterns for AI-assisted development
+- `cursor-flow.md`: Comprehensive workflow covering the complete development lifecycle (discovery, architecture, planning, execution, review)
+- `extensions.md`: Cursor/VS Code extensions and their roles in the development workflow
+
+**Purpose**: Process documentation and workflow guides for developers using Cursor. These are reference materials for humans, not AI behavior rules.
+
+**Getting Started**: Begin with [`guides/README.md`](guides/README.md) for navigation and overview.
+
 ### Prompts (`prompts/`)
 
 Reusable prompt templates:
