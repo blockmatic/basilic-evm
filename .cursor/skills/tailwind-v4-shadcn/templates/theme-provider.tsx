@@ -1,3 +1,4 @@
+import { logger } from '@repo/utils/logger'
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react'
 
 type Theme = 'dark' | 'light' | 'system'
@@ -34,7 +35,7 @@ export function ThemeProvider({
         (sessionStorage.getItem(storageKey) as Theme) ||
         defaultTheme
       )
-    } catch (e) {
+    } catch (_e) {
       // Storage unavailable (incognito/privacy mode) - use default
       return defaultTheme
     }
@@ -63,13 +64,13 @@ export function ThemeProvider({
       // Try to persist to localStorage, fall back to sessionStorage
       try {
         localStorage.setItem(storageKey, theme)
-      } catch (e) {
+      } catch (_e) {
         // localStorage unavailable (incognito) - use sessionStorage
         try {
           sessionStorage.setItem(storageKey, theme)
-        } catch (err) {
+        } catch (_err) {
           // Both unavailable - just update state without persistence
-          console.warn('Storage unavailable, theme preference will not persist')
+          logger.warn('Storage unavailable, theme preference will not persist')
         }
       }
       setTheme(theme)

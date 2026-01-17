@@ -13,7 +13,10 @@ import { neon } from '@neondatabase/serverless'
 import { drizzle } from 'drizzle-orm/neon-http'
 import * as schema from './schema'
 
-const sql = neon(process.env.DATABASE_URL!)
+const databaseUrl = process.env.DATABASE_URL
+if (!databaseUrl) throw new Error('DATABASE_URL environment variable is required')
+
+const sql = neon(databaseUrl)
 export const db = drizzle(sql, { schema })
 
 // === NEON SERVERLESS (WebSocket) ===
@@ -37,5 +40,7 @@ export const db = drizzle(sql, { schema })
 // import postgres from "postgres";
 // import { drizzle } from "drizzle-orm/postgres-js";
 //
-// const client = postgres(process.env.DATABASE_URL!);
+// const databaseUrl = process.env.DATABASE_URL;
+// if (!databaseUrl) throw new Error('DATABASE_URL environment variable is required');
+// const client = postgres(databaseUrl);
 // export const db = drizzle(client, { schema });

@@ -2,6 +2,7 @@
 // AI SDK Core - generateText() basic example
 
 import { openai } from '@ai-sdk/openai'
+import { logger } from '@repo/utils/logger'
 import { generateText } from 'ai'
 
 async function main() {
@@ -12,9 +13,17 @@ async function main() {
     temperature: 0.7,
   })
 
-  console.log('Generated text:', result.text)
-  console.log('Tokens used:', result.usage.totalTokens)
-  console.log('Finish reason:', result.finishReason)
+  logger.info(
+    {
+      text: result.text,
+      tokens: result.usage.totalTokens,
+      finishReason: result.finishReason,
+    },
+    'Generated text',
+  )
 }
 
-main().catch(console.error)
+main().catch(error => {
+  logger.error({ error }, 'Failed to generate text')
+  process.exit(1)
+})

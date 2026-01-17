@@ -28,14 +28,14 @@ Frontend React hooks for AI-powered user interfaces with Vercel AI SDK v5/v6.
 Type-safe messaging with agents using `InferAgentUIMessage<typeof agent>`:
 
 ```tsx
-import { useChat } from '@ai-sdk/react';
-import type { InferAgentUIMessage } from 'ai';
-import { myAgent } from './agent';
+import { useChat } from '@ai-sdk/react'
+import type { InferAgentUIMessage } from 'ai'
+import { myAgent } from './agent'
 
 export default function AgentChat() {
   const { messages, sendMessage } = useChat<InferAgentUIMessage<typeof myAgent>>({
     api: '/api/chat',
-  });
+  })
   // messages are now type-checked against agent schema
 }
 ```
@@ -44,20 +44,20 @@ export default function AgentChat() {
 Request user confirmation before executing tools:
 
 ```tsx
-import { useChat } from '@ai-sdk/react';
-import { useState } from 'react';
+import { useChat } from '@ai-sdk/react'
+import { useState } from 'react'
 
 export default function ChatWithApproval() {
   const { messages, sendMessage, addToolApprovalResponse } = useChat({
     api: '/api/chat',
-  });
+  })
 
   const handleApprove = (toolCallId: string) => {
     addToolApprovalResponse({
       toolCallId,
       approved: true,  // or false to deny
-    });
-  };
+    })
+  }
 
   return (
     <div>
@@ -72,7 +72,7 @@ export default function ChatWithApproval() {
                 </button>
                 <button onClick={() => addToolApprovalResponse({
                   toolCallId: tool.toolCallId,
-                  approved: false
+                  approved: false,
                 })}>
                   Deny
                 </button>
@@ -82,7 +82,7 @@ export default function ChatWithApproval() {
         </div>
       ))}
     </div>
-  );
+  )
 }
 ```
 
@@ -90,14 +90,14 @@ export default function ChatWithApproval() {
 Automatically continue conversation after handling approvals:
 
 ```tsx
-import { useChat, lastAssistantMessageIsCompleteWithApprovalResponses } from '@ai-sdk/react';
+import { useChat, lastAssistantMessageIsCompleteWithApprovalResponses } from '@ai-sdk/react'
 
 export default function AutoSubmitChat() {
   const { messages, sendMessage } = useChat({
     api: '/api/chat',
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithApprovalResponses,
     // Automatically resubmit after all approval responses provided
-  });
+  })
 }
 ```
 
@@ -105,19 +105,19 @@ export default function AutoSubmitChat() {
 Generate structured data alongside tool calling (previously only available in `useObject`):
 
 ```tsx
-import { useChat } from '@ai-sdk/react';
-import { z } from 'zod';
+import { useChat } from '@ai-sdk/react'
+import { z } from 'zod'
 
 const schema = z.object({
   summary: z.string(),
   sentiment: z.enum(['positive', 'neutral', 'negative']),
-});
+})
 
 export default function StructuredChat() {
   const { messages, sendMessage } = useChat({
     api: '/api/chat',
     // Server can now stream structured output with chat messages
-  });
+  })
 }
 ```
 
@@ -194,10 +194,10 @@ See `references/top-ui-errors.md` for complete documentation. Quick reference:
 **Solution**:
 ```typescript
 // ✅ CORRECT
-return result.toDataStreamResponse();
+return result.toDataStreamResponse()
 
 // ❌ WRONG
-return new Response(result.textStream);
+return new Response(result.textStream)
 ```
 
 ### 2. useChat No Response

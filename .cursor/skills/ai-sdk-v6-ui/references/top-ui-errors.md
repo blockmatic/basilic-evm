@@ -16,18 +16,18 @@ Common AI SDK UI errors with actionable solutions.
 ```typescript
 // ✅ CORRECT (App Router)
 export async function POST(req: Request) {
-  const result = streamText({ /* ... */ });
-  return result.toDataStreamResponse();  // Correct method
+  const result = streamText({ /* ... */ })
+  return result.toDataStreamResponse()  // Correct method
 }
 
 // ✅ CORRECT (Pages Router)
 export default async function handler(req, res) {
-  const result = streamText({ /* ... */ });
-  return result.pipeDataStreamToResponse(res);  // Correct method
+  const result = streamText({ /* ... */ })
+  return result.pipeDataStreamToResponse(res)  // Correct method
 }
 
 // ❌ WRONG
-return new Response(result.textStream);  // Missing stream protocol
+return new Response(result.textStream)  // Missing stream protocol
 ```
 
 ---
@@ -44,8 +44,8 @@ return new Response(result.textStream);  // Missing stream protocol
 
 // Check 2: Is your API route returning a Response?
 export async function POST(req: Request) {
-  const result = streamText({ model: openai('gpt-4'), messages });
-  return result.toDataStreamResponse();  // Must return this!
+  const result = streamText({ model: openai('gpt-4'), messages })
+  return result.toDataStreamResponse()  // Must return this!
 }
 
 // Check 3: Check network tab - is the request completing?
@@ -62,18 +62,18 @@ export async function POST(req: Request) {
 ```typescript
 // ✅ GOOD: SDK handles closing automatically
 export async function POST(req: Request) {
-  const result = streamText({ model: openai('gpt-4'), messages });
-  return result.toDataStreamResponse();
+  const result = streamText({ model: openai('gpt-4'), messages })
+  return result.toDataStreamResponse()
 }
 
 // ❌ BAD: Manual stream handling (error-prone)
-const encoder = new TextEncoder();
+const encoder = new TextEncoder()
 const stream = new ReadableStream({
   async start(controller) {
     // ...must manually close!
-    controller.close();
-  }
-});
+    controller.close()
+  },
+})
 ```
 
 **GitHub Issue**: #4123
@@ -93,8 +93,8 @@ const stream = new ReadableStream({
 ```typescript
 // Vercel - works out of the box
 export async function POST(req: Request) {
-  const result = streamText({ /* ... */ });
-  return result.toDataStreamResponse();
+  const result = streamText({ /* ... */ })
+  return result.toDataStreamResponse()
 }
 ```
 

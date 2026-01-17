@@ -2,6 +2,7 @@
 // AI SDK Core - streamText() with chat messages
 
 import { anthropic } from '@ai-sdk/anthropic'
+import { logger } from '@repo/utils/logger'
 import { streamText } from 'ai'
 
 async function main() {
@@ -20,20 +21,28 @@ async function main() {
     maxOutputTokens: 500,
   })
 
-  console.log('Streaming response:')
-  console.log('---')
+  logger.info('Streaming response')
+  logger.info('---')
 
-  // Stream text chunks to console
+  // Stream text chunks to stdout
   for await (const chunk of stream.textStream) {
     process.stdout.write(chunk)
   }
 
-  console.log('\n---')
+  logger.info('---')
 
   // Get final result with metadata
   const result = await stream.result
-  console.log('\nTokens used:', result.usage.totalTokens)
-  console.log('Finish reason:', result.finishReason)
+  logger.info(
+    {
+      tokens: result.usage.totalTokens,
+      finishReason: result.finishReason,
+    },
+    'Stream completed',
+  )
 }
 
-main().catch(console.error)
+main().catch(error => {
+  logger.error({ error }, 'Failed to stream text')
+  process.exit(1)
+})

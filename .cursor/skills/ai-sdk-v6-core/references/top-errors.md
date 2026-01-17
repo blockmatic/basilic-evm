@@ -21,30 +21,30 @@ API request to provider failed due to:
 ### Solution
 
 ```typescript
-import { AI_APICallError } from 'ai';
+import { AI_APICallError } from 'ai'
 
 try {
   const result = await generateText({
     model: openai('gpt-4'),
     prompt: 'Hello',
-  });
+  })
 } catch (error) {
   if (error instanceof AI_APICallError) {
-    console.error('API call failed:', error.message);
-    console.error('Status code:', error.statusCode);
-    console.error('Response:', error.responseBody);
+    console.error('API call failed:', error.message)
+    console.error('Status code:', error.statusCode)
+    console.error('Response:', error.responseBody)
 
     // Handle specific status codes
     if (error.statusCode === 401) {
       // Invalid API key
-      console.error('Check OPENAI_API_KEY environment variable');
+      console.error('Check OPENAI_API_KEY environment variable')
     } else if (error.statusCode === 429) {
       // Rate limit - implement exponential backoff
-      await wait(Math.pow(2, retryCount) * 1000);
+      await wait(Math.pow(2, retryCount) * 1000)
       // retry...
     } else if (error.statusCode >= 500) {
       // Provider issue - retry later
-      console.error('Provider service issue, retry in 1 minute');
+      console.error('Provider service issue, retry in 1 minute')
     }
   }
 }
@@ -81,7 +81,7 @@ Model didn't generate a valid object matching the Zod schema:
 ### Solution
 
 ```typescript
-import { AI_NoObjectGeneratedError } from 'ai';
+import { AI_NoObjectGeneratedError } from 'ai'
 
 try {
   const result = await generateObject({
@@ -93,10 +93,10 @@ try {
       nested: z.object({ /* ... */ }),
     }),
     prompt: 'Generate a person',
-  });
+  })
 } catch (error) {
   if (error instanceof AI_NoObjectGeneratedError) {
-    console.error('No valid object generated');
+    console.error('No valid object generated')
 
     // Solutions:
     // 1. Simplify schema

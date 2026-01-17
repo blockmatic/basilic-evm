@@ -27,6 +27,7 @@
 
 'use client'
 
+import { logger } from '@repo/utils/logger'
 import { useChat } from 'ai/react'
 import { type FormEvent, useEffect, useRef, useState } from 'react'
 
@@ -34,7 +35,7 @@ export default function ChatPage() {
   const { messages, sendMessage, isLoading, error, stop, reload } = useChat({
     api: '/api/chat',
     onError: error => {
-      console.error('Chat error:', error)
+      logger.error({ error }, 'Chat error')
     },
   })
 

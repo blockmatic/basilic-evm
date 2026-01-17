@@ -80,31 +80,31 @@ Modern patterns with wagmi:
 
 ### Connect Wallet
 ```tsx
-'use client';
+'use client'
 
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount } from 'wagmi';
+import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { useAccount } from 'wagmi'
 
 export function WalletConnect() {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected } = useAccount()
 
   return (
     <div>
       <ConnectButton />
       {isConnected && <p>Connected: {address}</p>}
     </div>
-  );
+  )
 }
 ```
 
 ### Write Contract
 ```tsx
-import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { parseEther } from 'viem';
+import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
+import { parseEther } from 'viem'
 
 export function MintButton() {
-  const { writeContract, data: hash, isPending } = useWriteContract();
-  const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
+  const { writeContract, data: hash, isPending } = useWriteContract()
+  const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash })
 
   const mint = () => {
     writeContract({
@@ -113,8 +113,8 @@ export function MintButton() {
       functionName: 'mint',
       args: [1n],
       value: parseEther('0.08'),
-    });
-  };
+    })
+  }
 
   return (
     <button onClick={mint} disabled={isPending || isLoading}>
@@ -122,23 +122,23 @@ export function MintButton() {
        isLoading ? 'Minting...' :
        isSuccess ? 'Minted!' : 'Mint NFT'}
     </button>
-  );
+  )
 }
 ```
 
 ### Sign Typed Data (EIP-712)
 ```tsx
-import { useSignTypedData } from 'wagmi';
+import { useSignTypedData } from 'wagmi'
 
 const DOMAIN = {
   name: 'My App',
   version: '1',
   chainId: 1,
   verifyingContract: '0x...',
-};
+}
 
 export function useSignOrder() {
-  const { signTypedDataAsync } = useSignTypedData();
+  const { signTypedDataAsync } = useSignTypedData()
 
   const sign = async (order: Order) => {
     return await signTypedDataAsync({
@@ -146,10 +146,10 @@ export function useSignOrder() {
       types: { Order: [...] },
       primaryType: 'Order',
       message: order,
-    });
-  };
+    })
+  }
 
-  return { sign };
+  return { sign }
 }
 ```
 
@@ -177,12 +177,12 @@ npm install wagmi viem @rainbow-me/rainbowkit @tanstack/react-query
 
 ```tsx
 // providers/Web3.tsx
-import { WagmiProvider } from 'wagmi';
-import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
-import { config } from './config';
+import { WagmiProvider } from 'wagmi'
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit'
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
+import { config } from './config'
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient()
 
 export function Web3Provider({ children }) {
   return (
@@ -191,7 +191,7 @@ export function Web3Provider({ children }) {
         <RainbowKitProvider>{children}</RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
-  );
+  )
 }
 ```
 
@@ -232,7 +232,7 @@ Check gas settings or speed up:
 await wallet.sendTransaction({
   ...tx,
   maxFeePerGas: tx.maxFeePerGas * 120n / 100n,
-});
+})
 ```
 
 ## Security Checklist

@@ -85,9 +85,9 @@ npm install ai@beta @ai-sdk/openai@beta @ai-sdk/react@beta
 - Available in API platform
 
 ```typescript
-import { openai } from '@ai-sdk/openai';
-const gpt5 = openai('gpt-5');
-const gpt51 = openai('gpt-5.1');
+import { openai } from '@ai-sdk/openai'
+const gpt5 = openai('gpt-5')
+const gpt51 = openai('gpt-5.1')
 ```
 
 ### Anthropic
@@ -115,10 +115,10 @@ const haiku45 = anthropic('claude-haiku-4-5-20251015');
 - **Flash-Lite** (Sept 2025): Updated efficiency
 
 ```typescript
-import { google } from '@ai-sdk/google';
-const pro = google('gemini-2.5-pro');
-const flash = google('gemini-2.5-flash');
-const lite = google('gemini-2.5-flash-lite');
+import { google } from '@ai-sdk/google'
+const pro = google('gemini-2.5-pro')
+const flash = google('gemini-2.5-flash')
+const lite = google('gemini-2.5-flash-lite')
 ```
 
 ---
@@ -141,15 +141,15 @@ See official docs for usage: https://ai-sdk.dev/docs/ai-sdk-core
 **Solution:**
 ```typescript
 // ❌ BAD: Top-level imports cause startup overhead
-import { createWorkersAI } from 'workers-ai-provider';
-const workersai = createWorkersAI({ binding: env.AI });
+import { createWorkersAI } from 'workers-ai-provider'
+const workersai = createWorkersAI({ binding: env.AI })
 
 // ✅ GOOD: Lazy initialization inside handler
 app.post('/chat', async (c) => {
-  const { createWorkersAI } = await import('workers-ai-provider');
-  const workersai = createWorkersAI({ binding: c.env.AI });
+  const { createWorkersAI } = await import('workers-ai-provider')
+  const workersai = createWorkersAI({ binding: c.env.AI })
   // ...
-});
+})
 ```
 
 **Additional:**
@@ -182,18 +182,18 @@ app.post('/chat', async (c) => {
 
 **Solution:**
 ```typescript
-import { AI_APICallError } from 'ai';
+import { AI_APICallError } from 'ai'
 
 try {
   const result = await generateText({
     model: openai('gpt-4'),
     prompt: 'Hello',
-  });
+  })
 } catch (error) {
   if (error instanceof AI_APICallError) {
-    console.error('API call failed:', error.message);
-    console.error('Status code:', error.statusCode);
-    console.error('Response:', error.responseBody);
+    console.error('API call failed:', error.message)
+    console.error('Status code:', error.statusCode)
+    console.error('Response:', error.responseBody)
 
     // Check common causes
     if (error.statusCode === 401) {

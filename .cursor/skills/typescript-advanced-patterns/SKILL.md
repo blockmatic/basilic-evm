@@ -40,24 +40,24 @@ Transform object types systematically:
 
 ```typescript
 // Make all properties optional
-type Partial<T> = { [P in keyof T]?: T[P] };
+type Partial<T> = { [P in keyof T]?: T[P] }
 
 // Make all properties readonly
-type Readonly<T> = { readonly [P in keyof T]: T[P] };
+type Readonly<T> = { readonly [P in keyof T]: T[P] }
 
 // Pick specific properties
-type Pick<T, K extends keyof T> = { [P in K]: T[P] };
+type Pick<T, K extends keyof T> = { [P in K]: T[P] }
 
 interface User {
-  id: number;
-  name: string;
-  email: string;
-  password: string;
+  id: number
+  name: string
+  email: string
+  password: string
 }
 
-type UserResponse = Omit<User, 'password'>;
-type UserUpdate = Partial<User>;
-type UserCreate = Omit<User, 'id'>;
+type UserResponse = Omit<User, 'password'>
+type UserUpdate = Partial<User>
+type UserCreate = Omit<User, 'id'>
 ```
 
 ### Type Guards
@@ -107,14 +107,14 @@ type LoadingState =
   | { status: 'idle' }
   | { status: 'loading' }
   | { status: 'success'; data: string[] }
-  | { status: 'error'; error: Error };
+  | { status: 'error'; error: Error }
 
 function renderState(state: LoadingState): string {
   switch (state.status) {
-    case 'idle': return 'Not started';
-    case 'loading': return 'Loading...';
-    case 'success': return `Loaded ${state.data.length} items`;
-    case 'error': return `Error: ${state.error.message}`;
+    case 'idle': return 'Not started'
+    case 'loading': return 'Loading...'
+    case 'success': return `Loaded ${state.data.length} items`
+    case 'error': return `Error: ${state.error.message}`
   }
 }
 ```
@@ -172,7 +172,7 @@ function renderState(state: LoadingState): string {
    - Mark immutable data structures as `readonly`
 
 6. **Not enabling strict mode**: Missing null checks and type errors
-   - Always use `"strict": true` in `tsconfig.json`
+   - Always use `'strict': true` in `tsconfig.json`
 
 7. **Mixing type and interface incorrectly**: Confusing semantics
    - Use `type` for unions/utilities, `interface` for object shapes
@@ -181,8 +181,8 @@ function renderState(state: LoadingState): string {
 
 ### Type-Safe ID
 ```typescript
-type UserId = string & { readonly __brand: 'UserId' };
-function createUserId(id: string): UserId { return id as UserId; }
+type UserId = string & { readonly __brand: 'UserId' }
+function createUserId(id: string): UserId { return id as UserId }
 ```
 
 ### Discriminated Union
@@ -195,8 +195,8 @@ type State =
 
 ### Mapped Type Transformation
 ```typescript
-type Readonly<T> = { readonly [P in keyof T]: T[P] };
-type Partial<T> = { [P in keyof T]?: T[P] };
+type Readonly<T> = { readonly [P in keyof T]: T[P] }
+type Partial<T> = { [P in keyof T]?: T[P] }
 ```
 
 ### Type Guard

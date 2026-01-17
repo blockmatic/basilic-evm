@@ -95,34 +95,34 @@ src/
 
 ```typescript
 // src/db/index.ts
-import { neon } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-http";
-import * as schema from "./schema";
+import { neon } from '@neondatabase/serverless'
+import { drizzle } from 'drizzle-orm/neon-http'
+import * as schema from './schema'
 
-const sql = neon(process.env.DATABASE_URL!);
-export const db = drizzle(sql, { schema });
+const sql = neon(process.env.DATABASE_URL!)
+export const db = drizzle(sql, { schema })
 ```
 
 ### Neon (With Connection Pooling)
 
 ```typescript
-import { Pool } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-serverless";
-import * as schema from "./schema";
+import { Pool } from '@neondatabase/serverless'
+import { drizzle } from 'drizzle-orm/neon-serverless'
+import * as schema from './schema'
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle(pool, { schema });
+const pool = new Pool({ connectionString: process.env.DATABASE_URL })
+export const db = drizzle(pool, { schema })
 ```
 
 ### Node Postgres
 
 ```typescript
-import { Pool } from "pg";
-import { drizzle } from "drizzle-orm/node-postgres";
-import * as schema from "./schema";
+import { Pool } from 'pg'
+import { drizzle } from 'drizzle-orm/node-postgres'
+import * as schema from './schema'
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle(pool, { schema });
+const pool = new Pool({ connectionString: process.env.DATABASE_URL })
+export const db = drizzle(pool, { schema })
 ```
 
 ## Schema Definition
@@ -138,70 +138,70 @@ import {
   integer,
   varchar,
   index,
-} from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+} from 'drizzle-orm/pg-core'
+import { relations } from 'drizzle-orm'
 
 // Users table
-export const users = pgTable("users", {
-  id: text("id").primaryKey(),
-  email: varchar("email", { length: 255 }).notNull().unique(),
-  name: text("name"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+export const users = pgTable('users', {
+  id: text('id').primaryKey(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  name: text('name'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+})
 
 // Tasks table
 export const tasks = pgTable(
-  "tasks",
+  'tasks',
   {
-    id: serial("id").primaryKey(),
-    title: varchar("title", { length: 200 }).notNull(),
-    description: text("description"),
-    completed: boolean("completed").default(false).notNull(),
-    userId: text("user_id")
+    id: serial('id').primaryKey(),
+    title: varchar('title', { length: 200 }).notNull(),
+    description: text('description'),
+    completed: boolean('completed').default(false).notNull(),
+    userId: text('user_id')
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+      .references(() => users.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },
   (table) => ({
-    userIdIdx: index("tasks_user_id_idx").on(table.userId),
-  })
-);
+    userIdIdx: index('tasks_user_id_idx').on(table.userId),
+  }),
+)
 
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   tasks: many(tasks),
-}));
+}))
 
 export const tasksRelations = relations(tasks, ({ one }) => ({
   user: one(users, {
     fields: [tasks.userId],
     references: [users.id],
   }),
-}));
+}))
 
 // Types
-export type User = typeof users.$inferSelect;
-export type NewUser = typeof users.$inferInsert;
-export type Task = typeof tasks.$inferSelect;
-export type NewTask = typeof tasks.$inferInsert;
+export type User = typeof users.$inferSelect
+export type NewUser = typeof users.$inferInsert
+export type Task = typeof tasks.$inferSelect
+export type NewTask = typeof tasks.$inferInsert
 ```
 
 ## Drizzle Kit Config
 
 ```typescript
 // drizzle.config.ts
-import { defineConfig } from "drizzle-kit";
+import { defineConfig } from 'drizzle-kit'
 
 export default defineConfig({
-  schema: "./src/db/schema.ts",
-  out: "./src/db/migrations",
-  dialect: "postgresql",
+  schema: './src/db/schema.ts',
+  out: './src/db/migrations',
+  dialect: 'postgresql',
   dbCredentials: {
     url: process.env.DATABASE_URL!,
   },
-});
+})
 ```
 
 ## Migrations
@@ -225,26 +225,26 @@ npx drizzle-kit studio
 ### Create
 
 ```typescript
-import { db } from "@/db";
-import { tasks } from "@/db/schema";
+import { db } from '@/db'
+import { tasks } from '@/db/schema'
 
 // Insert one
 const task = await db
   .insert(tasks)
   .values({
-    title: "New task",
+    title: 'New task',
     userId: user.id,
   })
-  .returning();
+  .returning()
 
 // Insert many
 const newTasks = await db
   .insert(tasks)
   .values([
-    { title: "Task 1", userId: user.id },
-    { title: "Task 2", userId: user.id },
+    { title: 'Task 1', userId: user.id },
+    { title: 'Task 2', userId: user.id },
   ])
-  .returning();
+  .returning()
 ```
 
 ### Read
@@ -285,7 +285,7 @@ const updated = await db
     updatedAt: new Date(),
   })
   .where(and(eq(tasks.id, taskId), eq(tasks.userId, user.id)))
-  .returning();
+  .returning()
 ```
 
 ### Delete
@@ -293,13 +293,13 @@ const updated = await db
 ```typescript
 await db
   .delete(tasks)
-  .where(and(eq(tasks.id, taskId), eq(tasks.userId, user.id)));
+  .where(and(eq(tasks.id, taskId), eq(tasks.userId, user.id)))
 ```
 
 ## Query Helpers
 
 ```typescript
-import { eq, ne, gt, lt, gte, lte, like, ilike, and, or, not, isNull, isNotNull, inArray, between, sql } from "drizzle-orm";
+import { eq, ne, gt, lt, gte, lte, like, ilike, and, or, not, isNull, isNotNull, inArray, between, sql } from 'drizzle-orm'
 
 // Comparison
 eq(tasks.id, 1)              // =
@@ -310,12 +310,12 @@ lt(tasks.id, 1)              // <
 lte(tasks.id, 1)             // <=
 
 // String
-like(tasks.title, "%test%")   // LIKE
-ilike(tasks.title, "%test%")  // ILIKE (case-insensitive)
+like(tasks.title, '%test%')   // LIKE
+ilike(tasks.title, '%test%')  // ILIKE (case-insensitive)
 
 // Logical
 and(eq(tasks.userId, id), eq(tasks.completed, false))
-or(eq(tasks.status, "pending"), eq(tasks.status, "active"))
+or(eq(tasks.status, 'pending'), eq(tasks.status, 'active'))
 not(eq(tasks.completed, true))
 
 // Null checks

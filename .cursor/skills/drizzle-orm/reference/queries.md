@@ -5,14 +5,14 @@
 ### Basic Select
 
 ```typescript
-import { db } from "@/db";
-import { users } from "@/db/schema";
+import { db } from '@/db'
+import { users } from '@/db/schema'
 
 // Select all
-const allUsers = await db.select().from(users);
+const allUsers = await db.select().from(users)
 
 // Select specific columns
-const names = await db.select({ name: users.name }).from(users);
+const names = await db.select({ name: users.name }).from(users)
 ```
 
 ### Where Clauses
@@ -70,33 +70,33 @@ const lastWeek = await db
 ### Order By
 
 ```typescript
-import { asc, desc } from "drizzle-orm";
+import { asc, desc } from 'drizzle-orm'
 
 // Ascending
-const oldest = await db.select().from(posts).orderBy(asc(posts.createdAt));
+const oldest = await db.select().from(posts).orderBy(asc(posts.createdAt))
 
 // Descending
-const newest = await db.select().from(posts).orderBy(desc(posts.createdAt));
+const newest = await db.select().from(posts).orderBy(desc(posts.createdAt))
 
 // Multiple columns
 const sorted = await db
   .select()
   .from(posts)
-  .orderBy(desc(posts.featured), desc(posts.createdAt));
+  .orderBy(desc(posts.featured), desc(posts.createdAt))
 ```
 
 ### Limit & Offset
 
 ```typescript
 // Pagination
-const page = 1;
-const pageSize = 10;
+const page = 1
+const pageSize = 10
 
 const posts = await db
   .select()
   .from(posts)
   .limit(pageSize)
-  .offset((page - 1) * pageSize);
+  .offset((page - 1) * pageSize)
 ```
 
 ### Joins
