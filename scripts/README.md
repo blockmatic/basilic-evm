@@ -78,9 +78,7 @@ Wrapper script for gitleaks staged file scanning.
 
 **Usage**: Automatically runs in pre-commit hooks. Can be run manually:
 ```bash
-pnpm security:scan-secrets
-# or (legacy)
-pnpm secrets:scan:staged
+pnpm security:secrets
 ```
 
 ### `scan-osv.mjs`
