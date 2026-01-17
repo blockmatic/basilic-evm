@@ -13,6 +13,7 @@
       "!**/.source",
       "!**/.vercel",
       "!**/.cache",
+      "!**/.cursor",
       "!**/coverage",
       "!**/test-results",
       "!**/playwright-report",
