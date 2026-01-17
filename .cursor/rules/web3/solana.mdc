@@ -59,3 +59,13 @@ export async function sendTransaction({
 ## Performance Optimization
 - Reuse PublicKey instances when possible
 - Validate addresses early before creating transactions
+
+## Anchor Setup
+- **Installation**: Use `pnpm setup:solana` to install Anchor automatically, or install manually via Homebrew/avm
+- **Package location**: Solana programs are in `contracts/solana/` and use `@repo/contracts-solana` package name
+- **Build behavior**: If Anchor isn't installed, builds skip gracefully without failing the pipeline
+- **Linux requirement**: Rust/Cargo must be installed first on Linux
+
+## Contract Development
+- Use Anchor framework for program development
+- Test tokens use PDA-based mint authority for open minting (faucet functionality)

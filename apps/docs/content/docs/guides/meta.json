@@ -2,6 +2,8 @@
   "index": "Overview",
   "--- Getting Set Up": "",
   "environment-setup": "Environment Setup",
+  "evm-contracts": "EVM Contracts (Foundry)",
+  "solana-contracts": "Solana Contracts (Anchor)",
   "--- Development": "",
   "add-endpoint": "Add API Endpoint",
   "add-component": "Add UI Component",

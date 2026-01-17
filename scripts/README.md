@@ -38,7 +38,7 @@ Runs during `postpack` lifecycle hook (after packing):
 
 ## Security Scripts
 
-Scripts that prevent committing secrets and scan for vulnerabilities.
+Scripts that prevent committing secrets, scan for vulnerabilities, and install security tools.
 
 ### `block-secret-files.mjs`
 
@@ -75,6 +75,105 @@ pnpm secrets:scan:staged
 Checks tool availability and prints install instructions if missing.
 
 **Usage**: Used internally by other scripts to verify required tools are installed.
+
+### `setup-gitleaks.mjs`
+
+Installs gitleaks for secret scanning in git repositories.
+
+**What it installs**:
+- **gitleaks** (required): Secret scanning tool that detects hardcoded secrets, API keys, passwords, and other sensitive information
+
+**Installation methods**:
+- **macOS**: Uses Homebrew if available, otherwise downloads binary from GitHub releases
+- **Linux**: Downloads binary from GitHub releases
+- **Windows**: Prints installation instructions (Chocolatey, Scoop, or manual)
+
+**Usage**: Automatically runs during `pnpm setup`. Can be run manually:
+```bash
+pnpm setup:gitleaks
+# or
+node scripts/setup-gitleaks.mjs
+```
+
+**Note**: gitleaks is required. Pre-commit hooks will fail if gitleaks is not installed.
+
+### `setup-osv-scanner.mjs`
+
+Installs osv-scanner for vulnerability scanning in dependencies.
+
+**What it installs**:
+- **osv-scanner** (optional): Vulnerability scanner that checks dependencies against OSV database
+
+**Installation methods**:
+- **macOS**: Uses Homebrew if available, otherwise downloads binary from GitHub releases
+- **Linux**: Downloads binary from GitHub releases
+- **Windows**: Prints installation instructions (Chocolatey, Scoop, or manual)
+
+**Usage**: Automatically runs during `pnpm setup`. Can be run manually:
+```bash
+pnpm setup:osv
+# or
+node scripts/setup-osv-scanner.mjs
+```
+
+**Note**: osv-scanner is optional. Used for scanning dependencies with `pnpm deps:osv`.
+
+### `setup-security-tools.mjs`
+
+Installs all security tools (gitleaks and osv-scanner).
+
+**Usage**: Automatically runs during `pnpm setup`. Can be run manually:
+```bash
+pnpm setup:security
+# or
+node scripts/setup-security-tools.mjs
+```
+
+## Contract Development Scripts
+
+Scripts that install contract development tools for EVM and Solana smart contracts.
+
+### `setup-evm-tools.mjs`
+
+Installs Foundry toolkit for EVM smart contract development.
+
+**What it installs**:
+- **Foundry** (optional): EVM smart contract development toolkit (`forge`, `cast`, `anvil`, `chisel`)
+
+**Installation methods**:
+- **macOS**: Uses Homebrew if available, otherwise uses foundryup installer
+- **Linux**: Uses foundryup installer (`curl -L https://foundry.paradigm.xyz | bash`)
+- **Windows**: Prints installation instructions (Chocolatey, Scoop, or manual)
+
+**Usage**: Automatically runs during `pnpm setup`. Can be run manually:
+```bash
+pnpm setup:evm
+# or
+node scripts/setup-evm-tools.mjs
+```
+
+**Note**: Foundry is optional. If not installed, EVM contract builds will skip gracefully without failing the build pipeline.
+
+### `setup-solana-tools.mjs`
+
+Installs Anchor framework for Solana smart contract development.
+
+**What it installs**:
+- **Anchor** (optional): Solana smart contract development framework
+
+**Installation methods**:
+- **macOS**: Uses Homebrew if available, otherwise uses avm (Anchor Version Manager)
+- **Linux**: Uses avm via cargo (requires Rust/Cargo to be installed first)
+- **Windows**: Prints installation instructions (Chocolatey, Scoop, or manual)
+
+**Usage**: Automatically runs during `pnpm setup`. Can be run manually:
+```bash
+pnpm setup:solana
+# or
+node scripts/setup-solana-tools.mjs
+```
+
+**Note**: Anchor is optional. If not installed, Solana contract builds will skip gracefully without failing the build pipeline. On Linux, Rust/Cargo must be installed first.
 
 ## Notes
 
