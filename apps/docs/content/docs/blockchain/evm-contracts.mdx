@@ -9,6 +9,30 @@ This guide covers setting up Foundry for EVM smart contract development in the m
 
 EVM contracts are located in `contracts/evm/` and use Foundry for development, testing, and deployment. Foundry is optional - if not installed, builds skip gracefully without failing the pipeline.
 
+## Monorepo Integration
+
+This package is fully integrated into the monorepo workspace:
+
+- **Package**: `@repo/contracts-evm`
+- **Workspace**: Included in `pnpm-workspace.yaml` as `contracts/*`
+- **Scripts**: Run via `pnpm --filter @repo/contracts-evm` pattern
+- **Caching**: Turborepo caches builds when tools are available
+- **Graceful degradation**: Builds skip if Foundry not installed (no CI failures)
+
+For comprehensive usage, deployment examples, and Cast commands, see the [contracts/evm/README.md](../../../../contracts/evm/README.md) file.
+
+## Deployed Contracts
+
+The following test contracts are deployed on **Arbitrum Sepolia** (Chain ID: 421614):
+
+| Token | Symbol | Address | Explorer |
+|-------|--------|---------|----------|
+| Dynamic Arcade Token | DNMC | `0x4F28D4eD49E20d064C9052E7Ff4Fd12878aBA09F` | [Arbiscan](https://sepolia.arbiscan.io/address/0x4F28D4eD49E20d064C9052E7Ff4Fd12878aBA09F) |
+| Mocked USDC | USDC | `0x6a2fE04d877439a44938D38709698d524BCF5c40` | [Arbiscan](https://sepolia.arbiscan.io/address/0x6a2fE04d877439a44938D38709698d524BCF5c40) |
+| Mocked USDT | USDT | `0x5f036f0B6948d4593364f975b81caBB3206aD994` | [Arbiscan](https://sepolia.arbiscan.io/address/0x5f036f0B6948d4593364f975b81caBB3206aD994) |
+
+See [contracts/evm/README.md](../../../../contracts/evm/README.md) for full details and usage examples.
+
 ## Quick Setup
 
 Install Foundry:
@@ -214,6 +238,6 @@ forge install
 
 ## Related Documentation
 
-- [Solana Contracts](/docs/guides/solana-contracts) - Solana program development with Anchor
+- [Solana Contracts](/docs/blockchain/solana-contracts) - Solana program development with Anchor
 - [Architecture: Monorepo](/docs/architecture/monorepo) - Package organization
 - [Getting Started](/docs/getting-started) - Initial setup

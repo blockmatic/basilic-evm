@@ -9,6 +9,18 @@ This guide covers setting up Anchor for Solana smart contract development in the
 
 Solana programs are located in `contracts/solana/` and use Anchor framework for development, testing, and deployment. Anchor is optional - if not installed, builds skip gracefully without failing the pipeline.
 
+## Monorepo Integration
+
+This package is fully integrated into the monorepo workspace:
+
+- **Package**: `@repo/contracts-solana`
+- **Workspace**: Included in `pnpm-workspace.yaml` as `contracts/*`
+- **Scripts**: Run via `pnpm --filter @repo/contracts-solana` pattern
+- **Caching**: Turborepo caches builds when tools are available
+- **Graceful degradation**: Builds skip if Anchor not installed (no CI failures)
+
+For comprehensive usage, deployment examples, and anchor commands, see the [contracts/solana/README.md](../../../../contracts/solana/README.md) file.
+
 ## Quick Setup
 
 Install Anchor:
@@ -231,6 +243,6 @@ choco install solana
 
 ## Related Documentation
 
-- [EVM Contracts](/docs/guides/evm-contracts) - Foundry and Solidity development
+- [EVM Contracts](/docs/blockchain/evm-contracts) - Foundry and Solidity development
 - [Architecture: Monorepo](/docs/architecture/monorepo) - Package organization
 - [Getting Started](/docs/getting-started) - Initial setup
