@@ -2,15 +2,22 @@
 
 ## Overview
 
-Create comprehensive tests for API endpoints that validate behavior through external interactions rather than internal implementation. All tests use real services with real credentials - NO MOCKS allowed for core functionality.
+Create comprehensive tests for API endpoints that validate behavior through external interactions rather than internal implementation. Tests use real services with sandbox/staging endpoints and dedicated test accounts following strict safety protocols.
 
 ## Testing Philosophy
 
-**CRITICAL**: All tests use real APIs with real credentials. NO MOCKS allowed for core functionality.
+**CRITICAL**: All tests using real APIs MUST follow mandatory safety constraints:
 
+- **Sandbox/Staging Only**: Use sandbox or staging endpoints exclusively. Production credentials and endpoints are FORBIDDEN.
+- **Dedicated Test Accounts**: Mandate dedicated least-privilege test accounts with minimal permissions required for testing.
+- **Secure Secret Storage**: Store credentials in secure vaults or environment variables only. Hardcoded secrets are FORBIDDEN.
+- **Rate Limiting**: Implement rate limiting and respect API quotas to prevent test suite failures.
+- **Resource Cleanup**: Reset state and delete test data between runs to ensure test isolation and prevent resource leaks.
+- **Hybrid Testing Strategy**: Use mocks in CI/dev environments for fast feedback; use sandbox/staging endpoints for pre-merge verification and integration testing.
+
+Additional requirements:
 - Test endpoints through their public interface, not internal code
 - Validate responses against defined contracts
-- Use actual credentials from environment variables
 - Focus on external behavior, never internal implementation
 
 ## Steps
@@ -52,8 +59,12 @@ Create comprehensive tests for API endpoints that validate behavior through exte
 - [ ] Validated response structure matches contracts
 - [ ] Tested authentication/authorization
 - [ ] Tested input validation
-- [ ] No mocks used for core functionality
-- [ ] Tests use real services with real credentials
+- [ ] Sandbox/staging endpoints configured (production endpoints forbidden)
+- [ ] Dedicated least-privilege test accounts used
+- [ ] Credentials stored securely (vaults or environment variables; no hardcoded secrets)
+- [ ] Rate limiting implemented and respected
+- [ ] Resource cleanup implemented (test data deleted, state reset between runs)
+- [ ] Hybrid testing strategy applied (mocks in CI/dev; sandbox/staging for pre-merge verification)
 - [ ] Tests focus on external behavior only
 
 ## What NOT to Do
