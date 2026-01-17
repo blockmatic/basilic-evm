@@ -40,6 +40,17 @@ Runs during `postpack` lifecycle hook (after packing):
 
 Scripts that prevent committing secrets, scan for vulnerabilities, and install security tools.
 
+### Security Script Organization
+
+All security-related pnpm scripts are organized under the `security:` namespace:
+
+- **`pnpm security:block-files`** - Check for blocked secret file types
+- **`pnpm security:secrets`** - Scan staged files for secrets (gitleaks)
+- **`pnpm security:secrets:full`** - Full repository secret scan (gitleaks)
+- **`pnpm security:osv`** - Scan dependencies for vulnerabilities (OSV Scanner)
+- **`pnpm security:audit`** - Run pnpm audit for dependency vulnerabilities
+- **`pnpm security:check`** - Run all security checks (comprehensive)
+
 ### `block-secret-files.mjs`
 
 Prevents committing sensitive file types in pre-commit hooks.
@@ -67,8 +78,27 @@ Wrapper script for gitleaks staged file scanning.
 
 **Usage**: Automatically runs in pre-commit hooks. Can be run manually:
 ```bash
+pnpm security:scan-secrets
+# or (legacy)
 pnpm secrets:scan:staged
 ```
+
+### `scan-osv.mjs`
+
+Wrapper script for OSV Scanner vulnerability scanning.
+
+**What it scans**:
+- Dependencies in `pnpm-lock.yaml` for known vulnerabilities
+- Checks against OSV (Open Source Vulnerabilities) database
+
+**Usage**: Automatically runs in pre-commit hooks via `hooks:security`. Can be run manually:
+```bash
+pnpm security:osv
+# or
+node scripts/scan-osv.mjs
+```
+
+**Note**: Requires osv-scanner to be installed. If not installed, the script will skip gracefully with a warning.
 
 ### `ensure-tool.mjs`
 
@@ -116,7 +146,7 @@ pnpm setup:osv
 node scripts/setup-osv-scanner.mjs
 ```
 
-**Note**: osv-scanner is optional. Used for scanning dependencies with `pnpm deps:osv`.
+**Note**: osv-scanner is optional. Used for scanning dependencies with `pnpm security:osv`.
 
 ### `setup-security-tools.mjs`
 
@@ -128,6 +158,27 @@ pnpm setup:security
 # or
 node scripts/setup-security-tools.mjs
 ```
+
+### `security-check.mjs`
+
+Comprehensive security check script that runs all security scans.
+
+**What it checks**:
+1. Blocked secret files (via `block-secret-files.mjs`)
+2. Secrets in repository (via gitleaks)
+3. Dependency vulnerabilities (via osv-scanner)
+4. pnpm audit for moderate+ severity vulnerabilities
+
+**Usage**: Run manually to perform all security checks:
+```bash
+pnpm security:check
+# or
+pnpm security:scan
+# or
+node scripts/security-check.mjs
+```
+
+**Note**: Scripts will skip gracefully if tools are not installed, but will report warnings.
 
 ## Contract Development Scripts
 
