@@ -87,6 +87,14 @@ function getLatestVersion(repo) {
     const url = `https://api.github.com/repos/${repo}/releases/latest`
     const response = execSync(`curl -s "${url}"`, { encoding: 'utf-8' })
     const data = JSON.parse(response)
+
+    // Validate response structure
+    if (!data || typeof data.tag_name !== 'string') {
+      console.error(`Unexpected API response structure for ${repo}`)
+      console.error(`Full response: ${JSON.stringify(data, null, 2)}`)
+      return null
+    }
+
     // Remove 'v' prefix if present
     return data.tag_name.replace(/^v/, '')
   } catch (error) {

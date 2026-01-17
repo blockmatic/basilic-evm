@@ -144,7 +144,7 @@ Extract text with pdfplumber:
 - **Examples**: See references/output-patterns.md for common patterns
 ```
 
-Claude loads FORMS.md, REFERENCE.md, or EXAMPLES.md only when needed.
+Claude loads references/workflows.md and references/output-patterns.md only when needed.
 
 **Pattern 2: Domain-specific organization**
 
@@ -194,7 +194,7 @@ For simple edits, modify the XML directly.
 **For OOXML details**: See references/output-patterns.md for document structure details
 ```
 
-Claude reads REDLINING.md or OOXML.md only when the user needs those features.
+Claude reads references/output-patterns.md only when the user needs those features.
 
 **Important guidelines:**
 
