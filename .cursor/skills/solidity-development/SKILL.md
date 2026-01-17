@@ -16,7 +16,7 @@ Does NOT cover:
 
 ## Principles
 
-- Use Solidity 0.8.24 (matches `contracts/evm/foundry.toml`)
+- Use Solidity 0.8.24
 - Use Foundry for development, testing, and deployment
 - Follow CEI pattern (Checks-Effects-Interactions) for all state changes
 - Use custom errors instead of require strings for gas efficiency
@@ -26,8 +26,8 @@ Does NOT cover:
 
 ## Constraints
 
-- MUST use Solidity 0.8.24 (matches monorepo configuration)
-- MUST use Foundry for testing (not Hardhat) - matches `contracts/evm/` setup
+- MUST use Solidity 0.8.24
+- MUST use Foundry for testing (not Hardhat)
 - MUST follow CEI pattern for external calls (prevents reentrancy)
 - SHOULD use OpenZeppelin Contracts via remappings (`@openzeppelin/=lib/openzeppelin-contracts/`)
 - SHOULD use custom errors instead of require strings (gas efficient)
@@ -35,22 +35,12 @@ Does NOT cover:
 - AVOID storage reads in loops (cache in memory first)
 - AVOID contract size > 24KB (split into libraries if needed)
 
-## Monorepo Integration
+## Foundry Configuration
 
-- **Package**: `@repo/contracts-evm`
-- **Location**: `contracts/evm/`
-- **Build**: `pnpm --filter @repo/contracts-evm build`
-- **Test**: `pnpm --filter @repo/contracts-evm test`
-- **Format**: `pnpm --filter @repo/contracts-evm fmt`
-- **Deploy**: `pnpm --filter @repo/contracts-evm deploy:local|dnmc|usdc|usdt`
-
-**Configuration** (from `foundry.toml`):
 - Solidity: 0.8.24
 - Optimizer: Enabled (200 runs)
 - Fuzz tests: 256 runs
 - Invariant tests: 256 runs
-
-See `contracts/evm/README.md` for deployment examples and test token patterns.
 
 ## Patterns
 
@@ -140,13 +130,9 @@ function withdraw(uint256 amount) external {
 
 - Uses `ethereum-development` for EVM internals understanding
 - Uses `smart-contract-security` for security patterns and auditing
-- References `@repo/contracts-evm` for contract structure and deployment patterns
-- References OpenZeppelin Contracts for standard implementations
+- Uses OpenZeppelin Contracts for standard implementations
 
-## Related Documentation
+## External Resources
 
-- `apps/docs/content/docs/blockchain/evm-contracts.mdx` - Foundry setup and monorepo integration
-- `contracts/evm/README.md` - Contract development, testing, and deployment examples
-- `contracts/evm/foundry.toml` - Foundry configuration (Solidity 0.8.24, optimizer 200 runs)
 - [Foundry Book](https://book.getfoundry.sh/) - Complete Foundry documentation
 - [OpenZeppelin Contracts](https://docs.openzeppelin.com/contracts) - Standard contract implementations

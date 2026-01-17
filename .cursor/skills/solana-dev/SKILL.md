@@ -18,11 +18,11 @@ Does NOT cover:
 
 - Use Solana Foundation framework-kit (`@solana/client` + `@solana/react-hooks`) for React/Next.js UI
 - Use `@solana/kit` for client/RPC/transaction code
-- Use Anchor 0.32.1 for program development (see `contracts/solana/Anchor.toml`)
-- Validate addresses with `PublicKey` from `@solana/web3.js` (see `@.cursor/rules/web3/solana.mdc`)
+- Use Anchor 0.32.1 for program development
+- Validate addresses with `PublicKey` from `@solana/web3.js`
 - Use Wallet Standard for wallet discovery and connection
 - Isolate `@solana/web3.js` to adapter boundaries when legacy dependencies require it
-- Reference `@repo/contracts-solana` package for contract structure and deployment patterns
+- Organize contracts using standard Anchor project structure
 
 ## Default stack decisions (opinionated)
 1) **UI: framework-kit first**
@@ -71,12 +71,10 @@ function validateSolanaAddress(address: string): boolean {
 
 Use Anchor 0.32.1 for program development:
 
-- Programs in `contracts/solana/programs/`
-- Tests in `contracts/solana/tests/`
-- Deployment scripts in `contracts/solana/scripts/`
-- Configuration in `contracts/solana/Anchor.toml`
-
-See `contracts/solana/README.md` for test token program example with PDA mint authority.
+- Organize programs in `programs/` directory
+- Place tests in `tests/` directory
+- Create deployment scripts in `scripts/` directory
+- Configure in `Anchor.toml` at project root
 
 ### Testing Pattern
 
@@ -84,24 +82,14 @@ Use Anchor test framework (includes local validator):
 
 ```bash
 # Run tests with local validator
-pnpm --filter @repo/contracts-solana test
+anchor test
 
 # Run tests without starting validator (requires running separately)
-pnpm --filter @repo/contracts-solana test:local
+anchor test --skip-local-validator
 ```
 
 ## Interactions
 
 - Complements `web3-frontend` for EVM frontend work
 - Uses `blockchain-basics` for general blockchain concepts
-- References `@repo/contracts-solana` for contract structure
-- References `@.cursor/rules/web3/solana.mdc` for address validation patterns
-- References `@.cursor/rules/web3/multichain.mdc` for chain-aware validation
 
-## Related Documentation
-
-- `@.cursor/rules/web3/solana.mdc` - Solana address validation and transaction patterns
-- `@.cursor/rules/web3/multichain.mdc` - Chain-aware address validation
-- `apps/docs/content/docs/blockchain/solana-contracts.mdx` - Anchor setup and monorepo integration
-- `contracts/solana/README.md` - Contract development, testing, and deployment examples
-- `contracts/solana/Anchor.toml` - Anchor configuration (version 0.32.1)

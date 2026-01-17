@@ -25,7 +25,7 @@ Does NOT cover:
 
 ## Constraints
 
-- MUST use viem v2 for client interactions (see `@.cursor/rules/web3/viem.mdc`)
+- MUST use viem v2 for client interactions
 - MUST validate addresses with `getAddress()` from viem (never cast directly)
 - SHOULD use EIP-1559 transactions (type 2) for predictable fees
 - SHOULD cache storage reads in memory when used in loops
@@ -110,19 +110,15 @@ contract Optimized {
 
 - Uses `solidity-development` for contract development patterns
 - Complements `web3-frontend` for frontend integration
-- References `@.cursor/rules/web3/viem.mdc` for viem v2 patterns
-- References `@repo/contracts-evm` for contract examples (deployed on Arbitrum Sepolia)
+- Uses Arbitrum Sepolia testnet for contract deployments
 
 ## Network Context
 
 - **Testing**: Arbitrum Sepolia (Chain ID: 421614) - used for contract deployments
 - **RPC**: `https://sepolia-rollup.arbitrum.io/rpc`
-- **Test tokens**: Deployed on Arbitrum Sepolia (see `contracts/evm/README.md`)
+- **Test tokens**: Deployed on Arbitrum Sepolia
 
-## Related Documentation
+## External Resources
 
-- `@.cursor/rules/web3/viem.mdc` - Viem v2 address validation and transaction patterns
-- `apps/docs/content/docs/blockchain/evm-contracts.mdx` - EVM contract development setup
-- `contracts/evm/README.md` - Contract deployment examples on Arbitrum Sepolia
 - [Viem Documentation](https://viem.sh/) - Complete viem v2 API reference
 - [Foundry Book](https://book.getfoundry.sh/) - Cast CLI commands

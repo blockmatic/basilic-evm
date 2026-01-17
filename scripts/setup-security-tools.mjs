@@ -13,7 +13,7 @@ function main() {
   try {
     console.log('📦 Installing gitleaks...')
     execSync('node scripts/setup-gitleaks.mjs', { stdio: 'inherit' })
-  } catch (error) {
+  } catch (_error) {
     console.error('\n❌ gitleaks setup failed')
     hasErrors = true
   }
@@ -22,7 +22,7 @@ function main() {
   try {
     console.log('\n📦 Installing osv-scanner...')
     execSync('node scripts/setup-osv-scanner.mjs', { stdio: 'inherit' })
-  } catch (error) {
+  } catch (_error) {
     console.error('\n⚠️  osv-scanner setup failed (optional)')
     // osv-scanner is optional, so don't fail the whole setup
   }

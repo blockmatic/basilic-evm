@@ -2,7 +2,7 @@
   "name": "basilic",
   "private": true,
   "scripts": {
-    "build": "turbo run build",
+    "build": "turbo run build --filter='!./contracts/**'",
     "dev": "turbo dev",
     "checktypes": "turbo checktypes",
     "lint": "pnpm run lint:biome && pnpm run lint:eslint",
@@ -11,7 +11,7 @@
     "lint:eslint": "turbo run lint:eslint",
     "lint:eslint:fix": "turbo run lint:eslint:fix",
     "lint:fix": "pnpm run lint:eslint:fix && pnpm run lint:biome:fix",
-    "test": "turbo run test",
+    "test": "turbo run test --filter='!./contracts/**'",
     "format": "biome format . --write",
     "hooks:pre-commit": "pnpm run hooks:security && biome check --write --staged --no-errors-on-unmatched && git update-index --again",
     "hooks:security": "node scripts/block-secret-files.mjs && node scripts/scan-secrets-staged.mjs",

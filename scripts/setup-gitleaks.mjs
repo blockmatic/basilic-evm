@@ -156,8 +156,18 @@ function installTool() {
       console.log(`\n📦 Installing ${displayName} (version ${version})...`)
       console.log(`   Downloading from: ${downloadUrl}`)
 
-      // Download
-      execSync(`wget -O ${tempFile} "${downloadUrl}"`, { stdio: 'inherit' })
+      // Download - use curl if wget not available
+      let downloadCommand
+      try {
+        execSync('which wget', { stdio: 'ignore' })
+        downloadCommand = `wget -O ${tempFile} "${downloadUrl}"`
+      } catch {
+        if (!checkCurlAvailable()) {
+          throw new Error('Neither wget nor curl is available. Please install one of them.')
+        }
+        downloadCommand = `curl -L -o ${tempFile} "${downloadUrl}"`
+      }
+      execSync(downloadCommand, { stdio: 'inherit' })
 
       // Extract if tar.gz
       if (isTarGz) {

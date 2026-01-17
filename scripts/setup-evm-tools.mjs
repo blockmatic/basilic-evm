@@ -78,9 +78,8 @@ function installTool() {
 
   if (!instructions) {
     console.error(`\n⚠️  Cannot install ${displayName} on ${os}`)
-    console.error(
-      `Please install ${displayName} manually: ${instructions?.instructions || 'See documentation'}`,
-    )
+    const fallbackMessage = `No installer for ${displayName} on ${os}. Please consult the project documentation or install manually.`
+    console.error(`Please install ${displayName} manually: ${fallbackMessage}`)
     return false
   }
 

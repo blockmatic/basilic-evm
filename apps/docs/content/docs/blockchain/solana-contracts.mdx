@@ -19,7 +19,7 @@ This package is fully integrated into the monorepo workspace:
 - **Caching**: Turborepo caches builds when tools are available
 - **Graceful degradation**: Builds skip if Anchor not installed (no CI failures)
 
-For comprehensive usage, deployment examples, and anchor commands, see the [contracts/solana/README.md](../../../../contracts/solana/README.md) file.
+For comprehensive usage, deployment examples, and anchor commands, see the `contracts/solana/README.md` file in the repository.
 
 ## Quick Setup
 
@@ -74,15 +74,23 @@ avm use latest
 
 ### Windows
 
-**Via Chocolatey:**
+**Recommended: Use WSL or avm**
+
+The official recommendation for Windows is to use WSL (Windows Subsystem for Linux) and follow the Linux installation steps, or use avm (Anchor Version Manager) if available.
+
+**Alternative options (community-maintained):**
+
+**Via Chocolatey (community-maintained):**
 ```bash
 choco install anchor
 ```
 
-**Via Scoop:**
+**Via Scoop (not officially supported):**
 ```bash
 scoop install anchor
 ```
+
+Note: The Chocolatey package is community-maintained and Scoop is not an officially supported/confirmed source for Anchor. For the most reliable installation, use WSL with the Linux instructions above.
 
 ## Verify Installation
 

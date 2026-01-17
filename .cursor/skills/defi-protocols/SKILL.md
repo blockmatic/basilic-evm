@@ -163,9 +163,7 @@ function getBorrowRate(uint256 utilization) public pure returns (uint256) {
 - Uses `smart-contract-security` for security patterns
 - Uses `ethereum-development` for EVM understanding
 
-## Related Documentation
+## External Resources
 
-- `apps/docs/content/docs/blockchain/evm-contracts.mdx` - Contract development setup
-- `contracts/evm/README.md` - Contract examples
 - [Uniswap V2 Documentation](https://docs.uniswap.org/contracts/v2/overview)
 - [Aave Documentation](https://docs.aave.com/) - Lending protocol patterns

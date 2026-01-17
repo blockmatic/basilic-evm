@@ -24,7 +24,7 @@ Does NOT cover:
 
 ## Constraints
 
-- MUST use OpenZeppelin Contracts for standard implementations (matches `contracts/evm/` setup)
+- MUST use OpenZeppelin Contracts for standard implementations
 - SHOULD use ERC-721A for batch minting (saves ~80% gas vs ERC-721)
 - SHOULD implement EIP-2981 for marketplace royalty support
 - SHOULD use operator filters for royalty enforcement (if needed)
@@ -75,7 +75,7 @@ Implement royalties for marketplace support:
 import "@openzeppelin/contracts/token/common/ERC2981.sol";
 
 contract NFTWithRoyalty is ERC721A, ERC2981 {
-    constructor() {
+    constructor(string memory name, string memory symbol) ERC721A(name, symbol) {
         _setDefaultRoyalty(msg.sender, 500); // 5%
     }
 
@@ -153,12 +153,10 @@ function tokenURI(uint256 tokenId) public view returns (string memory) {
 
 - Uses `solidity-development` for contract patterns
 - Uses `web3-frontend` for marketplace integration
-- References OpenZeppelin Contracts (used in `contracts/evm/`)
+- Uses OpenZeppelin Contracts for standard implementations
 
-## Related Documentation
+## External Resources
 
-- `apps/docs/content/docs/blockchain/evm-contracts.mdx` - Contract development setup
-- `contracts/evm/README.md` - Contract examples using OpenZeppelin
 - [OpenZeppelin Contracts](https://docs.openzeppelin.com/contracts) - Standard implementations
 - [ERC-721A Documentation](https://erc721a.org/) - Gas-optimized NFT standard
 - [OpenSea Metadata Standards](https://docs.opensea.io/docs/metadata-standards) - Marketplace integration

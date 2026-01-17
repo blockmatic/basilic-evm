@@ -100,8 +100,7 @@ Does NOT cover:
 - Complements `smart-contract-security` with cryptographic understanding
 - Supports `web3-frontend` with transaction lifecycle knowledge
 
-## Related Documentation
+## External Resources
 
-- `apps/docs/content/docs/blockchain/` - Blockchain development guides
 - [Ethereum Whitepaper](https://ethereum.org/en/whitepaper/) - Ethereum fundamentals
 - [Solana Documentation](https://docs.solana.com/) - Solana architecture

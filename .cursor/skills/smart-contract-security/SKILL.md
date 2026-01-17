@@ -29,7 +29,7 @@ Does NOT cover:
 - MUST use access control on admin functions
 - SHOULD write fuzz tests for functions with numeric inputs
 - SHOULD write invariant tests for system-wide properties
-- SHOULD use Foundry's security testing features (see `contracts/evm/test/`)
+- SHOULD use Foundry's security testing features for fuzz and invariant testing
 - AVOID trusting external calls without validation
 - AVOID using `block.timestamp` for critical logic (miners can manipulate)
 
@@ -180,12 +180,14 @@ function invariant_BalancesMatchTotalSupply() public {
 
 - Uses `solidity-development` for contract development patterns
 - Uses `ethereum-development` for EVM internals understanding
-- References `@repo/contracts-evm` for test patterns (see `contracts/evm/test/`)
+- Uses Foundry for fuzz and invariant testing
 
-## Related Documentation
+## External Resources
 
-- `apps/docs/content/docs/blockchain/evm-contracts.mdx` - Foundry setup
-- `contracts/evm/test/` - Foundry test examples
-- `contracts/evm/README.md` - Testing patterns
 - [Foundry Book - Fuzz Testing](https://book.getfoundry.sh/forge/fuzz-testing)
-- [SWC Registry](https://swcregistry.io/) - Common weakness enumeration
+- [EEA Security Guidelines](https://entethalliance.org/technical-specifications/) - Enterprise Ethereum Alliance security standards
+- [SCSVS](https://github.com/Consensys/smart-contract-verification-standard) - Smart Contract Security Verification Standard
+
+## Historical References
+
+- [SWC Registry](https://swcregistry.io/) - Common weakness enumeration (not actively maintained since ~2020, retained for historical context only)

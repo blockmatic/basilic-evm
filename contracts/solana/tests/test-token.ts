@@ -25,8 +25,18 @@ describe('test-token', () => {
     user2 = Keypair.generate()
 
     // Airdrop SOL to users
-    await provider.connection.requestAirdrop(user1.publicKey, 2 * anchor.web3.LAMPORTS_PER_SOL)
-    await provider.connection.requestAirdrop(user2.publicKey, 2 * anchor.web3.LAMPORTS_PER_SOL)
+    const sig1 = await provider.connection.requestAirdrop(
+      user1.publicKey,
+      2 * anchor.web3.LAMPORTS_PER_SOL,
+    )
+    const sig2 = await provider.connection.requestAirdrop(
+      user2.publicKey,
+      2 * anchor.web3.LAMPORTS_PER_SOL,
+    )
+
+    // Wait for airdrops to be confirmed
+    await provider.connection.confirmTransaction(sig1, 'confirmed')
+    await provider.connection.confirmTransaction(sig2, 'confirmed')
 
     // Find mint authority PDA
     const [mintAuthorityPDA, mintAuthorityBumpValue] = PublicKey.findProgramAddressSync(

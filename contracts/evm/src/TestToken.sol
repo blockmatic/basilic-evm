@@ -5,11 +5,11 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 /**
  * @title TestToken
- * @notice Test token contract for testing and faucet purposes. Mint and burn functions
- *         are open to anyone - no access control restrictions. This is intentional for
- *         testing environments and faucet functionality.
- * @dev This contract extends OpenZeppelin's ERC20 implementation with open minting/burning.
- *      The minter parameter is kept for reference but not enforced.
+ * @notice Test token contract for testing and faucet purposes. Mint function is open to anyone.
+ *         Burn function only allows callers to burn their own tokens (no cross-account burning).
+ *         This is intentional for testing environments and faucet functionality.
+ * @dev This contract extends OpenZeppelin's ERC20 implementation with open minting and
+ *      self-only burning. The minter parameter is kept for reference but not enforced.
  */
 contract TestToken is ERC20 {
     /// @notice The number of decimals for this token
@@ -48,10 +48,14 @@ contract TestToken is ERC20 {
         emit Mint(_account, _amount);
     }
 
-    /// @notice Burns tokens from an account. Open to anyone for testing purposes.
-    /// @param _account The account from which to burn tokens
+    /// @notice Burns tokens from an account. Only allows callers to burn their own tokens.
+    /// @dev This function enforces that the caller can only burn tokens from their own account
+    ///      (require(_account == msg.sender)). This is intentional for testing environments
+    ///      where users need to burn their own tokens, but should be reviewed for production use.
+    /// @param _account The account from which to burn tokens (must be msg.sender)
     /// @param _amount The amount of tokens to burn
     function burn(address _account, uint256 _amount) external {
+        require(_account == msg.sender, "TestToken: can only burn own tokens");
         _burn(_account, _amount);
         emit Burn(_account, _amount);
     }
