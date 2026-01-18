@@ -1,3 +1,17 @@
+---
+id: solana-resources
+title: Curated Resources (Source-of-Truth First)
+description: Curated list of Solana learning resources, documentation, and tools
+tags:
+  - solana
+  - resources
+  - documentation
+created: 2024-01-01
+updated: 2024-01-01
+source: solana-dev
+format: MDC
+---
+
 # Curated Resources (Source-of-Truth First)
 
 ## Learning Platforms

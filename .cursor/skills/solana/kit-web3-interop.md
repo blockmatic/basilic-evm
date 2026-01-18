@@ -1,3 +1,18 @@
+---
+title: Kit ↔ web3.js Interop (boundary patterns)
+description: Patterns for interop between Solana Kit and web3.js at adapter boundaries
+authors:
+  - solana-dev
+tags:
+  - solana
+  - kit
+  - web3.js
+  - interop
+  - adapter
+created: 2024-01-01
+updated: 2024-01-01
+---
+
 # Kit ↔ web3.js Interop (boundary patterns)
 
 ## The rule

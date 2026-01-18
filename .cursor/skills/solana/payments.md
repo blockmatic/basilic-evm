@@ -1,3 +1,16 @@
+---
+title: Payments and commerce (optional)
+description: Guide for implementing payments and commerce flows on Solana
+author: solana-dev
+created: 2024-01-01
+updated: 2024-01-01
+tags:
+  - solana
+  - payments
+  - commerce
+schema_version: 1.0
+---
+
 # Payments and commerce (optional)
 
 ## When payments are in scope

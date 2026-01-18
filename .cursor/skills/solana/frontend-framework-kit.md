@@ -1,3 +1,20 @@
+---
+title: Frontend with framework-kit (Next.js / React)
+description: Guide for building Solana frontends using framework-kit with Next.js and React
+category: skill
+tags:
+  - solana
+  - frontend
+  - framework-kit
+  - nextjs
+  - react
+framework:
+  - Next.js
+  - React
+created: 2024-01-01
+updated: 2024-01-01
+---
+
 # Frontend with framework-kit (Next.js / React)
 
 ## Goals

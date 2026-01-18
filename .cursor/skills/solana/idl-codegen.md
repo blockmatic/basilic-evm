@@ -1,3 +1,19 @@
+---
+title: IDLs + client generation (Codama / Shank / Kinobi)
+description: Guide for IDL-driven client generation using Codama, Shank, and Kinobi
+author: solana-dev
+tags:
+  - solana
+  - idl
+  - codegen
+  - codama
+  - shank
+  - kinobi
+version: 1.0.0
+created: 2024-01-01
+updated: 2024-01-01
+---
+
 # IDLs + client generation (Codama / Shank / Kinobi)
 
 ## Goal
