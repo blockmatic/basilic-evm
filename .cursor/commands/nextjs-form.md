@@ -24,7 +24,7 @@ Create or update Next.js forms using Server Actions with proper validation, erro
 
 3. **Build form component**
    - Use `useActionState` (React 19) for form state management and error display
-   - Replace deprecated `useFormStatus` with `useActionState`
+   - Use `useFormStatus` for pending submit status (both hooks are valid and complementary)
    - Handle initial state and state updates from Server Actions
    - Display validation errors with field-level and form-level feedback
    - Implement proper form reset after successful submission

@@ -39,12 +39,12 @@ This project includes 6 MCP servers:
 
 1. **shadcnui-official** - Canonical shadcn/ui component definitions and variants
 2. **shadcnui-jpisnice-react** - shadcn/ui v4 blocks, demos, and page templates for React
-3. **v0** - AI UI design and generation (v0.dev)
-4. **GitHub** - Repository operations
-5. **Vercel** - Deployment management
-6. **basilic-docs** - Basilic project documentation context
+3. **shadcnui-jpisnice-react-native** - shadcn/ui v4 components, blocks, and demos for React Native
+4. **github** - Repository operations and issue management
+5. **basilic-docs** - Basilic project documentation context
+6. **basilic-api** - Basilic API package context
 
-**Note:** `shadcnui-jpisnice-react-native` exists for future React Native support but is not included in the current React workflow.
+**Note:** `shadcnui-jpisnice-react-native` is configured for future React Native support.
 
 ### Setting Up API Keys
 
@@ -53,9 +53,7 @@ MCP servers require API keys to function:
 **For zsh (recommended):**
 ```bash
 # Add to ~/.zshrc
-export V0_API_KEY=your_v0_api_key_here
-export GITHUB_TOKEN=your_github_token_here  # Also required for shadcnui-jpisnice-react
-export VERCEL_API_TOKEN=your_vercel_api_token_here
+export GITHUB_TOKEN=your_github_token_here  # Required for github and shadcnui-jpisnice-react
 
 # Reload
 source ~/.zshrc
@@ -64,9 +62,7 @@ source ~/.zshrc
 **For bash:**
 ```bash
 # Add to ~/.bashrc
-export V0_API_KEY=your_v0_api_key_here
-export GITHUB_TOKEN=your_github_token_here  # Also required for shadcnui-jpisnice-react
-export VERCEL_API_TOKEN=your_vercel_api_token_here
+export GITHUB_TOKEN=your_github_token_here  # Required for github and shadcnui-jpisnice-react
 
 # Reload
 source ~/.bashrc
@@ -76,9 +72,7 @@ source ~/.bashrc
 
 ### Getting API Keys
 
-- **V0_API_KEY**: [v0.dev account settings](https://v0.dev)
 - **GITHUB_TOKEN**: [GitHub Personal Access Tokens](https://github.com/settings/tokens) (required for GitHub MCP and shadcnui-jpisnice-react)
-- **VERCEL_API_TOKEN**: [Vercel Account Tokens](https://vercel.com/account/tokens)
 
 ### Verifying MCP Setup
 

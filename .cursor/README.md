@@ -115,7 +115,7 @@ export VERCEL_API_TOKEN=your_token_here
 ## Related Resources
 
 **Project documentation:**
-- [Cursor Setup Guide](@apps/docs/content/docs/getting-started/cursor-setup.mdx) - MCP servers and IDE configuration
+- [Cursor Setup Guide](apps/docs/content/docs/getting-started/cursor-setup.mdx) - MCP servers and IDE configuration
 - Project tech stack - See main repository README
 
 **External documentation:**

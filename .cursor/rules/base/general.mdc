@@ -4,7 +4,7 @@ glob: "*"
 alwaysApply: true
 ---
 
-# General Agent Rulesponp
+# General Agent Rules
 
 ## Agent Behavior
 
@@ -12,7 +12,7 @@ alwaysApply: true
 - Before acting, confirm you’ve read and understood the linked docs. Summarize assumptions in 3–5 bullets.
 - Always update readme files, documentation and relevant cursor rules after making code changes
 - The AI agent is allowed to read, write, create, move, and delete any file in the workspace without asking for permission
-- Never ask before modifying creating and files, even dotfiles. Proceed directly with changes
+- Never ask before modifying or creating files, even dotfiles. Proceed directly with changes
 - Provide concise executive summaries when finishing tasks
 - Suggest improvements proactively when spotting issues
 

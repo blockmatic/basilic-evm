@@ -30,7 +30,7 @@ We use a **Fastify REST API** that exposes **OpenAPI** specifications. The OpenA
 Fastify routes are implemented with TypeBox schemas (native JSON Schema):
 
 ```typescript
-import { Type } from 'typebox'
+import { Type } from '@sinclair/typebox'
 
 const HealthResponseSchema = Type.Object({
   ok: Type.Literal(true),

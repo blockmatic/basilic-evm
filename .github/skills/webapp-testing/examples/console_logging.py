@@ -28,8 +28,11 @@ with sync_playwright() as p:
     browser.close()
 
 # Save console logs to file
-with open('/mnt/user-data/outputs/console.log', 'w') as f:
+import os
+log_path = '/tmp/console.log'  # Use portable path
+os.makedirs(os.path.dirname(log_path), exist_ok=True)
+with open(log_path, 'w') as f:
     f.write('\n'.join(console_logs))
 
 print(f"\nCaptured {len(console_logs)} console messages")
-print(f"Logs saved to: /mnt/user-data/outputs/console.log")
+print(f"Logs saved to: {log_path}")

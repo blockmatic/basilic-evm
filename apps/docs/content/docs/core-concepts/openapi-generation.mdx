@@ -26,7 +26,7 @@ TypeBox schemas are native JSON Schema definitions for Fastify routes:
 
 ```typescript
 // apps/api/src/routes/users.ts
-import { Type } from 'typebox'
+import { Type } from '@sinclair/typebox'
 
 const UserSchema = Type.Object({
   id: Type.String(),

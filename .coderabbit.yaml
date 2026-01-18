@@ -23,155 +23,131 @@ reviews:
   collapse_walkthrough: false
   
   # Auto-approve PRs that meet quality standards
-  auto_review: true
+  auto_review:
+    enabled: true
+    auto_incremental_review: true
+    drafts: false
+  
+  # Path filters (exclusion patterns)
+  path_filters:
+    # Build artifacts and dependencies
+    - "!**/*.min.js"
+    - "!**/*.min.css"
+    - "!**/dist/**"
+    - "!**/build/**"
+    - "!**/node_modules/**"
+    - "!**/pnpm-lock.yaml"
+    - "!**/package-lock.json"
+    - "!**/yarn.lock"
+    
+    # Generated files
+    - "!**/gen/**"
+    - "!**/*.gen.ts"
+    - "!**/*.gen.js"
+    
+    # Documentation assets
+    - "!**/*.png"
+    - "!**/*.jpg"
+    - "!**/*.jpeg"
+    - "!**/*.gif"
+    - "!**/*.svg"
+    - "!**/*.ico"
+    
+    # Configuration
+    - "!**/.env*"
+    - "!**/tsconfig*.json"
+    
+    # Blockchain artifacts
+    - "!**/broadcast/**"
+    - "!**/out/**"
+    - "!**/cache/**"
+  
+  # Path-specific instructions
+  path_instructions:
+    - path: "packages/**"
+      instructions: |
+        - Ensure subpath exports are defined in package.json (e.g., "@repo/utils/async", "@repo/error/node")
+        - Verify dual-mode exports (ESM/CJS) for compatibility
+        - Check that no server-only code leaks into client bundles (no fs, path, env loaders in shared/browser code)
+        - Validate TypeScript types are correctly exported
+        - Ensure platform-specific exports are used (e.g., @repo/error/node vs @repo/error/nextjs)
+        - Verify no root exports for packages with subpath exports
+    
+    - path: "apps/web/**"
+      instructions: |
+        - Follow Next.js 15 App Router conventions
+        - Use React Server Components by default - only add 'use client' when absolutely necessary (interactivity, hooks, browser APIs)
+        - Validate error boundaries are in place using @repo/error/nextjs
+        - Check mobile-first responsive design patterns
+        - Ensure no console.* usage - use @repo/utils/logger instead
+        - Verify proper error handling with captureError from @repo/error/nextjs
+        - Check that pages/layouts use default exports (exception to named exports rule)
+    
+    - path: "apps/docs/**"
+      instructions: |
+        - Follow Next.js 15 App Router conventions
+        - Use React Server Components by default
+        - Ensure MDX content follows documentation standards
+        - Verify cross-references use @ syntax correctly
+        - Check that documentation is up to date with code changes
+    
+    - path: "apps/api/**"
+      instructions: |
+        - Follow Fastify functional patterns (no classes or decorators)
+        - Use TypeBox schemas for route validation (not Zod on backend)
+        - Ensure proper error handling with @repo/error/node and captureError
+        - Validate logger usage from @repo/utils/logger (never console.*)
+        - Check OpenAPI schema generation is correct
+        - Verify error handler plugin uses request.log for proper request context
+        - Ensure ESM patterns (no __dirname/__filename, use import.meta.url)
+    
+    - path: "contracts/**"
+      instructions: |
+        - Follow Solidity best practices for EVM contracts
+        - Follow Anchor patterns for Solana contracts
+        - Verify security best practices (no reentrancy, proper access control)
+        - Check that tests use real networks/APIs where appropriate
+    
+    - path: "**/*.{ts,tsx}"
+      instructions: |
+        - Follow RORO pattern (receive object, return object) for multiple parameters
+        - Prefer functional code - avoid classes and decorators (except framework requirements)
+        - Avoid unnecessary curly braces for single-line conditionals and arrow functions
+        - Use explicit return types for exported functions and API handlers
+        - Prefer interfaces over types for object shapes
+        - Use import type for type-only imports
+        - Ensure Zod schemas are used for runtime validation at API boundaries
+        - Verify no console.* usage - use @repo/utils/logger instead
+        - Check that error handling uses @repo/error with platform-specific imports
+    
+    - path: "**/*.{test.ts,test.tsx,spec.ts,spec.tsx,e2e-spec.ts}"
+      instructions: |
+        - CRITICAL: Integration tests must use real APIs with real API keys - NO MOCKS for core functionality
+        - UI-only tests may mock API calls for performance, but integration tests must use real APIs
+        - Verify test describes what is being tested clearly
+        - Check edge cases are covered
+        - Ensure mocks are properly cleaned up (if used for UI-only tests)
+        - Validate assertions are meaningful
+        - For API tests: verify all CRUD operations, error handling, response validation against OpenAPI schemas
+    
+    - path: ".cursor/**"
+      instructions: |
+        - Ensure rules follow MDC format with frontmatter
+        - Validate skills have clear SKILL.md structure
+        - Check documentation is up to date
+        - Verify cross-references use @ syntax correctly
+    
+    - path: "**/*.{ts,tsx,js,jsx}"
+      instructions: |
+        - SECURITY: Never expose secrets in code (API keys, tokens, passwords)
+        - SECURITY: Always validate server-side - never trust client-side validation alone
+        - SECURITY: Use Zod schemas for input validation at API boundaries
+        - SECURITY: Never log secrets - use logger redaction features
+        - LINTING: Code must pass both Biome (formatting/style) and ESLint (correctness) before merge
+        - LINTING: Run pnpm lint:fix after making changes
+        - LINTING: File size limit is 300 lines (exempt: test files and UI components)
 
 # Chat configuration
 chat:
   # Enable AI chat responses on PR comments
   auto_reply: true
-
-# Ignore patterns
-ignore:
-  # Build artifacts and dependencies
-  - "**/*.min.js"
-  - "**/*.min.css"
-  - "**/dist/**"
-  - "**/build/**"
-  - "**/node_modules/**"
-  - "**/pnpm-lock.yaml"
-  - "**/package-lock.json"
-  - "**/yarn.lock"
-  
-  # Generated files
-  - "**/gen/**"
-  - "**/*.gen.ts"
-  - "**/*.gen.js"
-  
-  # Documentation assets
-  - "**/*.png"
-  - "**/*.jpg"
-  - "**/*.jpeg"
-  - "**/*.gif"
-  - "**/*.svg"
-  - "**/*.ico"
-  
-  # Configuration
-  - "**/.env*"
-  - "**/tsconfig*.json"
-  
-  # Blockchain artifacts
-  - "**/broadcast/**"
-  - "**/out/**"
-  - "**/cache/**"
-
-# Review rules aligned with project standards
-reviews_rules:
-  # TypeScript & Code Quality
-  - name: "TypeScript Strict Mode"
-    description: "Ensure TypeScript strict mode is enabled and followed"
-    pattern: "**/*.ts,**/*.tsx"
-    message: "Follow strict TypeScript patterns: explicit return types for exported functions, no implicit any, prefer interfaces over types for object shapes"
-  
-  - name: "Functional Code Patterns"
-    description: "Prefer functional patterns over classes"
-    pattern: "**/*.ts,**/*.tsx"
-    message: "Use functional patterns: RORO (receive object, return object), arrow functions, avoid classes and decorators except when required by framework"
-  
-  - name: "Single-line Conditionals"
-    description: "Use single-line conditionals without braces for simple cases"
-    pattern: "**/*.ts,**/*.tsx"
-    message: "Prefer single-line conditionals: 'if (!value) return null' instead of 'if (!value) { return null }'"
-  
-  # React & Next.js
-  - name: "React Server Components"
-    description: "Use React Server Components by default in Next.js"
-    pattern: "**/app/**/*.tsx"
-    message: "Use React Server Components by default. Only add 'use client' when necessary (hooks, event handlers, browser APIs)"
-  
-  - name: "Named Exports"
-    description: "Prefer named exports over default exports"
-    pattern: "**/*.ts,**/*.tsx"
-    message: "Use named exports except for Next.js pages/layouts that require default exports"
-  
-  # Error Handling & Logging
-  - name: "Error Handling"
-    description: "Use @repo/error package for all error handling"
-    pattern: "**/*.ts,**/*.tsx"
-    message: "Use captureError from @repo/error with platform-specific imports (/node, /nextjs, /browser). Never expose internal error details to users"
-  
-  - name: "Logging"
-    description: "Never use console.* directly"
-    pattern: "**/*.ts,**/*.tsx"
-    message: "Use logger from @repo/utils/logger instead of console.log/error/warn/info. Use structured fields for context"
-  
-  # Imports & Module Organization
-  - name: "Type-Only Imports"
-    description: "Use import type for type-only imports"
-    pattern: "**/*.ts,**/*.tsx"
-    message: "Use 'import type' for type-only imports to ensure they're erased at runtime"
-  
-  - name: "Subpath Exports"
-    description: "Use subpath exports for shared packages"
-    pattern: "**/*.ts,**/*.tsx"
-    message: "Import from platform-specific paths: @repo/utils/async, @repo/error/nextjs, @repo/ui/components/*. Never use root imports"
-  
-  - name: "Lodash Tree-Shaking"
-    description: "Use per-function lodash-es imports"
-    pattern: "**/*.ts,**/*.tsx"
-    message: "Import lodash functions individually: 'import isEmpty from \"lodash-es/isEmpty\"' instead of 'import { isEmpty } from \"lodash-es\"'"
-  
-  # Testing
-  - name: "Test Coverage"
-    description: "Ensure critical business logic has tests"
-    pattern: "**/*.test.ts,**/*.test.tsx,**/*.spec.ts"
-    message: "Add tests for critical business logic, error handling, and edge cases"
-  
-  # Security
-  - name: "No Secrets in Code"
-    description: "Never commit secrets or sensitive data"
-    pattern: "**/*"
-    message: "Detected potential secret. Use environment variables instead. Check .env files are in .gitignore"
-  
-  - name: "Environment Variables"
-    description: "Validate environment variables at startup"
-    pattern: "**/env*.ts,**/config*.ts"
-    message: "Use Zod schemas to validate environment variables at application startup"
-
-# Path-specific instructions
-path_instructions:
-  - path: "packages/**"
-    instructions: |
-      - Ensure subpath exports are defined in package.json
-      - Verify dual-mode exports (ESM/CJS) for compatibility
-      - Check that no server-only code leaks into client bundles
-      - Validate TypeScript types are correctly exported
-  
-  - path: "apps/web/**"
-    instructions: |
-      - Follow Next.js 15 App Router conventions
-      - Use React Server Components by default
-      - Ensure 'use client' is only added when necessary
-      - Validate error boundaries are in place
-      - Check mobile-first responsive design patterns
-  
-  - path: "apps/api/**"
-    instructions: |
-      - Follow Fastify functional patterns
-      - Use TypeBox schemas for route validation
-      - Ensure proper error handling with @repo/error/node
-      - Validate logger usage from @repo/utils/logger
-      - Check OpenAPI schema generation is correct
-  
-  - path: "**/*.test.ts"
-    instructions: |
-      - Verify test describes what is being tested
-      - Check edge cases are covered
-      - Ensure mocks are properly cleaned up
-      - Validate assertions are meaningful
-  
-  - path: ".cursor/**"
-    instructions: |
-      - Ensure rules follow MDC format
-      - Validate skills have clear SKILL.md structure
-      - Check documentation is up to date
-      - Verify cross-references are correct
