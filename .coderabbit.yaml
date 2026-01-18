@@ -88,7 +88,7 @@ reviews:
         - Follow Next.js 15 App Router conventions
         - Use React Server Components by default
         - Ensure MDX content follows documentation standards
-        - Verify cross-references use @ syntax correctly
+        - Verify cross-references use standard markdown links (e.g., [text](/docs/path)) not @ syntax
         - Check that documentation is up to date with code changes
     
     - path: "apps/api/**"
@@ -116,9 +116,9 @@ reviews:
         - Use explicit return types for exported functions and API handlers
         - Prefer interfaces over types for object shapes
         - Use import type for type-only imports
-        - Ensure Zod schemas are used for runtime validation at API boundaries
         - Verify no console.* usage - use @repo/utils/logger instead
         - Check that error handling uses @repo/error with platform-specific imports
+        - Note: Backend API routes use TypeBox for validation, frontend/Next.js apps use Zod for API boundary validation
     
     - path: "**/*.{test.ts,test.tsx,spec.ts,spec.tsx,e2e-spec.ts}"
       instructions: |
@@ -141,7 +141,7 @@ reviews:
       instructions: |
         - SECURITY: Never expose secrets in code (API keys, tokens, passwords)
         - SECURITY: Always validate server-side - never trust client-side validation alone
-        - SECURITY: Use Zod schemas for input validation at API boundaries
+        - SECURITY: Use TypeBox schemas for backend API route validation, Zod schemas for frontend/Next.js API boundary validation
         - SECURITY: Never log secrets - use logger redaction features
         - LINTING: Code must pass both Biome (formatting/style) and ESLint (correctness) before merge
         - LINTING: Run pnpm lint:fix after making changes

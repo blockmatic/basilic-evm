@@ -92,16 +92,29 @@ const apiKey = process.env.NEXT_PUBLIC_API_KEY // Never for secrets
 
 ### Rate Limiting Patterns
 ```typescript
-// ✅ Good: Rate limiting in middleware or API routes
-import { rateLimit } from '@repo/utils/rate-limit'
+// ✅ Good: Rate limiting in Fastify API using @fastify/rate-limit plugin
+// Configured globally in apps/api/src/plugins/rate-limit.ts
+// For route-specific rate limiting, register the plugin on specific routes:
+import rateLimit from '@fastify/rate-limit'
+import type { FastifyPluginAsync } from 'fastify'
 
-export async function POST(request: Request) {
-  const ip = request.headers.get('x-forwarded-for') || 'unknown'
-  if (!(await rateLimit.check(ip, 'login', 5, 60))) {
-    return new Response('Too many requests', { status: 429 })
-  }
-  // Process request
+const loginRateLimit: FastifyPluginAsync = async fastify => {
+  await fastify.register(rateLimit, {
+    max: 5, // 5 requests
+    timeWindow: 60 * 1000, // per 60 seconds
+    keyGenerator: request => {
+      const forwarded = request.headers['x-forwarded-for']
+      if (forwarded) {
+        const ips = Array.isArray(forwarded) ? forwarded[0] : forwarded
+        return ips.split(',')[0].trim()
+      }
+      return request.ip
+    },
+  })
 }
+
+// Apply to specific route
+fastify.register(loginRateLimit, { prefix: '/api/auth/login' })
 ```
 
 ## Security Auditing

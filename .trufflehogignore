@@ -18,7 +18,7 @@
 # Test files
 .*\.test\.(ts|tsx|js|jsx|mjs)$
 .*\.spec\.(ts|tsx|js|jsx|mjs)$
-.*test.*\.(ts|tsx|js|jsx|mjs)$
+.*/(test|tests)/.*\.(ts|tsx|js|jsx|mjs)$
 __tests__/.*
 __mocks__/.*
 fixtures/.*

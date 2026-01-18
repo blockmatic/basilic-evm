@@ -9,7 +9,6 @@ export default defineConfig({
     'src/logger/client.ts',
     'src/logger/server.ts',
     'src/debug/index.ts',
-    'src/rate-limit/index.ts',
   ],
   format: ['esm'],
   dts: true,
