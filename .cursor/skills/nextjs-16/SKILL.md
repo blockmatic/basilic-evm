@@ -565,3 +565,246 @@ export default async function DashboardPage() {
   )
 }
 ```
+
+## Concurrent Rendering & Performance
+
+**Fiber Architecture**: React's Fiber reconciler is always active in React 19.2.3 (used in Next.js 16). It enables concurrent rendering features but requires explicit use of concurrent APIs.
+
+**Concurrent Rendering**: Allows React to work on multiple UI versions simultaneously, interrupt non-urgent updates, prioritize user interactions, and stream content progressively. Not automatically enabled - you must use concurrent APIs.
+
+### Suspense Boundaries
+
+Suspense shows fallback UI while waiting for async operations. Next.js automatically uses Suspense for:
+
+- **Streaming Server Components**: Server components stream progressively
+- **Route loading states**: `loading.tsx` files automatically wrap routes in Suspense
+- **Data fetching**: Works with async Server Components
+
+#### Automatic Suspense (Server Components)
+
+```tsx
+// app/products/page.tsx
+// Next.js automatically wraps this in Suspense
+export default async function ProductsPage() {
+  const products = await fetchProducts() // Can be slow
+  return <ProductList products={products} />
+}
+
+// app/products/loading.tsx
+// Automatically shown while ProductsPage loads
+export default function Loading() {
+  return <div>Loading products...</div>
+}
+```
+
+#### Manual Suspense (Client Components)
+
+```tsx
+'use client'
+import { Suspense, useState } from 'react'
+
+export function ProductSearch() {
+  const [query, setQuery] = useState('')
+  
+  return (
+    <div>
+      <input 
+        value={query} 
+        onChange={(e) => setQuery(e.target.value)} 
+      />
+      <Suspense fallback={<div>Searching...</div>}>
+        <SearchResults query={query} />
+      </Suspense>
+    </div>
+  )
+}
+
+async function SearchResults({ query }: { query: string }) {
+  // This can be interrupted if query changes
+  const results = await searchProducts(query)
+  return <ResultsList results={results} />
+}
+```
+
+#### Progressive Streaming with Multiple Suspense Boundaries
+
+```tsx
+// app/dashboard/page.tsx
+export default async function Dashboard() {
+  return (
+    <div>
+      {/* Critical: Show immediately */}
+      <DashboardHeader />
+      
+      <div className="grid">
+        {/* Can stream independently */}
+        <Suspense fallback={<StatsSkeleton />}>
+          <Stats />
+        </Suspense>
+        
+        {/* Can stream independently */}
+        <Suspense fallback={<RecentActivitySkeleton />}>
+          <RecentActivity />
+        </Suspense>
+      </div>
+    </div>
+  )
+}
+
+// Each component fetches independently
+async function Stats() {
+  const stats = await fetchStats() // Slow query
+  return <StatsDisplay stats={stats} />
+}
+
+async function RecentActivity() {
+  const activity = await fetchActivity() // Another slow query
+  return <ActivityFeed activity={activity} />
+}
+```
+
+**Benefits**: Each Suspense boundary streams independently. Users see content as it becomes available, not all-or-nothing.
+
+### Transitions (`useTransition` / `startTransition`)
+
+Transitions mark updates as **non-urgent**, allowing React to keep the UI responsive during heavy rendering.
+
+**When to use:**
+- Search/filter inputs: Keep input responsive while filtering large lists
+- Tab switching: Smooth transitions between tabs
+- Complex state updates: Heavy computations that don't need immediate feedback
+
+#### Search with Transitions
+
+```tsx
+'use client'
+import { useTransition, useState } from 'react'
+
+export function ProductSearch() {
+  const [query, setQuery] = useState('')
+  const [isPending, startTransition] = useTransition()
+  const [filteredProducts, setFilteredProducts] = useState([])
+  
+  const handleSearch = (newQuery: string) => {
+    // Urgent: Update input immediately
+    setQuery(newQuery)
+    
+    // Non-urgent: Can be interrupted
+    startTransition(() => {
+      const filtered = products.filter(p => 
+        p.name.toLowerCase().includes(newQuery.toLowerCase())
+      )
+      setFilteredProducts(filtered)
+    })
+  }
+  
+  return (
+    <div>
+      <input 
+        value={query}
+        onChange={(e) => handleSearch(e.target.value)}
+        className={isPending ? 'opacity-50' : ''}
+      />
+      {isPending && <div>Filtering...</div>}
+      <ProductList products={filteredProducts} />
+    </div>
+  )
+}
+```
+
+#### Tab Switching
+
+```tsx
+'use client'
+import { useTransition, useState } from 'react'
+
+export function TabContainer() {
+  const [tab, setTab] = useState('overview')
+  const [isPending, startTransition] = useTransition()
+  
+  const handleTabChange = (newTab: string) => {
+    startTransition(() => {
+      setTab(newTab) // Heavy tab content can be interrupted
+    })
+  }
+  
+  return (
+    <div>
+      <div className="tabs">
+        <button onClick={() => handleTabChange('overview')}>Overview</button>
+        <button onClick={() => handleTabChange('details')}>Details</button>
+        <button onClick={() => handleTabChange('reviews')}>Reviews</button>
+      </div>
+      {isPending && <div>Loading...</div>}
+      <TabContent tab={tab} />
+    </div>
+  )
+}
+```
+
+### Deferred Values (`useDeferredValue`)
+
+Defer a value update, keeping the previous value visible while the new value is computed.
+
+**Important**: Only use `useMemo` with `useDeferredValue` if the computation is genuinely expensive (e.g., filtering 1000+ items, complex calculations). For simple operations, compute directly with the deferred value.
+
+```tsx
+'use client'
+import { useDeferredValue, useMemo, useState } from 'react'
+
+export function ProductSearch({ products }: { products: Product[] }) {
+  const [query, setQuery] = useState('')
+  
+  // Deferred value: query updates immediately, deferredQuery updates later
+  const deferredQuery = useDeferredValue(query)
+  
+  // Only use useMemo if filtering is genuinely expensive (1000+ items)
+  // For small arrays, just compute directly: products.filter(...)
+  const filteredProducts = useMemo(() => {
+    return products.filter(p => 
+      p.name.toLowerCase().includes(deferredQuery.toLowerCase())
+    )
+  }, [deferredQuery, products])
+  
+  return (
+    <div>
+      <input 
+        value={query}
+        onChange={(e) => setQuery(e.target.value)} // Immediate
+      />
+      <ProductList products={filteredProducts} /> {/* Uses deferred value */}
+    </div>
+  )
+}
+```
+
+**When to use `useMemo` with `useDeferredValue`**:
+- Filtering/searching large datasets (1000+ items)
+- Complex calculations or transformations
+- Expensive array operations
+
+**When NOT to use `useMemo`**:
+- Simple filtering of small arrays (< 100 items)
+- Basic string operations
+- Simple conditionals or transformations
+
+### Best Practices
+
+1. **Use Suspense for async operations**: Wrap async components in Suspense boundaries
+2. **Mark non-urgent updates with transitions**: Use `startTransition` for heavy updates that shouldn't block UI
+3. **Combine with loading states**: Use `isPending` from `useTransition` to show loading indicators
+4. **Server Components first**: Use Server Components by default, only use Client Components when you need interactivity
+5. **Progressive loading**: Use multiple Suspense boundaries to stream content independently
+6. **Avoid unnecessary memoization**: With React 19.2.3, most `useMemo` and `useCallback` are unnecessary. Only use when profiling reveals actual bottlenecks. Prefer concurrent features (`useTransition`, `useDeferredValue`) over manual memoization.
+
+### React Compiler: Not Recommended Yet
+
+While React Compiler (v1.0, stable as of October 2025) offers automatic memoization, we're **not enabling it yet** for these reasons:
+
+- **Build Performance**: Adds Babel layer, slowing builds (especially in CI)
+- **Library Compatibility**: Known issues with React Hook Form and some TanStack libraries
+- **Breaking Behavior**: Automatic memoization can change effect dependencies and caching behavior
+- **Code Patterns**: Requires strict adherence to Rules of React; may need refactoring
+- **Complexity**: More moving parts to debug and maintain
+
+**Current Recommendation**: Wait 3-6 months for better ecosystem support, or use **annotation mode** for incremental adoption if performance gains are critical.

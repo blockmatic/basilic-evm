@@ -408,7 +408,9 @@ const visibleMessages = messages.slice(
 );
 ```
 
-### 3. Memoize Message Rendering
+### 3. Memoize Message Rendering (When Needed)
+
+**Note**: With React 19.2.3, `React.memo` is preferred over `useCallback` for component optimization. However, only use `memo` when profiling reveals actual performance issues with message rendering (e.g., lagging when scrolling through many messages).
 
 ```tsx
 import { memo } from 'react';
@@ -419,6 +421,16 @@ const MessageComponent = memo(({ message }: { message: Message }) => {
 
 {messages.map(m => <MessageComponent key={m.id} message={m} />)}
 ```
+
+**When to use `React.memo`**:
+- Rendering many messages (100+ in viewport)
+- Message components perform expensive computations
+- Profiling shows re-render performance issues
+
+**When NOT to use `React.memo`**:
+- Small message lists (< 50 messages)
+- Simple message rendering without expensive operations
+- No measured performance issues
 
 ---
 

@@ -1,0 +1,112 @@
+## YOLO – Comprehensive Quality Assurance
+
+## Overview
+
+Execute a complete quality assurance pass across all apps in the monorepo. This command performs comprehensive checks including linting, building, testing, runtime verification, AI-assisted code review, and external review remediation when available. Work autonomously using best judgment, strictly following repository rules, Cursor rules, and established best practices.
+
+## Steps
+
+### 1. Run Quality Checks Across All Apps
+
+* Execute linting (`pnpm lint`) for all apps and packages
+* Run builds (`pnpm build`) for all apps to verify compilation
+* Execute test suites (`pnpm test`) for all apps
+* Verify dev runtime works correctly for each app
+* Fix any issues found during these checks
+
+### 2. AI-Assisted Code Review (Cursor Native)
+
+* Perform a full AI-based static review of the codebase
+* Analyze for:
+
+  * correctness bugs
+  * type safety issues
+  * runtime edge cases
+  * performance pitfalls
+  * architectural inconsistencies
+* Cross-check findings against:
+
+  * Cursor rules
+  * indexed documentation
+  * existing code patterns
+* Fix all high-confidence issues
+
+### 3. External Review Consumption (Conditional)
+
+* If available, fetch existing external review feedback, such as:
+
+  * CodeRabbit pull request comments via MCP
+  * CI annotations or review notes provided in context
+* Categorize issues by severity:
+
+  * critical
+  * correctness
+  * security
+  * performance
+  * style
+* Apply fixes that:
+
+  * comply with all Cursor rules
+  * respect repository conventions
+  * avoid breaking public APIs unless required
+* Document any conflicts between external feedback and local rules
+
+Important constraints:
+
+* Do not claim to execute or re-run external review tools
+* External tools are consumed read-only through MCP or provided context
+
+### 4. Autonomous Execution
+
+* Work independently without asking for permission
+* Use best judgment based on repository standards
+* Leverage available resources:
+
+  * Cursor skills (`.cursor/skills/`)
+  * Indexed documentation
+  * Web search when needed
+  * MCP servers for context consumption
+* Cursor rules override all other guidance
+
+### 5. File Management
+
+* Edit, create, or delete files as needed
+* Follow project naming and structure conventions
+* Update documentation when making meaningful or architectural changes
+
+### 6. Iteration and Verification
+
+* Iterate as many times as needed until all checks pass
+* Re-run quality checks after fixes to verify resolution
+* Ensure no regressions are introduced
+
+### 7. Summary and Reporting
+
+* Provide a comprehensive summary at the end
+* Document:
+
+  * issues found
+  * fixes applied
+  * issues deferred and reasons
+* Note any follow-up recommendations
+
+## YOLO Checklist
+
+* Linting passes for all apps and packages (`pnpm lint`)
+* All builds succeed (`pnpm build`)
+* All tests pass (`pnpm test`)
+* Dev runtime verified for each app
+* Cursor AI code review completed
+* External review feedback consumed when available
+* All fixes verified with re-run checks
+* No regressions introduced
+* Documentation updated if needed
+* All repository and Cursor rules followed
+* Comprehensive summary provided
+
+## Related Rules
+
+* Linting Rules (`.cursor/rules/base/linting.mdc`)
+* General Agent Rules (`.cursor/rules/base/general.mdc`)
+* Testing Rules (`.cursor/rules/base/testing.mdc`)
+* TypeScript Rules (`.cursor/rules/base/typescript.mdc`)
