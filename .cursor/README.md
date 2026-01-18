@@ -6,9 +6,8 @@ AI-assisted development configuration for this codebase. Contains rules, command
 
 **New to this codebase?** Start here:
 
-1. Read [Cursor Workflow Overview](https://basilic-docs.vercel.app/docs/cursor-workflow) - Entry point with learning path
-2. Skim [Quick Start Guide](https://basilic-docs.vercel.app/docs/cursor-workflow/quick-start) - 5-minute reference card
-3. Explore [Complete Workflow](https://basilic-docs.vercel.app/docs/cursor-workflow/complete-workflow) - Comprehensive workflow reference
+- [`commands/`](commands/) - Task-specific commands (code review, git, testing, etc.)
+- [`rules/`](rules/) - Coding standards organized by domain
 
 **Experienced developer?** Jump to:
 - [`commands/`](commands/) - Task-specific commands (code review, git, testing, etc.)
@@ -85,10 +84,13 @@ Specialized knowledge bundles for technologies and patterns.
 Model Context Protocol (MCP) servers extend Cursor with specialized capabilities. Configuration is in `mcp.json`.
 
 **Available servers:**
-- `shadcn` - UI component management (local CLI, no auth required)
+- `shadcnui-official` - Canonical shadcn/ui component definitions, variants, and single primitives (no auth required)
+- `shadcnui-jpisnice-react` - shadcn/ui v4 blocks, demos, and page templates for React (requires `GITHUB_TOKEN`)
 - `v0` - UI design and generation (requires `V0_API_KEY`)
 - `github` - Repository management (requires `GITHUB_TOKEN`)
 - `vercel` - Deployment and project management (requires `VERCEL_API_TOKEN`)
+
+**Note:** `shadcnui-jpisnice-react-native` exists for future React Native support but is not included in the current React workflow.
 
 **Setup:**
 
@@ -105,7 +107,7 @@ export VERCEL_API_TOKEN=your_token_here
 
 **Get API keys:**
 - [v0.dev account settings](https://v0.dev) - V0_API_KEY
-- [GitHub Personal Access Tokens](https://github.com/settings/tokens) - GITHUB_TOKEN
+- [GitHub Personal Access Tokens](https://github.com/settings/tokens) - GITHUB_TOKEN (also required for shadcnui-jpisnice-react)
 - [Vercel Account Tokens](https://vercel.com/account/tokens) - VERCEL_API_TOKEN
 
 **Note:** All servers use `pnpm dlx` for command execution.
@@ -113,7 +115,7 @@ export VERCEL_API_TOKEN=your_token_here
 ## Related Resources
 
 **Project documentation:**
-- [MCP Servers Guide](../../apps/docs/content/docs/mcp-servers/index.mdx) - Detailed usage documentation
+- [Cursor Setup Guide](@apps/docs/content/docs/getting-started/cursor-setup.mdx) - MCP servers and IDE configuration
 - Project tech stack - See main repository README
 
 **External documentation:**

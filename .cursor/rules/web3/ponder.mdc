@@ -1,6 +1,6 @@
 ---
 description: Ponder indexing standards and best practices
-globs: "**/ponder/**/*.ts"
+glob: "**/ponder/**/*.ts"
 alwaysApply: false
 ---
 # Ponder Rules

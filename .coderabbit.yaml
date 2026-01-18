@@ -1,0 +1,177 @@
+# CodeRabbit AI Code Review Configuration
+# Learn more: https://docs.coderabbit.ai/guides/review-instructions
+
+language: en-US
+early_access: false
+enable_free_tier: true
+
+# Review configuration
+reviews:
+  # Request review for specific users
+  request_changes_workflow: false
+  
+  # High level summary at the top of the review
+  high_level_summary: true
+  
+  # Poem style for summary (fun, concise, informative)
+  poem: true
+  
+  # Review level (comprehensive > simple)
+  review_status: true
+  
+  # Collapse walkthrough details by default
+  collapse_walkthrough: false
+  
+  # Auto-approve PRs that meet quality standards
+  auto_review: true
+
+# Chat configuration
+chat:
+  # Enable AI chat responses on PR comments
+  auto_reply: true
+
+# Ignore patterns
+ignore:
+  # Build artifacts and dependencies
+  - "**/*.min.js"
+  - "**/*.min.css"
+  - "**/dist/**"
+  - "**/build/**"
+  - "**/node_modules/**"
+  - "**/pnpm-lock.yaml"
+  - "**/package-lock.json"
+  - "**/yarn.lock"
+  
+  # Generated files
+  - "**/gen/**"
+  - "**/*.gen.ts"
+  - "**/*.gen.js"
+  
+  # Documentation assets
+  - "**/*.png"
+  - "**/*.jpg"
+  - "**/*.jpeg"
+  - "**/*.gif"
+  - "**/*.svg"
+  - "**/*.ico"
+  
+  # Configuration
+  - "**/.env*"
+  - "**/tsconfig*.json"
+  
+  # Blockchain artifacts
+  - "**/broadcast/**"
+  - "**/out/**"
+  - "**/cache/**"
+
+# Review rules aligned with project standards
+reviews_rules:
+  # TypeScript & Code Quality
+  - name: "TypeScript Strict Mode"
+    description: "Ensure TypeScript strict mode is enabled and followed"
+    pattern: "**/*.ts,**/*.tsx"
+    message: "Follow strict TypeScript patterns: explicit return types for exported functions, no implicit any, prefer interfaces over types for object shapes"
+  
+  - name: "Functional Code Patterns"
+    description: "Prefer functional patterns over classes"
+    pattern: "**/*.ts,**/*.tsx"
+    message: "Use functional patterns: RORO (receive object, return object), arrow functions, avoid classes and decorators except when required by framework"
+  
+  - name: "Single-line Conditionals"
+    description: "Use single-line conditionals without braces for simple cases"
+    pattern: "**/*.ts,**/*.tsx"
+    message: "Prefer single-line conditionals: 'if (!value) return null' instead of 'if (!value) { return null }'"
+  
+  # React & Next.js
+  - name: "React Server Components"
+    description: "Use React Server Components by default in Next.js"
+    pattern: "**/app/**/*.tsx"
+    message: "Use React Server Components by default. Only add 'use client' when necessary (hooks, event handlers, browser APIs)"
+  
+  - name: "Named Exports"
+    description: "Prefer named exports over default exports"
+    pattern: "**/*.ts,**/*.tsx"
+    message: "Use named exports except for Next.js pages/layouts that require default exports"
+  
+  # Error Handling & Logging
+  - name: "Error Handling"
+    description: "Use @repo/error package for all error handling"
+    pattern: "**/*.ts,**/*.tsx"
+    message: "Use captureError from @repo/error with platform-specific imports (/node, /nextjs, /browser). Never expose internal error details to users"
+  
+  - name: "Logging"
+    description: "Never use console.* directly"
+    pattern: "**/*.ts,**/*.tsx"
+    message: "Use logger from @repo/utils/logger instead of console.log/error/warn/info. Use structured fields for context"
+  
+  # Imports & Module Organization
+  - name: "Type-Only Imports"
+    description: "Use import type for type-only imports"
+    pattern: "**/*.ts,**/*.tsx"
+    message: "Use 'import type' for type-only imports to ensure they're erased at runtime"
+  
+  - name: "Subpath Exports"
+    description: "Use subpath exports for shared packages"
+    pattern: "**/*.ts,**/*.tsx"
+    message: "Import from platform-specific paths: @repo/utils/async, @repo/error/nextjs, @repo/ui/components/*. Never use root imports"
+  
+  - name: "Lodash Tree-Shaking"
+    description: "Use per-function lodash-es imports"
+    pattern: "**/*.ts,**/*.tsx"
+    message: "Import lodash functions individually: 'import isEmpty from \"lodash-es/isEmpty\"' instead of 'import { isEmpty } from \"lodash-es\"'"
+  
+  # Testing
+  - name: "Test Coverage"
+    description: "Ensure critical business logic has tests"
+    pattern: "**/*.test.ts,**/*.test.tsx,**/*.spec.ts"
+    message: "Add tests for critical business logic, error handling, and edge cases"
+  
+  # Security
+  - name: "No Secrets in Code"
+    description: "Never commit secrets or sensitive data"
+    pattern: "**/*"
+    message: "Detected potential secret. Use environment variables instead. Check .env files are in .gitignore"
+  
+  - name: "Environment Variables"
+    description: "Validate environment variables at startup"
+    pattern: "**/env*.ts,**/config*.ts"
+    message: "Use Zod schemas to validate environment variables at application startup"
+
+# Path-specific instructions
+path_instructions:
+  - path: "packages/**"
+    instructions: |
+      - Ensure subpath exports are defined in package.json
+      - Verify dual-mode exports (ESM/CJS) for compatibility
+      - Check that no server-only code leaks into client bundles
+      - Validate TypeScript types are correctly exported
+  
+  - path: "apps/web/**"
+    instructions: |
+      - Follow Next.js 15 App Router conventions
+      - Use React Server Components by default
+      - Ensure 'use client' is only added when necessary
+      - Validate error boundaries are in place
+      - Check mobile-first responsive design patterns
+  
+  - path: "apps/api/**"
+    instructions: |
+      - Follow Fastify functional patterns
+      - Use TypeBox schemas for route validation
+      - Ensure proper error handling with @repo/error/node
+      - Validate logger usage from @repo/utils/logger
+      - Check OpenAPI schema generation is correct
+  
+  - path: "**/*.test.ts"
+    instructions: |
+      - Verify test describes what is being tested
+      - Check edge cases are covered
+      - Ensure mocks are properly cleaned up
+      - Validate assertions are meaningful
+  
+  - path: ".cursor/**"
+    instructions: |
+      - Ensure rules follow MDC format
+      - Validate skills have clear SKILL.md structure
+      - Check documentation is up to date
+      - Verify cross-references are correct
