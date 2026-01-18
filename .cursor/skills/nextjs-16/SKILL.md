@@ -1,12 +1,19 @@
 ---
-name: Next.js 15 App Router
+name: Next.js 16 App Router
 description: |
-  Next.js 15 App Router patterns - pages, API routes, server components, client components, middleware.
+  Next.js 16 App Router patterns - pages, API routes, server components, client components, middleware.
   
-  Use when: building Next.js 15 applications with App Router.
+  Use when: building Next.js 16 applications with App Router.
 ---
 
-# Next.js 15 App Router Patterns
+# Next.js 16 App Router Patterns
+
+## Requirements
+
+- **Node.js**: 20.9+ required
+- **TypeScript**: 5.1+ required
+- **React**: 19+ for full feature support
+- **Turbopack**: Stable and default bundler (10× faster Fast Refresh with file system caching in beta)
 
 ## File Structure
 
@@ -67,6 +74,108 @@ export default async function EnvironmentsPage({
   })
 
   return <EnvironmentList environments={environments} />
+}
+```
+
+## use cache Directive
+
+Next.js 16 introduces the `use cache` directive for explicit caching at component or function level.
+
+### Component-Level Caching
+
+```tsx
+// app/dashboard/stats.tsx
+'use cache'
+
+import { getStats } from '@/lib/api'
+
+export async function DashboardStats() {
+  const stats = await getStats()
+  
+  return (
+    <div className="grid grid-cols-3 gap-4">
+      <StatCard title="Users" value={stats.users} />
+      <StatCard title="Revenue" value={stats.revenue} />
+      <StatCard title="Orders" value={stats.orders} />
+    </div>
+  )
+}
+```
+
+### Function-Level Caching with cacheLife
+
+```tsx
+// lib/api.ts
+'use cache'
+export async function getProductList() {
+  const res = await fetch('https://api.example.com/products')
+  return res.json()
+}
+
+// With cacheLife profiles
+'use cache'
+import { cacheLife } from 'next/cache'
+
+export async function getUserData(userId: string) {
+  cacheLife('max') // Cache for maximum duration
+  const res = await fetch(`/api/users/${userId}`)
+  return res.json()
+}
+
+export async function getRecentPosts() {
+  cacheLife('hours') // Cache for hours
+  const res = await fetch('/api/posts/recent')
+  return res.json()
+}
+
+export async function getDailyDeals() {
+  cacheLife('days') // Cache for days
+  const res = await fetch('/api/deals/daily')
+  return res.json()
+}
+
+// Custom cache lifetime
+export async function getWeatherData(location: string) {
+  cacheLife({
+    stale: 3600, // Serve stale data for 1 hour
+    revalidate: 7200, // Revalidate after 2 hours
+    expire: 86400, // Expire after 24 hours
+  })
+  const res = await fetch(`/api/weather/${location}`)
+  return res.json()
+}
+```
+
+### Partial Page Caching
+
+```tsx
+// app/products/page.tsx
+export default async function ProductsPage() {
+  return (
+    <div>
+      <Header /> {/* Static, always rendered */}
+      <ProductList /> {/* Cached with 'use cache' */}
+      <RecentActivity /> {/* Dynamic, not cached */}
+    </div>
+  )
+}
+
+// components/ProductList.tsx
+'use cache'
+import { getProducts } from '@/lib/api'
+import { cacheLife } from 'next/cache'
+
+export async function ProductList() {
+  cacheLife('hours')
+  const products = await getProducts()
+  
+  return (
+    <div className="grid grid-cols-3 gap-4">
+      {products.map(product => (
+        <ProductCard key={product.id} product={product} />
+      ))}
+    </div>
+  )
 }
 ```
 
@@ -244,9 +353,10 @@ export const { GET, POST } = handlers
 // app/environments/actions.ts
 'use server'
 
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
+import { cacheLife } from 'next/cache'
 
 const CreateSchema = z.object({
   name: z.string().min(1),
@@ -322,13 +432,18 @@ export default function Error({
 
 ## Data Fetching Patterns
 
+### Basic Fetch with cacheLife
+
 ```tsx
 // lib/api.ts
 const API_URL = process.env.FACADE_URL || 'http://localhost:1337'
 
 export async function getEnvironments() {
   const res = await fetch(`${API_URL}/api/v1/environments`, {
-    next: { revalidate: 60 }, // ISR: revalidate every 60 seconds
+    next: { 
+      revalidate: 60, // ISR: revalidate every 60 seconds
+      tags: ['environments'], // Tag for cache invalidation
+    },
   })
 
   if (!res.ok) {
@@ -347,6 +462,83 @@ export async function getEnvironment(id: string) {
     if (res.status === 404) return null
     throw new Error('Failed to fetch environment')
   }
+
+  return res.json()
+}
+```
+
+### Cache Invalidation APIs
+
+```tsx
+// app/environments/actions.ts
+'use server'
+
+import { revalidateTag, updateTag, cacheLife } from 'next/cache'
+
+// v16: revalidateTag requires cacheLife
+export async function updateEnvironment(id: string, data: any) {
+  await prisma.environment.update({
+    where: { id },
+    data,
+  })
+
+  // Revalidate with cacheLife
+  revalidateTag('environments', {
+    cacheLife: {
+      stale: 3600, // 1 hour
+      revalidate: 7200, // 2 hours
+      expire: 86400, // 24 hours
+    },
+  })
+}
+
+// v16: New updateTag API for immediate invalidation
+export async function deleteEnvironment(id: string) {
+  await prisma.environment.delete({
+    where: { id },
+  })
+
+  // Immediate invalidation (no cacheLife needed)
+  updateTag('environments')
+}
+
+// v16: New refresh() API for refreshing uncached data
+import { refresh } from 'next/cache'
+
+export async function refreshDashboard() {
+  // Refresh uncached/dynamic content
+  refresh()
+}
+```
+
+### cacheLife in fetch Options
+
+```tsx
+// lib/api.ts
+import { cacheLife } from 'next/cache'
+
+export async function getProducts() {
+  const res = await fetch('https://api.example.com/products', {
+    next: {
+      cacheLife: 'hours', // Use cacheLife profile
+      tags: ['products'],
+    },
+  })
+
+  return res.json()
+}
+
+export async function getUserProfile(userId: string) {
+  const res = await fetch(`/api/users/${userId}`, {
+    next: {
+      cacheLife: {
+        stale: 300, // 5 minutes
+        revalidate: 600, // 10 minutes
+        expire: 3600, // 1 hour
+      },
+      tags: ['user', userId],
+    },
+  })
 
   return res.json()
 }
