@@ -70,12 +70,11 @@ Task-specific command definitions for common development workflows.
 Specialized knowledge bundles for technologies and patterns.
 
 **Categories:**
-- **Framework skills**: Next.js 15, React best practices, Tailwind v4
+- **Framework skills**: Next.js 15, React best practices (Vercel Labs), Tailwind v4
 - **Backend skills**: Fastify, Drizzle ORM, TypeBox, OpenTelemetry
-- **AI skills**: Vercel AI SDK (core & UI), prompt engineering
-- **Web3 skills**: Ethereum, Solana, Solidity, DeFi, NFTs
-- **Architecture skills**: Senior architect, systematic planning, security practices
-- **Development skills**: Code deduplication, skill creator
+- **AI skills**: Vercel AI SDK (core & UI)
+- **Web3 skills**: Ethereum development, Solidity, Solana, smart contract security, web3 frontend
+- **Tools & Patterns**: TypeScript advanced patterns, OpenAPI codegen
 
 **Usage:** Read skill files for detailed guidance on specific technologies or patterns.
 
