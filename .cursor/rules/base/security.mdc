@@ -97,7 +97,7 @@ import { rateLimit } from '@repo/utils/rate-limit'
 
 export async function POST(request: Request) {
   const ip = request.headers.get('x-forwarded-for') || 'unknown'
-  if (!await rateLimit.check(ip, 'login', 5, 60)) {
+  if (!(await rateLimit.check(ip, 'login', 5, 60))) {
     return new Response('Too many requests', { status: 429 })
   }
   // Process request

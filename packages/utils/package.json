@@ -24,6 +24,10 @@
     "./debug": {
       "types": "./src/debug/index.ts",
       "import": "./dist/debug/index.js"
+    },
+    "./rate-limit": {
+      "types": "./src/rate-limit/index.ts",
+      "import": "./dist/rate-limit/index.js"
     }
   },
   "scripts": {
