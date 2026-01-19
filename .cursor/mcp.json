@@ -31,9 +31,9 @@
     },
     "coderabbit": {
       "command": "pnpm",
-      "args": ["dlx", "@coderabbitai/mcp-server"],
+      "args": ["dlx", "coderabbitai-mcp@latest"],
       "env": {
-        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+        "GITHUB_PAT": "${GITHUB_TOKEN}"
       },
       "description": "Expose CodeRabbit PR review comments via MCP"
     },

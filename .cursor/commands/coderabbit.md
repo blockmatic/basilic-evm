@@ -45,6 +45,28 @@ Fetch CodeRabbit review comments for the current PR, analyze all issues, apply f
 
 ## CodeRabbit Integration
 
+### MCP Configuration
+
+The CodeRabbit MCP server is configured in `.cursor/mcp.json`:
+
+```json
+{
+  "coderabbit": {
+    "command": "pnpm",
+    "args": ["dlx", "coderabbitai-mcp@latest"],
+    "env": {
+      "GITHUB_PAT": "${GITHUB_TOKEN}"
+    },
+    "description": "Expose CodeRabbit PR review comments via MCP"
+  }
+}
+```
+
+**Important configuration details:**
+- **Package**: `coderabbitai-mcp@latest` (not `@coderabbitai/mcp-server` - that package doesn't exist)
+- **Environment variable**: Maps `GITHUB_TOKEN` to `GITHUB_PAT` (the package expects `GITHUB_PAT`)
+- **Token scopes**: Requires `repo` scope for private repositories or `public_repo` for public repositories
+
 ### MCP Usage
 
 - Use `fetch_mcp_resource` or MCP tools from `coderabbit` server to get review comments
@@ -53,6 +75,16 @@ Fetch CodeRabbit review comments for the current PR, analyze all issues, apply f
   - Issue type and severity
   - Suggested fixes or explanations
   - Related code context
+
+### Troubleshooting MCP Connection
+
+If CodeRabbit MCP fails to connect:
+
+1. **Verify package name**: Ensure `.cursor/mcp.json` uses `coderabbitai-mcp@latest` (not `@coderabbitai/mcp-server`)
+2. **Check environment variable**: Verify `GITHUB_TOKEN` is set globally: `echo $GITHUB_TOKEN`
+3. **Test package manually**: Run `GITHUB_PAT="$GITHUB_TOKEN" pnpm dlx coderabbitai-mcp@latest --help` to verify it works
+4. **Restart Cursor**: After fixing configuration, fully restart Cursor to reload MCP servers
+5. **Check token scopes**: Ensure your GitHub token has the required scopes (`repo` or `public_repo`)
 
 ### Fix Strategy
 
