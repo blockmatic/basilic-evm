@@ -124,6 +124,7 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     testTimeout: 30000, // 30 seconds for API calls
+    hookTimeout: 30000, // 30 seconds for hooks (database initialization)
   },
   resolve: {
     // Order matters: try .ts first, then .js

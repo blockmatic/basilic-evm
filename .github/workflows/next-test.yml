@@ -1,4 +1,4 @@
-name: Web Tests
+name: Next Application Tests
 
 on:
   pull_request:
