@@ -51,6 +51,7 @@ Please apply @.cursor/rules/base/typescript.mdc when refactoring this code.
 - **Iterate**: Add rules when AI produces undesirable output or forgets standards
 - **Centralize**: Single source of truth—consolidate standards here, not elsewhere
 
+
 ### Commands (`commands/`)
 
 Task-specific command definitions for common development workflows.
