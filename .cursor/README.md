@@ -122,7 +122,7 @@ export GITHUB_PAT="$GITHUB_TOKEN"     # CodeRabbit MCP expects GITHUB_PAT
 ## Related Resources
 
 **Project documentation:**
-- [Cursor Setup Guide](apps/docs/content/docs/getting-started/cursor-setup.mdx) - MCP servers and IDE configuration
+- [Cursor Setup Guide](apps/docu/content/docs/getting-started/cursor-setup.mdx) - MCP servers and IDE configuration
 - Project tech stack - See main repository README
 
 **External documentation:**
