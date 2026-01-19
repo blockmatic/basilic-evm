@@ -56,6 +56,10 @@
       "esbuild@<0.25.0": ">=0.25.0",
       "path-to-regexp@<6.3.0": ">=6.3.0",
       "undici@<6.23.0": ">=6.23.0"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@sentry/cli",
+      "esbuild"
+    ]
   }
 }
