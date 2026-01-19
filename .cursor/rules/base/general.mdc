@@ -16,7 +16,28 @@ alwaysApply: true
 - Provide concise executive summaries when finishing tasks
 - Suggest improvements proactively when spotting issues
 
+### Information Priority Hierarchy
+
+When multiple sources of information are available, follow this priority order (highest to lowest):
+
+1. **Repository rules and skills** (`.cursor/rules/` and `.cursor/skills/`) - Highest priority
+   - Agent skills are part of the repository and have the same precedence as rules
+   - When a skill conflicts with indexed docs, follow the skill
+   - Repository-defined patterns, conventions, and skills always take precedence
+
+2. **Indexed documentation** (from Cursor settings) - Advisory only
+   - Use when repository guidance is missing or unclear
+   - Never override repository rules, skills, or existing code patterns
+   - See "Indexed Documentation Usage" below for detailed guidelines
+
+3. **General model knowledge** - Lowest priority
+   - Use only when repository and indexed docs don't provide guidance
+   - Always verify against repository patterns before applying
+
+**Key principle**: Repository rules and skills > Indexed docs > General knowledge
+
 ### Indexed Documentation Usage
+- Check Cursor settings for available indexed documentation before relying on general model knowledge
 - Prefer indexed docs over general model knowledge when documentation is available for a technology
 - Treat indexed docs as advisory only; repository rules and source code always take precedence
 - State uncertainty explicitly if information is missing from indexed docs rather than guessing

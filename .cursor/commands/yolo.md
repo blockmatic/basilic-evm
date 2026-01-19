@@ -4,6 +4,16 @@
 
 Execute a complete quality assurance pass across all apps in the monorepo. This command performs comprehensive checks including linting, building, testing, runtime verification, AI-assisted code review, and external review remediation when available. Work autonomously using best judgment, strictly following repository rules, Cursor rules, and established best practices.
 
+## CRITICAL: No Permission Required
+
+**THE MAIN POINT**: Agents executing this command MUST work autonomously and NEVER ask for permission to:
+
+* **Edit ANY files** - including dotfiles (`.env`, `.gitignore`, `.cursor/*`, etc.), configuration files, source code, documentation, or any other files
+* **Delete files** - remove files, directories, or entire features as needed
+* **Create files** - add new files, directories, configurations, or documentation
+
+**Proceed directly with all file operations without asking.** This is a "YOLO" command - act decisively and autonomously. The agent has full authority to modify the codebase to achieve quality assurance goals.
+
 ## Steps
 
 ### 1. Run Quality Checks Across All Apps
@@ -70,7 +80,10 @@ Important constraints:
 
 ### 5. File Management
 
-* Edit, create, or delete files as needed
+* **NEVER ask permission** - edit, create, or delete files directly
+* **Dotfiles included** - modify `.env`, `.gitignore`, `.cursor/*`, configuration files, or any dotfiles without asking
+* **Delete freely** - remove files, directories, or features as needed for quality improvements
+* **Create freely** - add new files, configurations, or documentation as required
 * Follow project naming and structure conventions
 * Update documentation when making meaningful or architectural changes
 
