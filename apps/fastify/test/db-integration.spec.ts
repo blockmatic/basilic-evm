@@ -32,14 +32,13 @@ describe('Database Integration', () => {
       .insert(users)
       .values({
         id: 'test-user-1',
-        dynamicUserId: 'dynamic-user-1',
         email: 'test@example.com',
       })
       .returning()
 
     expect(newUser).toBeDefined()
     expect(newUser.id).toBe('test-user-1')
-    expect(newUser.dynamicUserId).toBe('dynamic-user-1')
+    expect(newUser.email).toBe('test@example.com')
 
     // Test select
     const [user] = await db.select().from(users).where(eq(users.id, 'test-user-1')).limit(1)
