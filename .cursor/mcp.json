@@ -23,11 +23,15 @@
     },
     "github": {
       "command": "npx",
-      "args": ["@modelcontextprotocol/server-github"],
+      "args": [
+        "@modelcontextprotocol/server-github",
+        "--toolsets",
+        "context,repos,issues,pull_requests,users,actions"
+      ],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
       },
-      "description": "GitHub repository operations and issue management"
+      "description": "GitHub repository operations, issue management, and Actions logs"
     },
     "coderabbit": {
       "command": "npx",

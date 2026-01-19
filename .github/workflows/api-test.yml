@@ -23,6 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+      ENCRYPTION_KEY: 0000000000000000000000000000000000000000000000000000000000000000
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
