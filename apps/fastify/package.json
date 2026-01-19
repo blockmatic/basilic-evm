@@ -46,6 +46,7 @@
     "@scalar/fastify-api-reference": "^1.43.5",
     "@sinclair/typebox": "^0.34.47",
     "@t3-oss/env-core": "^0.13.10",
+    "@vercel/node": "^3.0.0",
     "ai": "^6.0.37",
     "dotenv": "^17.2.3",
     "fastify": "^5.7.0",

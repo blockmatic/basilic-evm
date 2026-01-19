@@ -25,8 +25,3 @@ Guide for implementing features using TDD workflow when explicitly requested. TD
 - [ ] Code follows project standards and linting rules
 - [ ] Repeated cycle for each feature increment
 - [ ] Tests focus on behavior, not implementation details
-
-## Related
-- @.cursor/rules/base/testing.mdc - Testing philosophy and patterns
-- @.cursor/rules/backend/testing.mdc - Fastify-specific testing patterns
-- @.cursor/rules/frontend/testing.mdc - React/Next.js-specific testing patterns

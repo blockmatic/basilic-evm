@@ -19,11 +19,5 @@ Create or update shadcn/ui components using MCP servers for component discovery,
 - [ ] TypeScript types properly defined (interfaces, inference)
 - [ ] Variants use `cva` pattern
 - [ ] Mobile-first responsive design applied
-- [ ] Code passes `pnpm lint`
+- [ ] Code follows ESLint and Biome rules (formatting, style, correctness)
 - [ ] Component tested in consuming app
-
-## Related
-- @.cursor/rules/frontend/shadcnui.mdc - Component patterns and MCP server usage
-- @.cursor/rules/base/typescript.mdc - TypeScript standards
-- @.cursor/rules/frontend/mobile-first.mdc - Responsive design guidelines
-- @.cursor/rules/base/linting.mdc - Linting requirements
