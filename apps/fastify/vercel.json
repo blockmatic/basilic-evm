@@ -4,14 +4,14 @@
   "buildCommand": "cd ../.. && pnpm install && pnpm turbo build --filter=@repo/fastify...",
   "installCommand": "cd ../.. && pnpm install",
   "functions": {
-    "vercel/index.ts": {
+    "api/[...].ts": {
       "maxDuration": 30
     }
   },
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/fastify"
+      "destination": "/api/$1"
     }
   ]
 }

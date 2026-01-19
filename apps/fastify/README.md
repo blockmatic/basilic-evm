@@ -65,7 +65,7 @@ See [Deployment Guide](https://basilic-docs.vercel.app/docs/guides/deployment) f
 
 ### Vercel Deployment
 
-When deploying to Vercel, the serverless function is located at `vercel/index.ts` (configured in `vercel.json`). All requests are rewritten to `/fastify` to route to this function. This configuration ensures the Fastify application runs correctly in Vercel's serverless environment.
+When deploying to Vercel, the serverless function is located at `api/[...].ts` (configured in `vercel.json`). All requests are rewritten to `/fastify` to route to this function. This configuration ensures the Fastify application runs correctly in Vercel's serverless environment.
 
 ## API Documentation
 
