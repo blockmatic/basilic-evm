@@ -1,37 +1,37 @@
 {
   "mcpServers": {
     "shadcnui-official": {
-      "command": "pnpm",
-      "args": ["dlx", "shadcn@latest", "mcp"],
+      "command": "npx",
+      "args": ["shadcn@latest", "mcp"],
       "description": "Official shadcn/ui components, variants, and definitions"
     },
     "shadcnui-jpisnice-react": {
-      "command": "pnpm",
-      "args": ["dlx", "@jpisnice/shadcn-ui-mcp-server"],
+      "command": "npx",
+      "args": ["@jpisnice/shadcn-ui-mcp-server"],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
       },
       "description": "shadcn/ui v4 components, blocks, and demos for React"
     },
     "shadcnui-jpisnice-react-native": {
-      "command": "pnpm",
-      "args": ["dlx", "@jpisnice/shadcn-ui-mcp-server", "--framework", "react-native"],
+      "command": "npx",
+      "args": ["@jpisnice/shadcn-ui-mcp-server", "--framework", "react-native"],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
       },
       "description": "shadcn/ui v4 components, blocks, and demos for react native"
     },
     "github": {
-      "command": "pnpm",
-      "args": ["dlx", "@modelcontextprotocol/server-github"],
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-github"],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
       },
       "description": "GitHub repository operations and issue management"
     },
     "coderabbit": {
-      "command": "pnpm",
-      "args": ["dlx", "coderabbitai-mcp@latest"],
+      "command": "npx",
+      "args": ["coderabbitai-mcp@latest"],
       "env": {
         "GITHUB_PAT": "${GITHUB_TOKEN}"
       },
