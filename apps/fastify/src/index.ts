@@ -88,8 +88,8 @@ const startServer = async () => {
     await initialize()
 
     await start()
-  } catch (err) {
-    fastify.log.error({ err }, 'Initialization failed')
+  } catch {
+    // Error already logged by initialize(), just exit
     process.exit(1)
   }
 }

@@ -40,16 +40,40 @@ async function startSupabase(logger?: {
       cwd: process.cwd(),
     })
 
-    // Wait for start command to complete
+    // Wait for start command to complete with timeout
     await new Promise<void>((resolve, reject) => {
+      let timeoutId: NodeJS.Timeout | null = null
+
+      const cleanup = () => {
+        if (timeoutId) {
+          clearTimeout(timeoutId)
+          timeoutId = null
+        }
+        startProcess.removeAllListeners()
+      }
+
+      // Set up timeout that kills process and rejects if fired
+      timeoutId = setTimeout(() => {
+        cleanup()
+        startProcess.kill()
+        reject(new Error(`Supabase start timed out after ${SUPABASE_START_TIMEOUT}ms`))
+      }, SUPABASE_START_TIMEOUT)
+
+      // Handle process close
       startProcess.on('close', code => {
+        cleanup()
         if (code === 0) {
           resolve()
         } else {
           reject(new Error(`Supabase start failed with exit code ${code}`))
         }
       })
-      startProcess.on('error', reject)
+
+      // Handle process error
+      startProcess.on('error', err => {
+        cleanup()
+        reject(err)
+      })
     })
 
     logger?.info('Supabase start command completed, waiting for services to be ready...')
