@@ -120,4 +120,4 @@ The API supports two migration strategies depending on database type:
   - PGLite instance doesn't exist at build time
   - Migrations run during app initialization (`src/index.ts` or `api/[...].ts`)
 
-See [Backend Stack](@apps/docu/content/docs/architecture/backend-stack.mdx), [API Development](@apps/docu/content/docs/core-concepts/api-architecture.mdx), and [ADR 008: Database](@apps/docu/content/docs/adrs/008-database.mdx) for detailed migration flow and architecture.
+See [Backend Stack](/docs/architecture/backend-stack), [API Development](/docs/core-concepts/api-architecture), and [ADR 008: Database](/docs/adrs/008-database) for detailed migration flow and architecture.

@@ -9,7 +9,6 @@ export const env = createEnv({
     PGLITE: z.coerce.boolean().default(false),
     DATABASE_URL: z
       .string()
-      .min(1)
       .optional()
       .transform(val => {
         // Note: Must check process.env.PGLITE here because env.PGLITE isn't available during transform phase
@@ -17,7 +16,19 @@ export const env = createEnv({
           return 'postgresql://localhost/test'
         }
         return val ?? ''
-      }),
+      })
+      .refine(
+        val => {
+          // When PGLITE is not true, DATABASE_URL must be non-empty
+          if (process.env.PGLITE !== 'true') {
+            return val !== undefined && val.length > 0
+          }
+          return true
+        },
+        {
+          message: 'DATABASE_URL is required when PGLITE is not enabled',
+        },
+      ),
     REDIS_URL: z.string().min(1).optional(),
     SENTRY_DSN: z.string().min(1).optional(),
     SENTRY_ENVIRONMENT: z.string().min(1).optional(),

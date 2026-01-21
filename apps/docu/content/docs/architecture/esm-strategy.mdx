@@ -296,15 +296,26 @@ import _ from 'lodash-es'
 
 ### Type Safety Patterns
 
-**Zod-First Validation:**
-- Validate at boundaries: API routes, forms, external APIs
+**Schema Validation Libraries:**
+This codebase uses different schema libraries depending on the runtime context:
+- **Zod**: Recommended for Next.js API routes (e.g., exported POST handlers in `app/api/` routes)
+- **TypeBox**: Used for Fastify route schemas and validation (all Fastify route handlers)
+
+**Zod for Next.js API Routes:**
+- Validate at boundaries: Next.js API routes, forms, external APIs
 - Infer types from schemas: `type User = z.infer<typeof userSchema>`
 - Colocate schemas: `app/api/users/schema.ts` (feature-specific)
 - ESLint `no-unsafe-*` rules disabled for Zod-first validation
 
-**Example:**
+**TypeBox for Fastify Routes:**
+- Use TypeBox for all Fastify route schemas (request/response validation)
+- Native JSON Schema - no conversion overhead
+- Automatic OpenAPI generation
+- Type-safe with TypeBox type provider
+
+**Example (Next.js API Route with Zod):**
 ```typescript
-// ✅ Good: Zod schema with type inference
+// ✅ Good: Zod schema with type inference for Next.js API routes
 import { z } from 'zod'
 
 const userSchema = z.object({
@@ -314,12 +325,35 @@ const userSchema = z.object({
 
 type User = z.infer<typeof userSchema>
 
-// ✅ Good: Validate at API boundary
+// ✅ Good: Validate at Next.js API boundary
 export async function POST(request: Request) {
   const body = await request.json()
   const user = userSchema.parse(body) // Type-safe after validation
   // ...
 }
+```
+
+**Example (Fastify Route with TypeBox):**
+```typescript
+// ✅ Good: TypeBox schema for Fastify route handlers
+import { Type, Static } from '@sinclair/typebox'
+
+const UserSchema = Type.Object({
+  name: Type.String(),
+  email: Type.String({ format: 'email' })
+})
+
+type User = Static<typeof UserSchema>
+
+// ✅ Good: TypeBox schema in Fastify route
+fastify.post('/users', {
+  schema: {
+    body: UserSchema
+  }
+}, async (request) => {
+  const user = request.body // Type-safe after validation
+  // ...
+})
 ```
 
 ### Module Resolution Strategies
