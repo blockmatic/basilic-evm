@@ -59,8 +59,18 @@ const initialize = async (): Promise<void> => {
     error: (msg: string, err?: unknown) => fastify.log.error({ err }, msg),
   }
 
-  // Create and store initialization promise
-  const initPromise = (async () => {
+  // Create pending promise and store immediately before starting async work
+  // This prevents race conditions where concurrent callers see null
+  let resolvePromise: () => void
+  const initPromise = new Promise<void>(resolve => {
+    resolvePromise = resolve
+  })
+
+  // Store promise immediately before async work begins
+  setInitializationPromise(initPromise)
+
+  // Start async work after promise is stored
+  ;(async () => {
     try {
       // Wait for database connection
       await waitForDatabase(logger)
@@ -69,19 +79,20 @@ const initialize = async (): Promise<void> => {
       await runMigrations(logger)
 
       setInitializationStatus(true)
+      resolvePromise()
     } catch (err) {
       fastify.log.error({ err }, 'Initialization failed')
       setInitializationStatus(false)
       emitInitFailureMetric()
       // Don't throw - allow function to start even if migrations fail
       // This prevents complete failure if there's a transient issue
+      resolvePromise()
     } finally {
       // Clear promise lock after completion so subsequent calls see isInitialized
       setInitializationPromise(null)
     }
   })()
 
-  setInitializationPromise(initPromise)
   return initPromise
 }
 
