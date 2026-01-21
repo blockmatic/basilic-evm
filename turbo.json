@@ -36,7 +36,11 @@
         "VERCEL_ENV",
         "NEXT_PUBLIC_LOG_ENABLED",
         "NEXT_PUBLIC_LOG_LEVEL",
-        "OPENAI_API_KEY"
+        "OPENAI_API_KEY",
+        "RESEND_API_KEY",
+        "EMAIL_FROM",
+        "APP_URL",
+        "EMAIL_ASSETS_URL"
       ]
     },
     "lint": {
@@ -53,7 +57,9 @@
         "OPENAI_API_KEY",
         "ENCRYPTION_KEY",
         "VERCEL",
-        "VERCEL_GIT_COMMIT_REF"
+        "VERCEL_GIT_COMMIT_REF",
+        "APP_URL",
+        "EMAIL_ASSETS_URL"
       ]
     },
     "lint:eslint:fix": {
@@ -67,15 +73,18 @@
         "OPENAI_API_KEY",
         "ENCRYPTION_KEY",
         "VERCEL",
-        "VERCEL_GIT_COMMIT_REF"
+        "VERCEL_GIT_COMMIT_REF",
+        "APP_URL",
+        "EMAIL_ASSETS_URL"
       ]
     },
     "checktypes": {
-      "dependsOn": ["^checktypes"]
+      "dependsOn": ["^checktypes"],
+      "env": ["NODE_ENV", "RESEND_API_KEY", "EMAIL_FROM"]
     },
     "test": {
       "dependsOn": ["^build"],
-      "env": ["NODE_ENV", "OPENAI_API_KEY", "ENCRYPTION_KEY", "CI"]
+      "env": ["NODE_ENV", "OPENAI_API_KEY", "ENCRYPTION_KEY", "CI", "RESEND_API_KEY", "EMAIL_FROM"]
     },
     "dev": {
       "dependsOn": ["^build"],
@@ -101,7 +110,9 @@
         "LOG_SERVICE",
         "VERCEL_ENV",
         "NEXT_PUBLIC_LOG_ENABLED",
-        "NEXT_PUBLIC_LOG_LEVEL"
+        "NEXT_PUBLIC_LOG_LEVEL",
+        "RESEND_API_KEY",
+        "EMAIL_FROM"
       ]
     }
   }

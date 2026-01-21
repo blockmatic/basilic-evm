@@ -29,4 +29,12 @@ Centralized design system dependencies:
 - Styling utilities (`clsx`, `tailwind-merge`, `class-variance-authority`)
 - Single source of truth for component versions
 
+## Dependency Strategy
+
+This package follows the **Component Library** pattern:
+
+- **Bundled Dependencies**: All component dependencies are bundled (`zod`, `date-fns`, `lucide-react`, `next-themes`, `react-hook-form`, Radix UI packages, etc.)
+- **Peer Dependencies**: Framework dependencies only (`react`, `react-dom`) - consumers control React version
+- **Rationale**: Simpler developer experience - install `@repo/ui` and it works. Version consistency across all apps. Follows industry patterns (shadcn/ui, Material-UI, Chakra UI)
+
 See [Frontend Stack](@apps/docu/content/docs/architecture/frontend-stack.mdx) for design system details.
