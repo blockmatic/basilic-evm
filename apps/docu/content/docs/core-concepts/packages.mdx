@@ -337,21 +337,31 @@ const html = await render(<WelcomeEmail name="John" />)
 Notification service library for sending notifications across different channels.
 
 **Exports:**
-- `NotificationService` - Main notification service class
+- `createNotifications()` - Factory function to create notification service
+- `Notifications` - Class wrapper for backward compatibility
 - `@repo/notif/types/*` - Type-safe notification type definitions
 
 **Usage:**
 ```typescript
-import { NotificationService } from "@repo/notif"
-import { InvoicePaidNotification } from "@repo/notif/types/invoice-paid"
+import { createNotifications } from "@repo/notif"
+// or
+import { Notifications } from "@repo/notif"
 
-const service = new NotificationService({
-  email: { apiKey: process.env.RESEND_API_KEY },
+// Using factory function (recommended)
+const notifications = createNotifications()
+await notifications.create({
+  type: "transactions_created",
+  payload: {
+    users: [{ id: "user_123", full_name: "John Doe", email: "john@example.com", team_id: "team_123" }],
+    transactions: [{ id: "tx_123", name: "Purchase", amount: 1000, currency: "USD", date: "2024-01-01" }],
+  },
 })
 
-await service.send({
-  type: "invoice-paid",
-  data: { invoiceId: "inv_123", amount: 1000 },
+// Using class wrapper
+const service = new Notifications()
+await service.create("transactions_created", {
+  users: [{ id: "user_123", full_name: "John Doe", email: "john@example.com", team_id: "team_123" }],
+  transactions: [{ id: "tx_123", name: "Purchase", amount: 1000, currency: "USD", date: "2024-01-01" }],
 })
 ```
 
