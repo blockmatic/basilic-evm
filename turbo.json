@@ -18,6 +18,7 @@
         "PORT",
         "HOST",
         "DATABASE_URL",
+        "PGLITE",
         "REDIS_URL",
         "SENTRY_DSN",
         "SENTRY_ENVIRONMENT",
@@ -54,6 +55,8 @@
         "CI",
         "PLAYWRIGHT_TEST_BASE_URL",
         "PORT",
+        "DATABASE_URL",
+        "PGLITE",
         "OPENAI_API_KEY",
         "ENCRYPTION_KEY",
         "VERCEL",
@@ -70,6 +73,8 @@
         "CI",
         "PLAYWRIGHT_TEST_BASE_URL",
         "PORT",
+        "DATABASE_URL",
+        "PGLITE",
         "OPENAI_API_KEY",
         "ENCRYPTION_KEY",
         "VERCEL",
@@ -84,7 +89,16 @@
     },
     "test": {
       "dependsOn": ["^build"],
-      "env": ["NODE_ENV", "OPENAI_API_KEY", "ENCRYPTION_KEY", "CI", "RESEND_API_KEY", "EMAIL_FROM"]
+      "env": [
+        "NODE_ENV",
+        "DATABASE_URL",
+        "PGLITE",
+        "OPENAI_API_KEY",
+        "ENCRYPTION_KEY",
+        "CI",
+        "RESEND_API_KEY",
+        "EMAIL_FROM"
+      ]
     },
     "dev": {
       "dependsOn": ["^build"],
@@ -96,6 +110,7 @@
         "PORT",
         "HOST",
         "DATABASE_URL",
+        "PGLITE",
         "REDIS_URL",
         "SENTRY_DSN",
         "SENTRY_ENVIRONMENT",
