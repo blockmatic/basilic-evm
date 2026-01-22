@@ -80,11 +80,12 @@ const authPlugin: FastifyPluginAsync = async fastify => {
 
     // Delegate to Better Auth
     try {
-      const authResponse = await auth.handler(req)
+      // Better Auth handler returns a standard Fetch API Response
+      const authResponse: Response = await auth.handler(req)
 
       // Forward response
       reply.status(authResponse.status)
-      authResponse.headers.forEach((value, key) => {
+      authResponse.headers.forEach((value: string, key: string) => {
         reply.header(key, value)
       })
 

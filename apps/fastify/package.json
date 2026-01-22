@@ -18,7 +18,7 @@
     "build": "pnpm db:migrate && tsc",
     "build:ts": "tsc",
     "watch:ts": "tsc -w",
-    "dev": "node --watch --import tsx src/index.ts",
+    "dev": "node --watch --import tsx src/server.ts",
     "dev:start": "pnpm run build:ts && node dist/app.js",
     "lint:eslint": "eslint . --max-warnings 0",
     "lint:eslint:fix": "eslint . --fix --max-warnings 0",

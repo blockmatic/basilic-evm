@@ -134,6 +134,6 @@ The API supports two migration strategies depending on database type:
 
 - **PGLite** (`PGLITE=true`): Migrations skip at build time, run at runtime when instance is created
   - PGLite instance doesn't exist at build time
-  - Migrations run during app initialization (`src/index.ts` or `api/[...].ts`)
+  - Migrations run during app initialization (`src/server.ts` or `api/[...].ts`)
 
 See [Backend Stack](/docs/architecture/backend-stack), [API Development](/docs/core-concepts/api-architecture), and [ADR 008: Database](/docs/adrs/008-database) for detailed migration flow and architecture.
