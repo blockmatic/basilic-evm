@@ -3,6 +3,7 @@ import type { FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
 import { getDb } from '../db/index.js'
 import { type Auth, getAuth } from '../lib/auth.js'
+import { env } from '../lib/env.js'
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -43,7 +44,7 @@ const authPlugin: FastifyPluginAsync = async fastify => {
   // Mount Better Auth routes at /api/auth/*
   fastify.all('/api/auth/*', async (request, reply) => {
     // Build full URL - Better Auth expects the full path including /api/auth
-    const host = request.headers.host || 'localhost:3000'
+    const host = request.headers.host || `localhost:${env.PORT}`
     const protocol = request.headers['x-forwarded-proto'] || 'http'
     // Ensure the URL includes the full path
     const fullUrl = `${protocol}://${host}${request.url}`

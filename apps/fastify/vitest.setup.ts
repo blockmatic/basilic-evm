@@ -9,7 +9,8 @@ process.env.ENCRYPTION_KEY =
 // Better Auth configuration for tests
 process.env.BETTER_AUTH_SECRET =
   process.env.BETTER_AUTH_SECRET || 'test-secret-key-that-is-at-least-32-characters-long'
-process.env.BETTER_AUTH_URL = process.env.BETTER_AUTH_URL || 'http://localhost:3000'
+process.env.BETTER_AUTH_URL =
+  process.env.BETTER_AUTH_URL || `http://localhost:${process.env.PORT || 3000}`
 process.env.BETTER_AUTH_TRUSTED_ORIGINS = process.env.BETTER_AUTH_TRUSTED_ORIGINS || ''
 // Email configuration for tests
 process.env.RESEND_API_KEY = process.env.RESEND_API_KEY || 're_test_key'

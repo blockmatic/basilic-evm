@@ -4,6 +4,7 @@
 
 import type { BetterAuthPlugin } from 'better-auth'
 import { createAuthEndpoint } from 'better-auth/api'
+import { env } from '../env.js'
 
 export const web3Plugin = (): BetterAuthPlugin => ({
   id: 'web3',
@@ -31,7 +32,8 @@ export const web3Plugin = (): BetterAuthPlugin => ({
 
         return ctx.json({
           nonce,
-          domain: ctx.request?.headers.get('host') || ctx.headers?.get('host') || 'localhost:3000',
+          domain:
+            ctx.request?.headers.get('host') || ctx.headers?.get('host') || `localhost:${env.PORT}`,
           issuedAt: new Date().toISOString(),
           expirationTime: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
           chain: normalizedChain,
