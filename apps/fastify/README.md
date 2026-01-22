@@ -134,7 +134,7 @@ The API supports two migration strategies depending on database type:
 
 - **PGLite** (`PGLITE=true`): Migrations skip at build time, run at runtime when instance is created
   - PGLite instance doesn't exist at build time
-  - Migrations run during app initialization (`src/server.ts` or `api/[...].ts`)
+  - Migrations run during app initialization (`server.ts` or `api/[...].ts`)
   - **Direct SQL execution**: Migrations are executed directly using PGLite's `exec()` method rather than Drizzle's `migratePGLite()` function
     - `migratePGLite()` silently fails to apply migrations in some contexts
     - Direct SQL execution ensures migrations are reliably applied

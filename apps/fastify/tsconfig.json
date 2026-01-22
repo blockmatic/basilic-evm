@@ -10,6 +10,5 @@
     "skipLibCheck": true,
     "types": ["node"]
   },
-  "include": ["src/**/*.ts", "api/**/*.ts"],
-  "exclude": ["src/server.ts"]
+  "include": ["src/**/*.ts", "api/**/*.ts"]
 }

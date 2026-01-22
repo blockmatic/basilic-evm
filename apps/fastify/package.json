@@ -18,7 +18,7 @@
     "build": "pnpm db:migrate && tsc",
     "build:ts": "tsc",
     "watch:ts": "tsc -w",
-    "dev": "node --watch --import tsx src/server.ts",
+    "dev": "node --watch --import tsx server.ts",
     "dev:start": "pnpm run build:ts && node dist/app.js",
     "lint:eslint": "eslint . --max-warnings 0",
     "lint:eslint:fix": "eslint . --fix --max-warnings 0",
@@ -80,6 +80,7 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "~5.9.3",
+    "undici-types": "^7.19.0",
     "vite-plugin-node": "^7.0.0",
     "vite-tsconfig-paths": "^6.0.4",
     "vitest": "^4.0.17"
