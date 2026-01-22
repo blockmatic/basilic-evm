@@ -91,9 +91,11 @@ describe('Crypto Utility', () => {
 
     it('should return null for corrupted ciphertext', () => {
       const plaintext = 'test-token'
-      const encrypted = encrypt(plaintext)!
+      const encrypted = encrypt(plaintext)
+      expect(encrypted).toBeTruthy()
+      if (!encrypted) return
       // Corrupt the ciphertext by changing a character
-      const corrupted = encrypted.slice(0, -5) + 'XXXXX'
+      const corrupted = `${encrypted.slice(0, -5)}XXXXX`
       expect(decrypt(corrupted)).toBeNull()
     })
 
@@ -127,8 +129,9 @@ describe('Crypto Utility', () => {
       for (const token of tokens) {
         const encrypted = encrypt(token)
         expect(encrypted).toBeTruthy()
+        if (!encrypted) continue
 
-        const decrypted = decrypt(encrypted!)
+        const decrypted = decrypt(encrypted)
         expect(decrypted).toBe(token)
       }
     })
