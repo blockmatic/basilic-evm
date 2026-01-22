@@ -1,3 +1,25 @@
+/**
+ * Vitest Test Setup
+ *
+ * Configures test environment and database lifecycle.
+ *
+ * ## Test Database Lifecycle
+ *
+ * Each test suite (`describe` block) gets a fresh PGLite in-memory database:
+ *
+ * 1. **beforeAll**: Creates a fresh database instance and runs migrations
+ * 2. **Tests run**: Tests within the same suite can share state/data
+ *    - Example: Create an account in one test, then test login in another
+ * 3. **afterAll**: Deletes the database instance (ensures clean state for next suite)
+ *
+ * ## Important Notes
+ *
+ * - Tests should NOT depend on state from other test suites
+ * - Each suite starts with a completely fresh database
+ * - Database instance is deleted after suite completes (handles test failures too)
+ * - No `afterEach` hook - data persists within a suite to allow test dependencies
+ */
+
 // Set all required environment variables before env validation
 // This must happen before any imports that use env.ts
 process.env.NODE_ENV = 'test'
@@ -22,13 +44,16 @@ process.env.EMAIL_FROM_NAME = process.env.EMAIL_FROM_NAME || 'Test App'
 
 import { logger } from '@repo/utils/logger'
 import { afterAll, beforeAll } from 'vitest'
+import { resetDbInstance } from './src/db/index.js'
 import { runMigrations } from './src/db/migrate.js'
-import { closeTestDatabase, getTestDatabase } from './test/utils/db.js'
+import { closeTestDatabase, resetTestDatabase } from './test/utils/db.js'
 
 beforeAll(async () => {
-  await getTestDatabase()
+  // Create a fresh database instance for this test suite
+  // This ensures each suite starts with a clean database
+  await resetTestDatabase()
 
-  // Run migrations if they exist
+  // Run migrations to set up the schema
   // Errors are logged and rethrown to fail tests on migration regressions
   try {
     await runMigrations({
@@ -44,6 +69,14 @@ beforeAll(async () => {
   // No fallback SQL needed - migrations are the source of truth
 })
 
+// No afterEach hook - tests can share state/data within a suite
+// This allows tests to depend on each other (e.g., create account, then test login)
+// Data is only cleared when the suite completes (via afterAll)
+
 afterAll(async () => {
+  // Delete database instance after all tests in suite complete
+  // This ensures clean state for next test suite and handles test failures
+  // Even if tests fail, the instance is cleaned up here
   await closeTestDatabase()
+  resetDbInstance()
 })

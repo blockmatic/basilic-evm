@@ -3,7 +3,6 @@ import 'dotenv/config'
 import { readdir } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { drizzle } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import { Pool } from 'pg'
@@ -56,11 +55,47 @@ try {
   logger.info(`Found ${migrationFiles.length} migration file(s), running migrations...`)
 
   const pool = new Pool({ connectionString: env.DATABASE_URL })
-  const db = drizzle<NodePgDatabase>(pool)
+
+  // Check if users table already exists (indicates migrations were run manually)
+  try {
+    const tableCheck = await pool.query(
+      "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'users')",
+    )
+    const usersTableExists = tableCheck.rows[0]?.exists ?? false
+
+    if (usersTableExists) {
+      // Check if migrations table exists
+      const migrationsTableCheck = await pool.query(
+        "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = '__drizzle_migrations')",
+      )
+      const migrationsTableExists = migrationsTableCheck.rows[0]?.exists ?? false
+
+      if (!migrationsTableExists) {
+        logger.info(
+          'Users table exists but migrations tracking not initialized. Tables appear to be already migrated. Skipping migration step.',
+        )
+        await pool.end()
+        process.exit(0)
+      } else {
+        // Migrations table exists, let drizzle handle it normally
+        logger.info('Migrations tracking table exists, running migrations...')
+      }
+    }
+  } catch (checkError) {
+    logger.error('Failed to check table existence', checkError)
+    await pool.end()
+    throw checkError
+  }
+
+  const db = drizzle(pool)
 
   try {
     await migrate(db, { migrationsFolder: migrationsDir })
     logger.info('Migrations completed successfully (PostgreSQL)')
+  } catch (migrationError: unknown) {
+    // If migration fails with table exists error and we got here, it's a real conflict
+    logger.error('Migration failed', migrationError)
+    throw migrationError
   } finally {
     await pool.end()
   }

@@ -48,6 +48,22 @@ All runtime scripts build `@repo/utils` first to ensure compiled workspace depen
 
 Tests run with Vitest in ESM mode against the TypeScript source.
 
+### Test Database
+
+Tests use a **fresh PGLite in-memory database** for each test suite:
+
+- **Fresh instance per suite**: Each test suite (`describe` block) gets a completely fresh database instance
+- **State sharing within suite**: Tests within the same suite can share state/data (e.g., create an account in one test, then test login in another)
+- **Automatic cleanup**: Database instance is automatically deleted after all tests in a suite complete
+- **Failure handling**: If a test fails, the database instance is still cleaned up in `afterAll`
+
+**Lifecycle:**
+1. `beforeAll`: Creates a fresh PGLite instance and runs migrations
+2. Tests run: Can share state/data within the suite
+3. `afterAll`: Deletes the database instance (ensures clean state for next suite)
+
+**Important**: Tests should not depend on state from other test suites. Each suite starts with a clean database.
+
 ## Environment Variables
 
 The API uses environment variables for configuration. See [Environment Setup Guide](@apps/docu/content/docs/getting-started/installation.mdx) for complete details.

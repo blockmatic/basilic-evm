@@ -51,8 +51,8 @@ export async function getAuth() {
                 error: error instanceof Error ? error : new Error(String(error)),
                 label: 'sendMagicLink failed',
                 data: {
-                  email,
-                  url,
+                  emailDomain: email.split('@')[1] || '[redacted]',
+                  magicLinkSent: true,
                 },
                 tags: {
                   app: 'api',
