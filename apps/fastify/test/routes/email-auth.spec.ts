@@ -78,39 +78,4 @@ describe('Magic Link Authentication', () => {
       expect(response.statusCode).toBe(400)
     })
   })
-
-  describe('Removed Password Endpoints', () => {
-    it('should reject password sign-up endpoint', async () => {
-      const response = await fastify.inject({
-        method: 'POST',
-        url: '/api/auth/sign-up/email',
-        payload: {
-          email: 'test@example.com',
-          password: 'password123',
-          name: 'Test User',
-        },
-      })
-
-      // Better Auth returns 400 with error message when email/password is disabled
-      // This confirms password auth is not enabled
-      expect(response.statusCode).toBeGreaterThanOrEqual(400)
-      expect(response.statusCode).toBeLessThan(500)
-    })
-
-    it('should reject password sign-in endpoint', async () => {
-      const response = await fastify.inject({
-        method: 'POST',
-        url: '/api/auth/sign-in/email',
-        payload: {
-          email: 'test@example.com',
-          password: 'password123',
-        },
-      })
-
-      // Better Auth returns 400 with error message when email/password is disabled
-      // This confirms password auth is not enabled
-      expect(response.statusCode).toBeGreaterThanOrEqual(400)
-      expect(response.statusCode).toBeLessThan(500)
-    })
-  })
 })

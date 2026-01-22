@@ -64,9 +64,8 @@ export async function runMigrations(logger?: {
       } else {
         // In runtime mode, get instance from db connection
         // The instance is available at db._.session.client for PGLite connections
-        // biome-ignore lint/suspicious/noExplicitAny: Drizzle PGLite connection structure is not fully typed
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Drizzle PGLite connection structure is not fully typed
-        pgliteInstance = (db as any)._.session.client
+        // Accessing internal Drizzle structure - not part of public API
+        pgliteInstance = (db as unknown as { _: { session: { client: PGlite } } })._.session.client
       }
 
       // Read and execute each migration SQL file
