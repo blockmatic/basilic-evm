@@ -50,12 +50,10 @@ export async function getAuth() {
   if (!authInstance) {
     const db = await getDb()
     // Check both local and global for test provider
-    const emailProvider =
-      testEmailProvider ??
-      (typeof globalThis !== 'undefined'
-        ? (globalThis.__betterAuthTestEmailProvider ?? null)
-        : null) ??
-      resend
+    // Prefer global first (more reliable in tests with module reloads), then local, then resend
+    const globalProvider =
+      typeof globalThis !== 'undefined' ? (globalThis.__betterAuthTestEmailProvider ?? null) : null
+    const emailProvider = testEmailProvider ?? globalProvider ?? resend
 
     // Better Auth with Drizzle adapter does NOT auto-create tables
     // All tables must be created via Drizzle migrations (see src/db/migrate.ts)

@@ -1,8 +1,8 @@
 {
   "extends": "@repo/typescript-config/nextjs.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
+      "*": ["./*"],
       "@/*": ["./*"],
       "@repo/ui/*": ["../../packages/ui/src/*"],
       "@repo/core": ["../../packages/core/src/index.ts"],

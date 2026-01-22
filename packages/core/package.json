@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "checktypes": "tsc --noEmit",
+    "checktypes": "tsgo --noEmit",
     "lint:eslint": "eslint . --max-warnings 0",
     "lint:eslint:fix": "eslint . --fix --max-warnings 0",
     "prepack": "pnpm build && node ../../scripts/prepare-publish.mjs",
@@ -23,8 +23,8 @@
     "@hey-api/openapi-ts": "^0.90.8",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "eslint": "^9.39.2",
-    "tsup": "^8.5.1",
-    "typescript": "^5.9.3"
+    "eslint": "*",
+    "tsup": "*",
+    "@typescript/native-preview": "*"
   }
 }
