@@ -35,20 +35,35 @@ const authPlugin: FastifyPluginAsync = async fastify => {
 
   // Session validation hook
   fastify.addHook('onRequest', async request => {
-    const session = await auth.api.getSession({
-      headers: request.headers,
-    })
-    request.session = session
+    try {
+      const session = await auth.api.getSession({
+        headers: request.headers,
+      })
+      request.session = session
+    } catch (error) {
+      captureError({
+        code: 'INTERNAL_ERROR',
+        error: error instanceof Error ? error : new Error(String(error)),
+        logger: request.log,
+        label: 'auth.api.getSession failed',
+        data: {
+          method: request.method,
+          url: request.url,
+        },
+        tags: {
+          app: 'api',
+          module: 'auth-service',
+          route: request.url,
+        },
+      })
+      request.session = null
+    }
   })
 
   // Mount Better Auth routes at /api/auth/*
   fastify.all('/api/auth/*', async (request, reply) => {
-    // Build full URL - Better Auth expects the full path including /api/auth
-    const host = request.headers.host || `localhost:${env.PORT}`
-    const protocol = request.headers['x-forwarded-proto'] || 'http'
-    // Ensure the URL includes the full path
-    const fullUrl = `${protocol}://${host}${request.url}`
-    const url = new URL(fullUrl)
+    // Build full URL using trusted env.BETTER_AUTH_URL as base
+    const url = new URL(request.url, env.BETTER_AUTH_URL)
 
     // Build Headers object
     const headers = new Headers()

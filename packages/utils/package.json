@@ -40,7 +40,6 @@
     "test": "echo \"no test\""
   },
   "peerDependencies": {
-    "lodash-es": "*",
     "nuqs": "*",
     "pino": "*",
     "react": "*",
