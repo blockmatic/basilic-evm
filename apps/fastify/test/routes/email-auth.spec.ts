@@ -28,12 +28,9 @@ describe('Magic Link Authentication', () => {
         },
       })
 
-      // Magic link endpoint should exist (not 404)
-      // Endpoint exists but may return 500 if verification table doesn't exist
-      // This indicates migration issue, not endpoint configuration issue
-      expect(response.statusCode).not.toBe(404)
-      // Accept 200 (success) or 500 (migration issue - table missing)
-      expect([200, 500]).toContain(response.statusCode)
+      // Magic link endpoint should exist and return 200
+      // Migrations are run in vitest.setup.ts beforeAll, so verification table should exist
+      expect(response.statusCode).toBe(200)
     })
 
     it('should return 400 for invalid email format', async () => {

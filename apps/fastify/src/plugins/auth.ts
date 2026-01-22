@@ -85,9 +85,17 @@ const authPlugin: FastifyPluginAsync = async fastify => {
 
       // Forward response
       reply.status(authResponse.status)
+      // Forward all headers except Set-Cookie (handled separately)
       authResponse.headers.forEach((value: string, key: string) => {
-        reply.header(key, value)
+        if (key.toLowerCase() !== 'set-cookie') {
+          reply.header(key, value)
+        }
       })
+      // Handle Set-Cookie headers separately to preserve multiple cookies
+      const cookies = authResponse.headers.getSetCookie()
+      for (const cookie of cookies) {
+        reply.header('Set-Cookie', cookie)
+      }
 
       if (authResponse.body) {
         const text = await authResponse.text()
