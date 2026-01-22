@@ -48,11 +48,8 @@
         "BETTER_AUTH_TRUSTED_ORIGINS"
       ]
     },
-    "lint": {
-      "dependsOn": ["^lint"]
-    },
+    "lint": {},
     "lint:eslint": {
-      "dependsOn": ["^lint:eslint"],
       "env": [
         "NODE_ENV",
         "NEXT_RUNTIME",
@@ -76,7 +73,7 @@
       ]
     },
     "lint:eslint:fix": {
-      "dependsOn": ["^lint:eslint:fix"],
+      "cache": false,
       "env": [
         "NODE_ENV",
         "NEXT_RUNTIME",
@@ -101,7 +98,6 @@
       ]
     },
     "checktypes": {
-      "dependsOn": ["^checktypes"],
       "env": [
         "NODE_ENV",
         "RESEND_API_KEY",
