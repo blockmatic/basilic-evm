@@ -81,7 +81,7 @@
     "@types/node": "^25.0.9",
     "@types/react": "^19.2.8",
     "eslint": "^9.39.2",
-    "lodash-es": "latest",
+    "lodash-es": "^4.17.23",
     "nuqs": "^2.8.6",
     "react": "^19.2.3",
     "react-use": "^17.6.0",

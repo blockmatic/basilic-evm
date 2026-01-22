@@ -6,6 +6,15 @@ process.env.DATABASE_URL = 'postgresql://localhost/test'
 process.env.OPENAI_API_KEY = process.env.OPENAI_API_KEY || 'test-openai-key'
 process.env.ENCRYPTION_KEY =
   process.env.ENCRYPTION_KEY || '0000000000000000000000000000000000000000000000000000000000000000'
+// Better Auth configuration for tests
+process.env.BETTER_AUTH_SECRET =
+  process.env.BETTER_AUTH_SECRET || 'test-secret-key-that-is-at-least-32-characters-long'
+process.env.BETTER_AUTH_URL = process.env.BETTER_AUTH_URL || 'http://localhost:3000'
+process.env.BETTER_AUTH_TRUSTED_ORIGINS = process.env.BETTER_AUTH_TRUSTED_ORIGINS || ''
+// Email configuration for tests
+process.env.RESEND_API_KEY = process.env.RESEND_API_KEY || 're_test_key'
+process.env.EMAIL_FROM = process.env.EMAIL_FROM || 'test@example.com'
+process.env.EMAIL_FROM_NAME = process.env.EMAIL_FROM_NAME || 'Test App'
 
 // Dynamic env vars are passed from CI secrets if available
 // They're optional and will be undefined if not provided
@@ -30,19 +39,8 @@ beforeAll(async () => {
     throw err
   }
 
-  // Fallback: Create tables manually using SQL
-  // This is a temporary solution until migrations are generated
-  const { instance } = await getTestDatabase()
-  await instance.exec(`
-    -- Create users table
-    CREATE TABLE IF NOT EXISTS users (
-      id TEXT PRIMARY KEY,
-      email VARCHAR(255),
-      created_at TIMESTAMP DEFAULT NOW() NOT NULL,
-      updated_at TIMESTAMP DEFAULT NOW() NOT NULL
-    );
-    CREATE INDEX IF NOT EXISTS users_email_idx ON users(email);
-  `)
+  // Migrations handle all table creation and updates
+  // No fallback SQL needed - migrations are the source of truth
 })
 
 afterAll(async () => {

@@ -1,0 +1,86 @@
+import { betterAuth } from 'better-auth'
+import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+import { Resend } from 'resend'
+import { getDb } from '../db/index.js'
+import * as schema from '../db/schema/index.js'
+import { web3Plugin } from './auth-plugins/web3.js'
+import { env } from './env.js'
+
+const resend = new Resend(env.RESEND_API_KEY)
+
+// Initialize auth instance - db will be initialized on first use
+// Better Auth adapter will access db when needed
+let authInstance: ReturnType<typeof betterAuth> | null = null
+
+export async function getAuth() {
+  if (!authInstance) {
+    const db = await getDb()
+    authInstance = betterAuth({
+      database: drizzleAdapter(db, {
+        provider: 'pg',
+        schema: {
+          ...schema,
+          user: schema.users, // Map 'user' model to 'users' table
+          session: schema.sessions, // Map 'session' model to 'sessions' table
+        },
+      }),
+      secret: env.BETTER_AUTH_SECRET,
+      baseURL: env.BETTER_AUTH_URL,
+      trustedOrigins: env.BETTER_AUTH_TRUSTED_ORIGINS,
+      emailAndPassword: {
+        enabled: true,
+        requireEmailVerification: true,
+        sendVerificationEmail: async ({ user, url }: { user: { email: string }; url: string }) => {
+          await resend.emails.send({
+            from: `${env.EMAIL_FROM_NAME} <${env.EMAIL_FROM}>`,
+            to: user.email,
+            subject: 'Verify your email',
+            html: `
+              <p>Hello,</p>
+              <p>Please verify your email by clicking the link below:</p>
+              <a href="${url}">Verify Email</a>
+            `,
+          })
+        },
+      },
+      magicLink: {
+        enabled: true,
+        sendMagicLink: async ({ email, url }: { email: string; url: string }) => {
+          await resend.emails.send({
+            from: `${env.EMAIL_FROM_NAME} <${env.EMAIL_FROM}>`,
+            to: email,
+            subject: 'Sign in to your account',
+            html: `
+              <p>Hello,</p>
+              <p>Click the link below to sign in:</p>
+              <a href="${url}">Sign In</a>
+            `,
+          })
+        },
+      },
+      plugins: [web3Plugin()],
+      session: {
+        cookieName: 'better-auth.session_token',
+        expiresIn: 60 * 60 * 24 * 7, // 7 days
+        updateAge: 60 * 60 * 24, // 1 day
+        cookieCache: {
+          enabled: true,
+          maxAge: 60 * 5, // 5 minutes
+        },
+      },
+      advanced: {
+        cookiePrefix: 'better-auth',
+        defaultCookieAttributes: {
+          secure: env.NODE_ENV === 'production',
+          httpOnly: true,
+          sameSite: 'lax',
+          path: '/',
+        },
+      },
+    })
+  }
+  return authInstance
+}
+
+// Type export for Better Auth instance
+export type Auth = Awaited<ReturnType<typeof getAuth>>

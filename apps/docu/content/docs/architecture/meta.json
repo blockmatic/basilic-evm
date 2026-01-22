@@ -4,6 +4,7 @@
     "index",
     "backend-stack",
     "frontend-stack",
+    "authentication",
     "esm-strategy",
     "package-conventions",
     "portability",

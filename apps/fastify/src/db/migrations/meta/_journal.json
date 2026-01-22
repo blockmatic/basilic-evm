@@ -8,6 +8,27 @@
       "when": 1769016196218,
       "tag": "0000_steady_talos",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1769021954765,
+      "tag": "0001_redundant_green_goblin",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1769022305210,
+      "tag": "0002_first_black_cat",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1769022799314,
+      "tag": "0003_smiling_zombie",
+      "breakpoints": true
     }
   ]
 }

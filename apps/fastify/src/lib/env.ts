@@ -56,6 +56,22 @@ export const env = createEnv({
       .string()
       .length(64)
       .regex(/^[0-9a-fA-F]+$/, 'Must be a 32-byte hex string'),
+    // Auth configuration
+    BETTER_AUTH_SECRET: z.string().min(32),
+    BETTER_AUTH_URL: z.string().url(),
+    BETTER_AUTH_TRUSTED_ORIGINS: z
+      .string()
+      .default('')
+      .transform(val =>
+        val
+          .split(',')
+          .map(origin => origin.trim())
+          .filter(Boolean),
+      ),
+    // Email configuration
+    RESEND_API_KEY: z.string().min(1),
+    EMAIL_FROM: z.string().email(),
+    EMAIL_FROM_NAME: z.string().default('App'),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
