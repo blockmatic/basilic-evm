@@ -38,14 +38,30 @@ pnpm install
 
 ### Running the Application
 
-```bash
-# From monorepo root (runs all apps)
-pnpm dev
+**Recommended: From monorepo root** (runs all apps with watch mode):
 
-# Or from this directory
+```bash
+# From monorepo root
+pnpm dev
+```
+
+This starts all development servers including:
+- Fastify API server (with OpenAPI generation)
+- Next.js frontend (this app)
+- Package watchers for automatic rebuilds
+
+**Alternative: Run directly** (requires building dependencies first):
+
+```bash
+# Build required packages first
+pnpm build --filter=@repo/core --filter=@repo/react --filter=@repo/error --filter=@repo/utils
+
+# Then run from this directory
 cd apps/next
 pnpm dev
 ```
+
+**Note**: When running directly, you must rebuild dependencies (`@repo/core`, `@repo/react`, `@repo/error`, `@repo/utils`) whenever they change. Using `pnpm dev` from the root handles this automatically with watch mode.
 
 The application will be available at `http://localhost:3000` (or the next available port).
 

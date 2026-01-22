@@ -33,6 +33,7 @@
   "scripts": {
     "build": "tsup",
     "checktypes": "tsgo --noEmit",
+    "dev": "tsup --watch",
     "lint:eslint": "eslint . --max-warnings 0",
     "lint:eslint:fix": "eslint . --fix --max-warnings 0",
     "prepack": "pnpm build && node ../../scripts/prepare-publish.mjs",

@@ -15,7 +15,7 @@
     "test:watch": "NODE_OPTIONS='--import tsx' vitest",
     "test:cov": "NODE_OPTIONS='--import tsx' vitest run --coverage",
     "start": "pnpm run build:ts && node --env-file=.env dist/app.js",
-    "build": "pnpm db:migrate && tsgo",
+    "build": "pnpm generate:openapi && pnpm db:migrate && tsgo",
     "build:ts": "tsgo",
     "watch:ts": "tsgo -w",
     "dev": "pnpm generate:openapi && concurrently -n server,openapi 'node --watch --import tsx server.ts' 'chokidar \"src/routes/**/*.ts\" \"src/plugins/**/*.ts\" -c \"pnpm generate:openapi\"'",

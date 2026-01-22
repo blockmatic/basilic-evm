@@ -4,6 +4,7 @@ export { useReactApiConfig } from './context.js'
 export * from './gen/index.js'
 // Export hooks
 export { useHealthCheck } from './hooks/useHealthCheck.js'
+export { useSession } from './hooks/useSession.js'
 // Export provider and context
 export { ReactApiProvider } from './provider.js'
 export type { ReactApiConfig } from './setup.js'

@@ -12,6 +12,7 @@
   "scripts": {
     "build": "tsup",
     "checktypes": "tsgo --noEmit",
+    "dev": "node --import tsx scripts/wait-and-watch.mjs",
     "lint:eslint": "eslint . --max-warnings 0",
     "lint:eslint:fix": "eslint . --fix --max-warnings 0",
     "prepack": "pnpm build && node ../../scripts/prepare-publish.mjs",
@@ -26,10 +27,14 @@
     "@hey-api/openapi-ts": "^0.90.8",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@repo/utils": "workspace:*",
     "@tanstack/react-query": "^5.90.19",
     "@types/react": "*",
+    "chokidar-cli": "^3.0.0",
+    "concurrently": "^9.2.1",
     "eslint": "*",
     "tsup": "*",
+    "tsx": "^4.21.0",
     "@typescript/native-preview": "*"
   },
   "peerDependencies": {

@@ -1,0 +1,214 @@
+import { expect, type Page, test } from '@playwright/test'
+
+const TEST_EMAIL = 'test@example.com'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+
+/**
+ * Helper function to send magic link request
+ */
+async function sendMagicLink(page: Page) {
+  await page.goto('/')
+  await page.fill('input[type="email"]', TEST_EMAIL)
+  await page.click('button[type="submit"]')
+  // Wait for the success message indicating email was sent
+  await page.waitForSelector('text=Check your email for the magic link', { timeout: 5000 })
+}
+
+/**
+ * Helper function to extract magic link token from Fastify test endpoint
+ */
+async function extractToken(): Promise<string | null> {
+  try {
+    const response = await fetch(`${API_URL}/api/test/last-magic-link`)
+    if (!response.ok) {
+      return null
+    }
+    const data = await response.json()
+    return data.token || null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Helper function to verify magic link and navigate to verify URL
+ */
+async function verifyMagicLink(page: Page, token: string) {
+  const verifyUrl = `/api/auth/magic-link/verify?token=${token}&callbackURL=/dashboard`
+  await page.goto(verifyUrl)
+  // Wait for redirect to dashboard
+  await page.waitForURL(/\/dashboard/, { timeout: 5000 })
+}
+
+/**
+ * Helper function to check if user is authenticated on dashboard
+ */
+async function checkAuthenticated(page: Page) {
+  // Check URL is dashboard
+  expect(page.url()).toContain('/dashboard')
+
+  // Check user email is displayed
+  const emailElement = page.locator(`text=${TEST_EMAIL}`)
+  await expect(emailElement).toBeVisible()
+
+  // Check API health badge shows "API OK" (indicates connected)
+  const apiBadge = page.locator('text=API OK')
+  await expect(apiBadge).toBeVisible({ timeout: 10000 })
+}
+
+test.describe('Valid Magic Link Flow', () => {
+  test('should complete full magic link authentication flow', async ({ page }) => {
+    // Step 1: Send magic link
+    await sendMagicLink(page)
+
+    // Step 2: Extract token from backend
+    const token = await extractToken()
+    expect(token).toBeTruthy()
+    expect(typeof token).toBe('string')
+
+    if (!token) {
+      throw new Error('Failed to extract magic link token')
+    }
+
+    // Step 3: Verify magic link
+    await verifyMagicLink(page, token)
+
+    // Step 4: Check authenticated state
+    await checkAuthenticated(page)
+
+    // Step 5: Check success message is displayed
+    const successMessage = page.locator('text=Successfully authenticated')
+    await expect(successMessage.first()).toBeVisible({ timeout: 2000 })
+  })
+
+  test('should redirect to dashboard with success message query param', async ({ page }) => {
+    await sendMagicLink(page)
+
+    const token = await extractToken()
+    expect(token).toBeTruthy()
+
+    if (!token) {
+      throw new Error('Failed to extract magic link token')
+    }
+
+    await verifyMagicLink(page, token)
+
+    // Check URL contains authenticated=true query param
+    await page.waitForURL(/\/dashboard\?.*authenticated=true/, { timeout: 5000 })
+
+    // Check success message is visible
+    const successAlert = page.locator('role=alert')
+    await expect(successAlert.first()).toBeVisible()
+  })
+})
+
+test.describe('Invalid Magic Link Flow', () => {
+  test('should redirect to login with error message for invalid token', async ({ page }) => {
+    // Navigate to verify URL with invalid token
+    await page.goto('/api/auth/magic-link/verify?token=invalid-token-12345')
+
+    // Should redirect to login page
+    await page.waitForURL(/\/\?.*message=/, { timeout: 5000 })
+
+    // Check error message is displayed
+    const errorMessage = page.locator('text=/Invalid or expired magic link/i')
+    await expect(errorMessage.first()).toBeVisible()
+
+    // Verify no session cookie is set
+    const cookies = await page.context().cookies()
+    const sessionCookie = cookies.find(cookie => cookie.name.includes('session_token'))
+    expect(sessionCookie).toBeUndefined()
+  })
+
+  test('should redirect to login with error message for missing token', async ({ page }) => {
+    await page.goto('/api/auth/magic-link/verify')
+
+    // Should redirect to login page
+    await page.waitForURL(/\/\?.*message=/, { timeout: 5000 })
+
+    // Check error message is displayed
+    const errorMessage = page.locator('text=/Invalid or expired magic link/i')
+    await expect(errorMessage.first()).toBeVisible()
+  })
+
+  test('should redirect to login with error message for expired token', async ({ page }) => {
+    // Use a token that looks valid but is expired
+    await page.goto('/api/auth/magic-link/verify?token=expired-token-abc123')
+
+    // Should redirect to login page
+    await page.waitForURL(/\/\?.*message=/, { timeout: 5000 })
+
+    // Check error message is displayed
+    const errorMessage = page.locator('text=/Invalid or expired magic link/i')
+    await expect(errorMessage.first()).toBeVisible()
+  })
+})
+
+test.describe('Protected Route Access', () => {
+  test('should redirect to login when accessing dashboard without auth', async ({ page }) => {
+    // Clear all cookies first
+    await page.context().clearCookies()
+
+    // Navigate directly to dashboard
+    await page.goto('/dashboard')
+
+    // Should redirect to login page
+    await page.waitForURL(/\//, { timeout: 5000 })
+    expect(page.url()).not.toContain('/dashboard')
+
+    // Verify login form is visible
+    const emailInput = page.locator('input[type="email"]')
+    await expect(emailInput).toBeVisible()
+  })
+
+  test('should access dashboard after authentication', async ({ page }) => {
+    // Authenticate first
+    await sendMagicLink(page)
+    const token = await extractToken()
+    expect(token).toBeTruthy()
+
+    if (!token) {
+      throw new Error('Failed to extract magic link token')
+    }
+
+    await verifyMagicLink(page, token)
+
+    // Now navigate to dashboard directly
+    await page.goto('/dashboard')
+
+    // Should stay on dashboard (not redirect)
+    await page.waitForURL(/\/dashboard/, { timeout: 5000 })
+
+    // Verify authenticated content is visible
+    await checkAuthenticated(page)
+  })
+})
+
+test.describe('JWT Session Refresh', () => {
+  test('should maintain session after authentication', async ({ page }) => {
+    // Authenticate
+    await sendMagicLink(page)
+    const token = await extractToken()
+    expect(token).toBeTruthy()
+
+    if (!token) {
+      throw new Error('Failed to extract magic link token')
+    }
+
+    await verifyMagicLink(page, token)
+
+    // Get session cookie
+    const cookies = await page.context().cookies()
+    const sessionCookie = cookies.find(cookie => cookie.name.includes('session_token'))
+    expect(sessionCookie).toBeDefined()
+
+    // Make authenticated request to session endpoint
+    const response = await page.request.get('/api/auth/get-session')
+    expect(response.ok()).toBeTruthy()
+
+    const sessionData = await response.json()
+    expect(sessionData).toHaveProperty('user')
+    expect(sessionData.user).not.toBeNull()
+    expect(sessionData.user.email).toBe(TEST_EMAIL)
+  })
+})

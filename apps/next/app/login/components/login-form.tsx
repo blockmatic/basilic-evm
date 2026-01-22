@@ -12,31 +12,73 @@ import {
 import { Input } from '@repo/ui/components/input'
 import { cn } from '@repo/ui/lib/utils'
 import { useMutation } from '@tanstack/react-query'
-import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
-export function LoginForm({ className, ...props }: React.ComponentProps<'form'>) {
+type LoginFormProps = React.ComponentProps<'form'> & {
+  initialError?: string
+}
+
+export function LoginForm({ className, initialError, ...props }: LoginFormProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
-  const [catalogError, setCatalogError] = useState<CatalogError | null>(null)
+  const [catalogError, setCatalogError] = useState<CatalogError | null>(
+    initialError
+      ? {
+          code: 'MAGIC_LINK_VERIFICATION_FAILED',
+          message: initialError,
+        }
+      : null,
+  )
+
+  // Clear error from URL after displaying it
+  useEffect(() => {
+    if (searchParams.get('error') || searchParams.get('message')) {
+      const newSearchParams = new URLSearchParams(searchParams.toString())
+      newSearchParams.delete('error')
+      newSearchParams.delete('message')
+      const newUrl = newSearchParams.toString()
+        ? `${window.location.pathname}?${newSearchParams.toString()}`
+        : window.location.pathname
+      router.replace(newUrl, { scroll: false })
+    }
+  }, [router, searchParams])
 
   const mutation = useMutation({
     mutationFn: async (email: string): Promise<{ success: boolean }> => {
+      const callbackURL = `${window.location.origin}/dashboard`
       const response = await fetch('/api/auth/sign-in/magic-link', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, callbackURL }),
       })
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({
-          message: 'Failed to send magic link',
-        }))
-        throw new Error(errorData.message || 'Failed to send magic link')
+        let errorMessage = 'Failed to send magic link'
+        try {
+          const errorData = await response.json()
+          // Better Auth returns error in different formats
+          errorMessage =
+            errorData.message ||
+            errorData.error?.message ||
+            errorData.error ||
+            errorData.code ||
+            'Failed to send magic link'
+        } catch {
+          // If response is not JSON, try to get text
+          const text = await response.text().catch(() => '')
+          errorMessage = text || errorMessage
+        }
+        throw new Error(errorMessage)
       }
 
-      return response.json()
+      const data = await response.json()
+      // Better Auth returns {status: true} but we need {success: boolean}
+      return { success: data.status === true || data.success === true }
     },
     onError: error => {
       const catalogErr = captureError({
