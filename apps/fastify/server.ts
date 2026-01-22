@@ -5,7 +5,25 @@ import Fastify from 'fastify'
 import app from './src/app.js'
 import { waitForDatabase } from './src/db/health.js'
 import { runMigrations } from './src/db/migrate.js'
+import { setTestEmailProvider } from './src/lib/auth.js'
 import { env } from './src/lib/env.js'
+import { setSharedFakeEmail } from './src/routes/test.js'
+
+// Dynamically import FakeEmailProvider only in development/test
+async function setupFakeEmailProvider() {
+  const allowedEnvs = ['test', 'development']
+  if (env.NODE_ENV && allowedEnvs.includes(env.NODE_ENV)) {
+    try {
+      const { FakeEmailProvider } = await import('./test/utils/fake-email.js')
+      const fakeEmailProvider = new FakeEmailProvider()
+      setTestEmailProvider(fakeEmailProvider)
+      setSharedFakeEmail(fakeEmailProvider)
+    } catch {
+      // If import fails (e.g., in production build), silently skip
+      // This is expected in production where test files aren't included
+    }
+  }
+}
 
 // Initialize Sentry BEFORE Fastify instance creation
 initSentry({
@@ -70,6 +88,9 @@ const start = async () => {
 
 const startServer = async () => {
   try {
+    // Set up fake email provider for E2E tests (before auth instance is created)
+    await setupFakeEmailProvider()
+
     // Initialize database and migrations before starting server
     await initialize()
 

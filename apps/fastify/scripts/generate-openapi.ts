@@ -107,6 +107,7 @@ async function generateOpenAPI() {
   // Create Fastify instance (same as production)
   const fastify = Fastify({
     logger: false, // Disable logging for generation
+    pluginTimeout: 30000, // Increase timeout for plugin loading (30 seconds)
   })
 
   try {
