@@ -6,8 +6,7 @@ alwaysApply: true
 # React Hooks Rules
 
 ## Core Principles
-- Use TanStack Query for data fetching
-- Use `useAsyncFn` for one-off async operations
+- Use TanStack Query for ANY async operation that benefits from caching/state management
 - Follow hooks naming: `use-kebab-case.ts`
 
 ## TanStack Query Patterns
@@ -25,9 +24,49 @@ Always use `@lukemorales/query-key-factory` for centralized, type-safe query key
 ✅ **Do**: Use namespace invalidation `queryClient.invalidateQueries({ queryKey: articles._def })`
 
 ## Async Operations
-**Use TanStack Query for**: Server data fetching, data that needs caching, mutations and optimistic updates
 
-**Use `useAsyncFn` from `react-use` for**: One-off async operations (file uploads, form submissions without caching), non-data-fetching async operations
+### TanStack Query Versatility (CRITICAL)
+**TanStack Query's `useQuery` accepts ANY async `queryFn`**—it doesn't require HTTP calls or fetch. The `queryFn` can be any function returning a Promise, such as local computations, database queries, file reads, or even synchronous operations wrapped in a promise.
+
+**Use TanStack Query for**: ANY async operation that benefits from caching, state management, or repeated execution:
+- Server data fetching (HTTP requests)
+- Local computations (expensive calculations)
+- localStorage/sessionStorage reads
+- File operations
+- Database queries
+- Any cacheable async operation
+
+**Key Benefits**: All TanStack features work identically regardless of data source: caching by `queryKey`, deduping, background refetching, stale-while-revalidate, and devtools.
+
+### Examples
+
+```typescript
+// Local computation (no network)
+const { data } = useQuery({
+  queryKey: ['fibonacci', n],
+  queryFn: () => computeFibonacci(n),
+})
+
+// localStorage read
+const { data: settings } = useQuery({
+  queryKey: ['user-settings'],
+  queryFn: () => Promise.resolve(JSON.parse(localStorage.getItem('settings') || '{}')),
+})
+
+// Sync operation wrapped in promise
+const { data } = useQuery({
+  queryKey: ['local-state'],
+  queryFn: () => Promise.resolve(expensiveLocalCalculation()),
+})
+
+// Server data fetching (traditional use case)
+const { data } = useQuery({
+  queryKey: ['users', userId],
+  queryFn: () => fetchUser(userId),
+})
+```
+
+**When to use TanStack Query**: Any async operation that would benefit from automatic caching, stale management, or repeated execution. For one-off promises without caching needs, use plain async/await in event handlers.
 
 See @.cursor/rules/frontend/react.mdc for state management decision tree and when to use each pattern.
 

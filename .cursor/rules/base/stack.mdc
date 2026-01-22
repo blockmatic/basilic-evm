@@ -12,13 +12,13 @@ alwaysApply: true
 See @apps/docu/content/docs/architecture/frontend-stack.mdx for complete library documentation and technology choices.
 
 ## Core Libraries
-- **@tanstack/react-query**: Primary data fetching (use `@lukemorales/query-key-factory`)
+- **@tanstack/react-query**: Primary data fetching and async operations (use `@lukemorales/query-key-factory`)
 - **@repo/react**: Generated React Query hooks from Hey API clients
 - **nuqs**: URL-based state for shareable UI state
 - **zod**: Primary schema validation tool
 - **@repo/lib**: Utility library (prefer over custom implementations)
 - **lodash-es**: Common operations (per-function imports)
-- **react-use**: `useAsyncFn` for one-off async operations
+- **ahooks**: `useSetState` for grouped state management, `useLocalStorageState` for localStorage state
 
 ## Essential Patterns
 - **Query Key Factory**: Use `@lukemorales/query-key-factory` for centralized, type-safe query keys

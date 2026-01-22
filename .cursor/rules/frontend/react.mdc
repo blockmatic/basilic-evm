@@ -19,7 +19,7 @@ alwaysApply: true
 
 ## State Management Decision Tree
 1. **URL-shareable UI state** → Use `nuqs` (filters, search, tabs, pagination, view preferences)
-2. **Grouped state not in URL** → Use `useSetState` from `react-use` (game engine, form state, ephemeral UI state)
+2. **Grouped state not in URL** → Use `useSetState` from `ahooks` (game engine, form state, ephemeral UI state)
 3. **Loading/error states from async** → Use TanStack Query's built-in state (`isLoading`, `isError`, `isFetching`)
 4. **Simple independent state** → Use `useState` (rare, prefer other options)
 
@@ -32,11 +32,11 @@ alwaysApply: true
 **Don't use useSetState for**: URL-shareable state (use `nuqs`), loading/error states (use TanStack Query)
 
 ### Loading/Error State Management
-Never manually manage `isLoading`, `error`, or `isError` states. Use TanStack Query hooks or `useAsyncFn` which provide these automatically.
+Never manually manage `isLoading`, `error`, or `isError` states. Use TanStack Query hooks which provide these automatically.
 
-**When to use TanStack Query state**: Server data fetching (cached, shared across components), mutations and optimistic updates, data that needs background refetching
+**When to use TanStack Query state**: ANY async operation that benefits from caching or state management (server data fetching, local computations, localStorage reads, mutations, optimistic updates, background refetching)
 
-**When to use useAsyncFn**: One-off async operations (file uploads, form submissions without caching), non-data-fetching async operations
+**For one-off async operations without caching needs**: Use plain async/await in event handlers (no state management hook needed)
 
 ## Rendering Optimization
 
