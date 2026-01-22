@@ -81,10 +81,59 @@ const authPlugin: FastifyPluginAsync = async fastify => {
 
     // Build body - only for methods that support bodies (not GET/HEAD)
     const method = request.method.toUpperCase()
-    const body =
-      request.body && method !== 'GET' && method !== 'HEAD'
-        ? JSON.stringify(request.body)
-        : undefined
+    const contentType = request.headers['content-type']?.toLowerCase() ?? ''
+    let body: BodyInit | undefined
+    let shouldRemoveContentLength = false
+
+    if (request.body && method !== 'GET' && method !== 'HEAD') {
+      const rawBody = request.body
+
+      // Pass through binary/string types unchanged
+      if (
+        rawBody instanceof Buffer ||
+        rawBody instanceof Uint8Array ||
+        rawBody instanceof ArrayBuffer ||
+        typeof rawBody === 'string'
+      ) {
+        body = rawBody
+      }
+      // Handle form-urlencoded
+      else if (
+        contentType.includes('application/x-www-form-urlencoded') ||
+        (typeof rawBody === 'object' &&
+          rawBody !== null &&
+          !Array.isArray(rawBody) &&
+          contentType.includes('form'))
+      ) {
+        // Convert plain object to URLSearchParams
+        const params = new URLSearchParams()
+        for (const [key, value] of Object.entries(rawBody)) {
+          if (value != null) {
+            params.append(key, String(value))
+          }
+        }
+        body = params.toString()
+        shouldRemoveContentLength = true
+      }
+      // Handle JSON (default for plain objects or explicit JSON content-type)
+      else if (
+        contentType.includes('application/json') ||
+        (typeof rawBody === 'object' && rawBody !== null)
+      ) {
+        body = JSON.stringify(rawBody)
+        shouldRemoveContentLength = true
+      }
+      // Fallback: stringify if we can't determine type
+      else {
+        body = String(rawBody)
+        shouldRemoveContentLength = true
+      }
+    }
+
+    // Remove content-length if we re-encoded the body
+    if (shouldRemoveContentLength) {
+      headers.delete('content-length')
+    }
 
     // Construct Fetch API Request
     const req = new Request(url.toString(), {
