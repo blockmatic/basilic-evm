@@ -7,6 +7,24 @@ vi.setConfig({
   hookTimeout: 30000,
 })
 
+// Mock Resend to avoid real API calls in tests
+vi.mock('resend', () => {
+  return {
+    Resend: vi.fn().mockImplementation(() => {
+      return {
+        emails: {
+          send: vi.fn().mockResolvedValue({
+            data: {
+              id: 'mock-email-id',
+            },
+            error: null,
+          }),
+        },
+      }
+    }),
+  }
+})
+
 describe('Magic Link Authentication', () => {
   let fastify: FastifyInstance
 

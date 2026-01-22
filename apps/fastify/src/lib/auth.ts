@@ -17,6 +17,9 @@ let authInstance: ReturnType<typeof betterAuth> | null = null
 export async function getAuth() {
   if (!authInstance) {
     const db = await getDb()
+    // Better Auth with Drizzle adapter does NOT auto-create tables
+    // All tables must be created via Drizzle migrations (see src/db/migrate.ts)
+    // The drizzleAdapter expects tables to already exist - it will NOT create them
     authInstance = betterAuth({
       database: drizzleAdapter(db, {
         provider: 'pg',

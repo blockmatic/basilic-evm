@@ -1,26 +1,35 @@
 /**
  * Test Database Utilities
  *
- * Manages PGLite in-memory database instances for testing.
+ * Manages a single shared PGLite in-memory database instance for all tests.
  *
  * ## Lifecycle
  *
- * - **getTestDatabase()**: Gets or creates a singleton PGLite instance
- * - **resetTestDatabase()**: Closes existing instance and creates a fresh one
- * - **closeTestDatabase()**: Closes and deletes the instance
+ * - **getTestDatabase()**: Gets or creates a singleton PGLite instance (used in global setup)
+ * - **resetTestDatabase()**: Closes existing instance and creates a fresh one (NOT used in tests)
+ * - **closeTestDatabase()**: Closes and deletes the instance (used in global teardown)
  *
  * ## Usage
  *
- * Used by `vitest.setup.ts` to manage database lifecycle:
- * - `beforeAll`: Calls `resetTestDatabase()` to ensure fresh instance per suite
- * - `afterAll`: Calls `closeTestDatabase()` to clean up
+ * Used by `vitest.global-setup.ts` to manage database lifecycle:
+ * - **globalSetup**: Calls `getTestDatabase()` to create single instance, then runs migrations
+ * - **Tests run**: All test files share the same database instance via singleton pattern
+ * - **globalTeardown**: Calls `closeTestDatabase()` to delete instance after all tests complete
+ *
+ * ## Important Notes
+ *
+ * - Single instance pattern: One database for ALL test files
+ * - Instance created once before all test files execute
+ * - Instance deleted once after all test files complete
+ * - Tests can share state/data across files if needed
+ * - No per-suite resets - use `resetTestDatabase()` only if you need a fresh instance (not recommended)
  *
  * @module test/utils/db
  */
 
 import { PGlite } from '@electric-sql/pglite'
 
-// Singleton pattern for test database - reset per test suite
+// Singleton pattern for test database - single shared instance for all tests
 let pgLiteInstance: PGlite | null = null
 let dbUrl: string | null = null
 
@@ -45,7 +54,7 @@ export async function getTestDatabase() {
 /**
  * Close and delete the test database instance.
  * This ensures clean state and frees memory.
- * Called in `afterAll` hook to clean up after test suite completes.
+ * Called in `vitest.global-setup.ts` teardown to clean up after all tests complete.
  */
 export async function closeTestDatabase() {
   if (pgLiteInstance) {
@@ -57,8 +66,11 @@ export async function closeTestDatabase() {
 
 /**
  * Reset the test database by closing existing instance and creating a fresh one.
- * This ensures each test suite starts with a completely clean database.
- * Called in `beforeAll` hook to set up fresh database per suite.
+ * This ensures a completely clean database.
+ *
+ * **Note**: This is NOT used in the standard test setup. The test suite uses a single
+ * shared instance created in global setup. Only use this if you need to reset the
+ * database mid-test (not recommended).
  *
  * @returns Fresh database instance and connection URL
  */

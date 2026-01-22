@@ -50,19 +50,19 @@ Tests run with Vitest in ESM mode against the TypeScript source.
 
 ### Test Database
 
-Tests use a **fresh PGLite in-memory database** for each test suite:
+Tests use a **single shared PGLite in-memory database** for all test files:
 
-- **Fresh instance per suite**: Each test suite (`describe` block) gets a completely fresh database instance
-- **State sharing within suite**: Tests within the same suite can share state/data (e.g., create an account in one test, then test login in another)
-- **Automatic cleanup**: Database instance is automatically deleted after all tests in a suite complete
-- **Failure handling**: If a test fails, the database instance is still cleaned up in `afterAll`
+- **Single shared instance**: One PGLite instance is created before all test files execute and shared across all tests
+- **State sharing across files**: Tests can share state/data across different test files (e.g., create an account in one test file, then test login in another)
+- **Automatic cleanup**: Database instance is automatically deleted after all tests complete
+- **Failure handling**: If tests fail, the database instance is still cleaned up in global teardown
 
 **Lifecycle:**
-1. `beforeAll`: Creates a fresh PGLite instance and runs migrations
-2. Tests run: Can share state/data within the suite
-3. `afterAll`: Deletes the database instance (ensures clean state for next suite)
+1. **Global Setup** (`vitest.global-setup.ts`): Creates a single PGLite instance and runs migrations directly using SQL execution
+2. **Tests run**: All test files share the same database instance via singleton pattern
+3. **Global Teardown** (`vitest.global-setup.ts`): Deletes the database instance after all tests complete
 
-**Important**: Tests should not depend on state from other test suites. Each suite starts with a clean database.
+**Important**: Tests share the same database instance. If you need isolated state, clean up data in your tests or use transactions.
 
 ## Environment Variables
 
@@ -135,5 +135,14 @@ The API supports two migration strategies depending on database type:
 - **PGLite** (`PGLITE=true`): Migrations skip at build time, run at runtime when instance is created
   - PGLite instance doesn't exist at build time
   - Migrations run during app initialization (`src/server.ts` or `api/[...].ts`)
+  - **Direct SQL execution**: Migrations are executed directly using PGLite's `exec()` method rather than Drizzle's `migratePGLite()` function
+    - `migratePGLite()` silently fails to apply migrations in some contexts
+    - Direct SQL execution ensures migrations are reliably applied
+    - Migration SQL files are read and executed in order, handling multiple statements per file
+
+**Test Environment**:
+- Uses a single shared PGLite instance created in `vitest.global-setup.ts`
+- Migrations run once before all test files execute using direct SQL execution
+- All test files share the same database instance and schema
 
 See [Backend Stack](/docs/architecture/backend-stack), [API Development](/docs/core-concepts/api-architecture), and [ADR 008: Database](/docs/adrs/008-database) for detailed migration flow and architecture.
