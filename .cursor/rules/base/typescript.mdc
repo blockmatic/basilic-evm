@@ -1,10 +1,11 @@
 ---
+description: TypeScript conventions
 alwaysApply: true
 ---
 # TypeScript Rules
 
 ## Project Context
-- **TypeScript**: v5.9.3 (strict mode)
+- **TypeScript**: strict mode
 - **ts-reset**: `@total-typescript/ts-reset` configured globally
 - **Module system**: ESM with bundler/Node resolution
 - **Monorepo**: Shared packages via `@repo/*` with subpath exports

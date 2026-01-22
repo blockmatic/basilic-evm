@@ -1,7 +1,7 @@
 ---
 description: Best practices for writing high-quality agent skills
 glob: ".cursor/skills/**/*"
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Agent Skill Writing Standards

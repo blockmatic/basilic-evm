@@ -1,11 +1,13 @@
 ---
 description: React component patterns and best practices
-alwaysApply: false
+glob: "**/*.{tsx,css}"
+alwaysApply: true
 ---
 # React Rules
 
 ## Component Structure
 - Function components only (never class components)
+- Always use function declaration syntax: `function Component() { }` (never arrow functions for components)
 - No explicit return types (inferred automatically)
 - Props always use object destructuring: `function Component({ title }: { title: string })`
 - RORO pattern applies to regular functions only, not React components (see @.cursor/rules/base/typescript.mdc)

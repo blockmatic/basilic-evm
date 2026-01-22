@@ -1,5 +1,6 @@
 ---
 description: General multichain address validation patterns and best practices
+glob: "packages/utils/src/web3/**/*"
 alwaysApply: false
 ---
 # Multichain Rules

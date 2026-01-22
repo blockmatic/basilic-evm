@@ -1,5 +1,6 @@
 ---
 description: Backend testing standards and patterns for Fastify
+glob: "apps/fastify/**/*.{spec.ts,test.ts,e2e-spec.ts}"
 alwaysApply: false
 ---
 # Backend Testing Rules

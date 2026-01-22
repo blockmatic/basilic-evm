@@ -1,7 +1,7 @@
 ---
 description: Guidelines for creating effective Cursor rule files
 glob: ".cursor/rules/**/*.mdc"
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Rules for Writing Cursor Rules
@@ -9,6 +9,10 @@ alwaysApply: false
 ## Structure
 - **Modular**: Separate files per language/domain, not monolithic
 - **Scoped**: Use glob patterns (`*` for global, specific patterns for targeted) with clear descriptions
+Globs Syntax
+Use globs as a comma-separated string (e.g., globs: src/**/*.ts,tests/**/*.ts) or YAML array (e.g., globs: ["src/**/*.ts", "tests/**/*.ts"] or block style with -).
+
+
 - **Auto-attach**: Leverage globs so rules apply only where relevant
 
 ## Content

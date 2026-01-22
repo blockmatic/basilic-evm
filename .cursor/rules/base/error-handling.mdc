@@ -1,6 +1,6 @@
 ---
 description: Error handling patterns
-alwaysApply: false
+alwaysApply: true
 ---
 # Error Handling Rules
 

@@ -1,5 +1,6 @@
 ---
 description: Solidity development standards with Foundry
+glob: "contracts/evm/**/*"
 alwaysApply: false
 ---
 # Solidity & Foundry Rules

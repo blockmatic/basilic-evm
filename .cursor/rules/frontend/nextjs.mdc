@@ -1,6 +1,7 @@
 ---
 description: Next.js standards
-alwaysApply: false
+glob: "**/*.{tsx,css}"
+alwaysApply: true
 ---
 # Next.js Rules
 

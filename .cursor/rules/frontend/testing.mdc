@@ -1,6 +1,7 @@
 ---
 description: Frontend testing standards and patterns for React/Next.js
-alwaysApply: false
+glob: "**/*.{tsx,css}"
+alwaysApply: true
 ---
 # Frontend Testing Rules
 

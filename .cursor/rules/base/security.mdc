@@ -1,6 +1,6 @@
 ---
 description: Security best practices and patterns
-alwaysApply: false
+alwaysApply: true
 ---
 # Security Rules
 

@@ -1,6 +1,6 @@
 ---
 description: Logging best practices and rules
-alwaysApply: false
+alwaysApply: true
 ---
 # Logging Rules
 

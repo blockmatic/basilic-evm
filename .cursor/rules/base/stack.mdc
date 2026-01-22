@@ -1,7 +1,12 @@
 ---
 description: Preferred frontend technology stack and library usage patterns
-alwaysApply: false
+alwaysApply: true
 ---
+
+# Typescript Stack
+
+# Backend Stack
+
 # Frontend Stack
 
 See @apps/docu/content/docs/architecture/frontend-stack.mdx for complete library documentation and technology choices.

@@ -1,7 +1,7 @@
 ---
 description: Environment variable management pattern for all apps
 glob: ".env*, **/env*.ts, **/load-env.ts"
-alwaysApply: false
+alwaysApply: true
 ---
 # Environment Variable Pattern
 

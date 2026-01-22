@@ -1,6 +1,7 @@
 ---
 description: React hooks patterns and best practices
-alwaysApply: false
+glob: "**/*.{tsx,css}"
+alwaysApply: true
 ---
 # React Hooks Rules
 

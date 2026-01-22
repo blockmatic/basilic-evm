@@ -1,11 +1,10 @@
 ---
 description: Common testing philosophy and patterns for all test types
-alwaysApply: false
+alwaysApply: true
 ---
 # Testing Rules
 
 ## Philosophy
-**CRITICAL**: All tests use real APIs with real API keys. NO MOCKS for core functionality.
 
 - E2E tests hit real endpoints (no unit tests)
 - Integration tests use real external services
