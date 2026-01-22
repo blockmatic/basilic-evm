@@ -1,6 +1,7 @@
 import { captureError } from '@repo/error/node'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+import { magicLink } from 'better-auth/plugins'
 import { Resend } from 'resend'
 import { getDb } from '../db/index.js'
 import * as schema from '../db/schema/index.js'
@@ -23,79 +24,48 @@ export async function getAuth() {
           ...schema,
           user: schema.users, // Map 'user' model to 'users' table
           session: schema.sessions, // Map 'session' model to 'sessions' table
+          verification: schema.verification, // Magic link tokens
+          account: schema.account, // OAuth accounts (future use)
         },
       }),
       secret: env.BETTER_AUTH_SECRET,
       baseURL: env.BETTER_AUTH_URL,
       trustedOrigins: env.BETTER_AUTH_TRUSTED_ORIGINS,
-      emailAndPassword: {
-        enabled: true,
-        requireEmailVerification: true,
-        sendVerificationEmail: async ({ user, url }: { user: { email: string }; url: string }) => {
-          try {
-            await resend.emails.send({
-              from: `${env.EMAIL_FROM_NAME} <${env.EMAIL_FROM}>`,
-              to: user.email,
-              subject: 'Verify your email',
-              html: `
-              <p>Hello,</p>
-              <p>Please verify your email by clicking the link below:</p>
-              <a href="${url}">Verify Email</a>
-            `,
-            })
-          } catch (error) {
-            captureError({
-              code: 'INTERNAL_ERROR',
-              error: error instanceof Error ? error : new Error(String(error)),
-              label: 'sendVerificationEmail failed',
-              data: {
-                email: user.email,
-                url,
-              },
-              tags: {
-                app: 'api',
-                module: 'auth-service',
-                function: 'sendVerificationEmail',
-              },
-            })
-            throw error
-          }
-        },
-      },
-      magicLink: {
-        enabled: true,
-        sendMagicLink: async ({ email, url }: { email: string; url: string }) => {
-          try {
-            await resend.emails.send({
-              from: `${env.EMAIL_FROM_NAME} <${env.EMAIL_FROM}>`,
-              to: email,
-              subject: 'Sign in to your account',
-              html: `
+      plugins: [
+        magicLink({
+          sendMagicLink: async ({ email, url }: { email: string; url: string }) => {
+            try {
+              await resend.emails.send({
+                from: `${env.EMAIL_FROM_NAME} <${env.EMAIL_FROM}>`,
+                to: email,
+                subject: 'Sign in to your account',
+                html: `
               <p>Hello,</p>
               <p>Click the link below to sign in:</p>
               <a href="${url}">Sign In</a>
             `,
-            })
-          } catch (error) {
-            captureError({
-              code: 'INTERNAL_ERROR',
-              error: error instanceof Error ? error : new Error(String(error)),
-              label: 'sendMagicLink failed',
-              data: {
-                email,
-                url,
-              },
-              tags: {
-                app: 'api',
-                module: 'auth-service',
-                function: 'sendMagicLink',
-              },
-            })
-            throw error
-          }
-        },
-      },
-      plugins: [web3Plugin()],
+              })
+            } catch (error) {
+              captureError({
+                code: 'INTERNAL_ERROR',
+                error: error instanceof Error ? error : new Error(String(error)),
+                label: 'sendMagicLink failed',
+                data: {
+                  email,
+                  url,
+                },
+                tags: {
+                  app: 'api',
+                  module: 'auth-service',
+                  function: 'sendMagicLink',
+                },
+              })
+              throw error
+            }
+          },
+        }),
+        web3Plugin(),
+      ],
       session: {
         cookieName: 'better-auth.session_token',
         expiresIn: 60 * 60 * 24 * 7, // 7 days

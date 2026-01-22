@@ -29,7 +29,7 @@
     "db:reset": "supabase db reset",
     "db:status": "supabase status",
     "db:migrate": "node --import tsx scripts/migrate.ts",
-    "db:generate": "drizzle-kit generate",
+    "db:generate": "NODE_OPTIONS='--import tsx' drizzle-kit generate",
     "db:push": "drizzle-kit push"
   },
   "keywords": [],
