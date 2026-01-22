@@ -1,11 +1,11 @@
 ---
 title: Authentication Architecture
-description: Better Auth integration with email, magic link, and Web3 wallet authentication
+description: Better Auth integration with magic link authentication and OAuth readiness
 ---
 
 ## Overview
 
-The authentication system uses Better Auth as the core framework, integrated with Fastify and Drizzle ORM. It supports multiple authentication methods including email/password, magic links, and Web3 wallet authentication (SIWE for Ethereum and SIWS for Solana).
+The authentication system uses Better Auth as the core framework, integrated with Fastify and Drizzle ORM. It supports magic link authentication (passwordless email-based login) and is prepared for OAuth providers. Web3 wallet authentication infrastructure exists but is currently disabled.
 
 ## Architecture Principles
 
@@ -17,15 +17,7 @@ The authentication system uses Better Auth as the core framework, integrated wit
 
 ## Authentication Methods
 
-### Email & Password
-
-Users can sign up and sign in using email and password. Email verification is required before accounts are fully activated.
-
-**Endpoints:**
-- `POST /api/auth/sign-up/email` - Register new user
-- `POST /api/auth/sign-in/email` - Sign in with email/password
-
-### Magic Link
+### Magic Link (Primary Method)
 
 Passwordless authentication via email links. Users receive a magic link that signs them in when clicked.
 
@@ -35,13 +27,15 @@ Passwordless authentication via email links. Users receive a magic link that sig
 
 ### Web3 Wallet Authentication
 
-Support for Ethereum (SIWE) and Solana (SIWS) wallet authentication. Users sign a message with their wallet to authenticate.
+Web3 wallet authentication infrastructure exists but is currently disabled. The plugin structure is in place for future implementation of Ethereum (SIWE) and Solana (SIWS) wallet authentication.
 
-**Endpoints:**
+**Status:** Infrastructure ready, implementation pending
+
+**Endpoints (when enabled):**
 - `GET /api/auth/sign-in/web3/:chain/nonce` - Get nonce for signing
 - `POST /api/auth/sign-in/web3/:chain/verify` - Verify signature and create session
 
-**Supported chains:**
+**Supported chains (when enabled):**
 - `eip155` - Ethereum and EVM-compatible chains
 - `solana` - Solana blockchain
 
@@ -83,6 +77,51 @@ Sessions are stored in PostgreSQL and managed by Better Auth. Session cookies ar
 }
 ```
 
+### Verification Table
+
+```typescript
+{
+  id: string (primary key)
+  identifier: string (email address)
+  value: string (token)
+  expiresAt: timestamp
+  createdAt: timestamp
+  updatedAt: timestamp
+}
+```
+
+**Purpose:** Stores magic link tokens for email authentication
+
+**Constraints:**
+- Indexes on `identifier` and `expiresAt` for performance
+
+### Account Table
+
+```typescript
+{
+  id: string (primary key)
+  userId: string (foreign key → users.id)
+  accountId: string
+  providerId: string (OAuth provider)
+  accessToken: string (optional)
+  refreshToken: string (optional)
+  idToken: string (optional)
+  accessTokenExpiresAt: timestamp (optional)
+  refreshTokenExpiresAt: timestamp (optional)
+  scope: string (optional)
+  createdAt: timestamp
+  updatedAt: timestamp
+}
+```
+
+**Purpose:** Stores OAuth provider accounts (ready for future OAuth implementation)
+
+**Note:** No password field - magic link authentication only
+
+**Constraints:**
+- Foreign key to `users` with cascade delete
+- Indexes on `userId` and `accountId`
+
 ### Wallet Identities Table
 
 ```typescript
@@ -96,6 +135,8 @@ Sessions are stored in PostgreSQL and managed by Better Auth. Session cookies ar
   lastUsedAt: timestamp
 }
 ```
+
+**Purpose:** Stores Web3 wallet identities (infrastructure ready, implementation pending)
 
 **Constraints:**
 - Unique constraint on `(chain, address)`
@@ -196,18 +237,24 @@ This ensures migrations work across all deployment platforms (Docker, Railway, F
 **Implemented:**
 - Better Auth foundation with Drizzle adapter
 - Sessions table and management
-- Email/password authentication
-- Magic link authentication (basic)
-- Web3 auth plugin structure (nonce generation)
-- Wallet identities table
-- Wallet management routes
+- Magic link authentication (fully functional)
+- Verification table for magic link tokens
+- Account table (OAuth ready, no password field)
+- Error handling with `@repo/error/node`
+- Web3 auth plugin structure (infrastructure only)
+- Wallet identities table (infrastructure only)
+
+**Architecture Decisions:**
+- **Magic link only**: Password authentication removed in favor of passwordless email-based login
+- **OAuth ready**: Account table prepared for future OAuth provider integration
+- **Web3 disabled**: Infrastructure exists but tests are disabled until full implementation
 
 **To Be Completed:**
+- OAuth provider integration (Google, GitHub, etc.)
 - Full SIWE signature verification
 - Full SIWS signature verification
-- Nonce storage and validation
+- Nonce storage and validation for Web3 auth
 - User resolution logic for Web3 auth
-- Magic link token storage and verification
 
 ## References
 

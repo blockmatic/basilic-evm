@@ -87,6 +87,7 @@
         "OPENAI_API_KEY",
         "ENCRYPTION_KEY",
         "VERCEL",
+        "VERCEL_URL",
         "VERCEL_GIT_COMMIT_REF",
         "APP_URL",
         "EMAIL_ASSETS_URL",
