@@ -43,8 +43,9 @@
         "APP_URL",
         "EMAIL_ASSETS_URL",
         "ENCRYPTION_KEY",
-        "DYNAMIC_API_TOKEN",
-        "DYNAMIC_ENVIRONMENT_ID"
+        "BETTER_AUTH_SECRET",
+        "BETTER_AUTH_URL",
+        "BETTER_AUTH_TRUSTED_ORIGINS"
       ]
     },
     "lint": {
