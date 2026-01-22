@@ -4,6 +4,134 @@ export type ClientOptions = {
     baseUrl: `${string}://${string}` | (string & {});
 };
 
+export type DeleteApiAuthBy__Data = {
+    body?: never;
+    path: {
+        '*': string;
+    };
+    query?: never;
+    url: '/api/auth/{*}';
+};
+
+export type DeleteApiAuthBy__Responses = {
+    /**
+     * Default Response
+     */
+    200: unknown;
+};
+
+export type GetApiAuthBy__Data = {
+    body?: never;
+    path: {
+        '*': string;
+    };
+    query?: never;
+    url: '/api/auth/{*}';
+};
+
+export type GetApiAuthBy__Responses = {
+    /**
+     * Default Response
+     */
+    200: unknown;
+};
+
+export type HeadApiAuthBy__Data = {
+    body?: never;
+    path: {
+        '*': string;
+    };
+    query?: never;
+    url: '/api/auth/{*}';
+};
+
+export type HeadApiAuthBy__Responses = {
+    /**
+     * Default Response
+     */
+    200: unknown;
+};
+
+export type OptionsApiAuthBy__Data = {
+    body?: never;
+    path: {
+        '*': string;
+    };
+    query?: never;
+    url: '/api/auth/{*}';
+};
+
+export type OptionsApiAuthBy__Responses = {
+    /**
+     * Default Response
+     */
+    200: unknown;
+};
+
+export type PatchApiAuthBy__Data = {
+    body?: never;
+    path: {
+        '*': string;
+    };
+    query?: never;
+    url: '/api/auth/{*}';
+};
+
+export type PatchApiAuthBy__Responses = {
+    /**
+     * Default Response
+     */
+    200: unknown;
+};
+
+export type PostApiAuthBy__Data = {
+    body?: never;
+    path: {
+        '*': string;
+    };
+    query?: never;
+    url: '/api/auth/{*}';
+};
+
+export type PostApiAuthBy__Responses = {
+    /**
+     * Default Response
+     */
+    200: unknown;
+};
+
+export type PutApiAuthBy__Data = {
+    body?: never;
+    path: {
+        '*': string;
+    };
+    query?: never;
+    url: '/api/auth/{*}';
+};
+
+export type PutApiAuthBy__Responses = {
+    /**
+     * Default Response
+     */
+    200: unknown;
+};
+
+export type TraceApiAuthBy__Data = {
+    body?: never;
+    path: {
+        '*': string;
+    };
+    query?: never;
+    url: '/api/auth/{*}';
+};
+
+export type TraceApiAuthBy__Responses = {
+    /**
+     * Default Response
+     */
+    200: unknown;
+};
+
 export type HealthCheckData = {
     body?: never;
     path?: never;
@@ -16,7 +144,8 @@ export type HealthCheckResponses = {
      * Default Response
      */
     200: {
-        ok: true;
+        ok: boolean;
+        initialized: boolean;
         now: string;
     };
 };
@@ -36,6 +165,53 @@ export type GetResponses = {
      */
     200: unknown;
 };
+
+export type GetWalletsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/wallets';
+};
+
+export type GetWalletsResponses = {
+    /**
+     * Default Response
+     */
+    200: unknown;
+};
+
+export type DeleteWalletData = {
+    body?: never;
+    path: {
+        chain: 'eip155' | 'solana';
+        address: string;
+    };
+    query?: never;
+    url: '/wallets/{chain}/{address}';
+};
+
+export type DeleteWalletErrors = {
+    /**
+     * Default Response
+     */
+    404: {
+        code: string;
+        message: string;
+    };
+};
+
+export type DeleteWalletError = DeleteWalletErrors[keyof DeleteWalletErrors];
+
+export type DeleteWalletResponses = {
+    /**
+     * Default Response
+     */
+    200: {
+        success: true;
+    };
+};
+
+export type DeleteWalletResponse = DeleteWalletResponses[keyof DeleteWalletResponses];
 
 export type ChatData = {
     body: {

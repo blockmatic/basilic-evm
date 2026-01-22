@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ChatData, ChatErrors, ChatResponses, ChatStreamData, ChatStreamErrors, ChatStreamResponses, GetData, GetResponses, HealthCheckData, HealthCheckResponses } from './types.gen';
+import type { ChatData, ChatErrors, ChatResponses, ChatStreamData, ChatStreamErrors, ChatStreamResponses, DeleteApiAuthBy__Data, DeleteApiAuthBy__Responses, DeleteWalletData, DeleteWalletErrors, DeleteWalletResponses, GetApiAuthBy__Data, GetApiAuthBy__Responses, GetData, GetResponses, GetWalletsData, GetWalletsResponses, HeadApiAuthBy__Data, HeadApiAuthBy__Responses, HealthCheckData, HealthCheckResponses, OptionsApiAuthBy__Data, OptionsApiAuthBy__Responses, PatchApiAuthBy__Data, PatchApiAuthBy__Responses, PostApiAuthBy__Data, PostApiAuthBy__Responses, PutApiAuthBy__Data, PutApiAuthBy__Responses, TraceApiAuthBy__Data, TraceApiAuthBy__Responses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -18,6 +18,22 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
     meta?: Record<string, unknown>;
 };
 
+export const deleteApiAuthBy__ = <ThrowOnError extends boolean = false>(options: Options<DeleteApiAuthBy__Data, ThrowOnError>) => (options.client ?? client).delete<DeleteApiAuthBy__Responses, unknown, ThrowOnError>({ url: '/api/auth/{*}', ...options });
+
+export const getApiAuthBy__ = <ThrowOnError extends boolean = false>(options: Options<GetApiAuthBy__Data, ThrowOnError>) => (options.client ?? client).get<GetApiAuthBy__Responses, unknown, ThrowOnError>({ url: '/api/auth/{*}', ...options });
+
+export const headApiAuthBy__ = <ThrowOnError extends boolean = false>(options: Options<HeadApiAuthBy__Data, ThrowOnError>) => (options.client ?? client).head<HeadApiAuthBy__Responses, unknown, ThrowOnError>({ url: '/api/auth/{*}', ...options });
+
+export const optionsApiAuthBy__ = <ThrowOnError extends boolean = false>(options: Options<OptionsApiAuthBy__Data, ThrowOnError>) => (options.client ?? client).options<OptionsApiAuthBy__Responses, unknown, ThrowOnError>({ url: '/api/auth/{*}', ...options });
+
+export const patchApiAuthBy__ = <ThrowOnError extends boolean = false>(options: Options<PatchApiAuthBy__Data, ThrowOnError>) => (options.client ?? client).patch<PatchApiAuthBy__Responses, unknown, ThrowOnError>({ url: '/api/auth/{*}', ...options });
+
+export const postApiAuthBy__ = <ThrowOnError extends boolean = false>(options: Options<PostApiAuthBy__Data, ThrowOnError>) => (options.client ?? client).post<PostApiAuthBy__Responses, unknown, ThrowOnError>({ url: '/api/auth/{*}', ...options });
+
+export const putApiAuthBy__ = <ThrowOnError extends boolean = false>(options: Options<PutApiAuthBy__Data, ThrowOnError>) => (options.client ?? client).put<PutApiAuthBy__Responses, unknown, ThrowOnError>({ url: '/api/auth/{*}', ...options });
+
+export const traceApiAuthBy__ = <ThrowOnError extends boolean = false>(options: Options<TraceApiAuthBy__Data, ThrowOnError>) => (options.client ?? client).trace<TraceApiAuthBy__Responses, unknown, ThrowOnError>({ url: '/api/auth/{*}', ...options });
+
 /**
  * Returns server health status with current ISO datetime
  *
@@ -26,6 +42,15 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 export const healthCheck = <ThrowOnError extends boolean = false>(options?: Options<HealthCheckData, ThrowOnError>) => (options?.client ?? client).get<HealthCheckResponses, unknown, ThrowOnError>({ url: '/health', ...options });
 
 export const get = <ThrowOnError extends boolean = false>(options?: Options<GetData, ThrowOnError>) => (options?.client ?? client).get<GetResponses, unknown, ThrowOnError>({ url: '/', ...options });
+
+export const getWallets = <ThrowOnError extends boolean = false>(options?: Options<GetWalletsData, ThrowOnError>) => (options?.client ?? client).get<GetWalletsResponses, unknown, ThrowOnError>({ url: '/wallets', ...options });
+
+/**
+ * Delete wallet identity
+ *
+ * Unlink a wallet from the current user
+ */
+export const deleteWallet = <ThrowOnError extends boolean = false>(options: Options<DeleteWalletData, ThrowOnError>) => (options.client ?? client).delete<DeleteWalletResponses, DeleteWalletErrors, ThrowOnError>({ url: '/wallets/{chain}/{address}', ...options });
 
 /**
  * Generate AI chat response
