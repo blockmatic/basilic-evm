@@ -1,3 +1,4 @@
+import { captureError } from '@repo/error/node'
 import type { FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
 import { getDb } from '../db/index.js'
@@ -62,8 +63,12 @@ const authPlugin: FastifyPluginAsync = async fastify => {
       }
     }
 
-    // Build body
-    const body = request.body ? JSON.stringify(request.body) : undefined
+    // Build body - only for methods that support bodies (not GET/HEAD)
+    const method = request.method.toUpperCase()
+    const body =
+      request.body && method !== 'GET' && method !== 'HEAD'
+        ? JSON.stringify(request.body)
+        : undefined
 
     // Construct Fetch API Request
     const req = new Request(url.toString(), {
@@ -73,19 +78,43 @@ const authPlugin: FastifyPluginAsync = async fastify => {
     })
 
     // Delegate to Better Auth
-    const authResponse = await auth.handler(req)
+    try {
+      const authResponse = await auth.handler(req)
 
-    // Forward response
-    reply.status(authResponse.status)
-    authResponse.headers.forEach((value, key) => {
-      reply.header(key, value)
-    })
+      // Forward response
+      reply.status(authResponse.status)
+      authResponse.headers.forEach((value, key) => {
+        reply.header(key, value)
+      })
 
-    if (authResponse.body) {
-      const text = await authResponse.text()
-      return text
+      if (authResponse.body) {
+        const text = await authResponse.text()
+        return text
+      }
+      return null
+    } catch (error) {
+      const catalogError = captureError({
+        code: 'INTERNAL_ERROR',
+        error: error instanceof Error ? error : new Error(String(error)),
+        logger: request.log,
+        label: 'auth.handler failed',
+        data: {
+          method: request.method,
+          url: request.url,
+        },
+        tags: {
+          app: 'api',
+          module: 'auth-service',
+          route: request.url,
+        },
+      })
+
+      reply.status(500).send({
+        code: catalogError.code,
+        message: catalogError.message,
+      })
+      return null
     }
-    return null
   })
 }
 

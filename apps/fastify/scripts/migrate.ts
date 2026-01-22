@@ -56,10 +56,10 @@ try {
   logger.info(`Found ${migrationFiles.length} migration file(s), running migrations...`)
 
   const pool = new Pool({ connectionString: env.DATABASE_URL })
-  const db = drizzle(pool)
+  const db = drizzle<NodePgDatabase>(pool)
 
   try {
-    await migrate(db as unknown as NodePgDatabase, { migrationsFolder: migrationsDir })
+    await migrate(db, { migrationsFolder: migrationsDir })
     logger.info('Migrations completed successfully (PostgreSQL)')
   } finally {
     await pool.end()

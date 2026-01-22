@@ -15,6 +15,15 @@ export const web3Plugin = (): BetterAuthPlugin => ({
       },
       async ctx => {
         const { chain } = ctx.params as { chain: string }
+        const normalizedChain = chain.toLowerCase()
+
+        if (normalizedChain !== 'eip155' && normalizedChain !== 'solana') {
+          return ctx.json(
+            { error: `Invalid chain: ${chain}. Supported chains are 'eip155' and 'solana'.` },
+            { status: 400 },
+          )
+        }
+
         const nonce = crypto.randomUUID()
 
         // TODO: Store nonce in database or cache with TTL (5 minutes)
@@ -25,7 +34,7 @@ export const web3Plugin = (): BetterAuthPlugin => ({
           domain: ctx.request?.headers.get('host') || ctx.headers?.get('host') || 'localhost:3000',
           issuedAt: new Date().toISOString(),
           expirationTime: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
-          chain,
+          chain: normalizedChain,
         })
       },
     ),

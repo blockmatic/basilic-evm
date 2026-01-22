@@ -3,8 +3,8 @@
   "pages": [
     "index",
     "backend-stack",
-    "frontend-stack",
     "authentication",
+    "frontend-stack",
     "esm-strategy",
     "package-conventions",
     "portability",

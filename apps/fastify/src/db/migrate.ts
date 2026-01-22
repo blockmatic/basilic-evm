@@ -40,13 +40,12 @@ export async function runMigrations(logger?: {
     return
   }
 
-  logger?.info(`Found ${migrationFiles.length} migration file(s), running migrations...`)
-
   try {
     const shouldUsePGLite = env.PGLITE === true || env.NODE_ENV === 'test'
 
     if (shouldUsePGLite) {
       // PGLite: Run migrations at runtime when instance is created
+      logger?.info(`Found ${migrationFiles.length} migration file(s), running migrations...`)
       const db = await getDb()
       await migratePGLite(db as unknown as PgliteDatabase, {
         migrationsFolder: migrationsDir,

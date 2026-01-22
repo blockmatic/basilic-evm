@@ -75,7 +75,9 @@ const response = await fetch('/api/auth/sign-in/magic-link', {
 
 1. Get nonce:
 ```typescript
-const { nonce, domain } = await fetch('/api/auth/sign-in/web3/eip155/nonce')
+const { nonce, domain } = await fetch('/api/auth/sign-in/web3/eip155/nonce', {
+  credentials: 'include',
+})
   .then(r => r.json())
 ```
 
