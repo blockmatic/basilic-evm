@@ -31,6 +31,11 @@ alwaysApply: true
 - **Subpath exports**: Always use subpaths (`@repo/utils/async`, `@repo/error/nextjs`)
 - **Lodash**: `import isEmpty from "lodash-es/isEmpty"` (per-function imports)
 
+## ESM Patterns
+- **Never use CommonJS patterns**: Avoid `__dirname`, `__filename`, `require()`, `module.exports`
+- **ESM path resolution**: Use `fileURLToPath(import.meta.url)` with `dirname()` from `node:path`, but use descriptive variable names (e.g., `scriptDir`, `currentDir`, not `__dirname`)
+- **Example**: `const scriptDir = dirname(fileURLToPath(import.meta.url))`
+
 ## Type Safety
 - **Zod-first**: Validate at boundaries (API routes, forms, external APIs)
 - **Infer types**: `type User = z.infer<typeof userSchema>`

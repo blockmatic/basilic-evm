@@ -21,7 +21,7 @@ See @apps/docu/content/docs/architecture/frontend-stack.mdx for complete library
 - **ahooks**: `useSetState` for grouped state management, `useLocalStorageState` for localStorage state
 
 ## Essential Patterns
-- **Query Key Factory**: Use `@lukemorales/query-key-factory` for centralized, type-safe query keys
+- **Query Key Factory**: See @.cursor/rules/frontend/react-hooks.mdc for TanStack Query patterns including query key factory
 - **nuqs**: Use for URL-shareable state (search, filters, tabs, pagination)
 - **API Client**: Use `@repo/core` for API client creation
 

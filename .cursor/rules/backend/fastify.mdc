@@ -7,6 +7,8 @@ alwaysApply: false
 
 See @apps/docu/content/docs/architecture/backend-stack.mdx for why Fastify was chosen and architecture details.
 
+CRITICAL: NEVER edit db/migration files directly.
+
 ## Module Structure
 - Organize routes by domain/feature (e.g., `routes/feature.ts`, `routes/user.ts`)
 - Keep routes focused and single-purpose
@@ -14,7 +16,11 @@ See @apps/docu/content/docs/architecture/backend-stack.mdx for why Fastify was c
 - Keep handlers thin - delegate business logic to services
 
 ## ESM Patterns
-**Never use `__dirname` or `__filename`** - use ESM pattern: `fileURLToPath(import.meta.url)` and `dirname()`
+**Never use CommonJS patterns**: Avoid `__dirname`, `__filename`, `require()`, `module.exports`
+
+**ESM path resolution**: Use `fileURLToPath(import.meta.url)` with `dirname()` from `node:path`, but use descriptive variable names (e.g., `scriptDir`, `currentDir`, not `__dirname`)
+
+**Example**: `const scriptDir = dirname(fileURLToPath(import.meta.url))`
 
 **Never use `require()`** - use dynamic `import()` with `pathToFileURL`
 

@@ -14,14 +14,7 @@ alwaysApply: true
 
 ## Performance Optimization
 
-### Concurrent Rendering Features
-**Suspense Boundaries**: Leverage automatic Suspense for Server Components via `loading.tsx` files, add manual Suspense boundaries for progressive loading in Client Components, use multiple Suspense boundaries for independent streaming sections
-
-**Transitions** (`useTransition` / `startTransition`): Use for search/filter inputs, tab switching, heavy state updates. Pattern: `startTransition(() => { setFilteredData(expensiveFilter(data)) })`. Use `isPending` to show loading states
-
-**Deferred Values** (`useDeferredValue`): Use for expensive filtering/computation that can be deferred. Pattern: `const deferredQuery = useDeferredValue(query)` then use in `useMemo` (only if computation is genuinely expensive). **Important**: Only use `useMemo` with `useDeferredValue` if computation is actually expensive (filtering 1000+ items, complex calculations). For simple operations, compute directly with deferred value
-
-**Streaming Patterns**: Use multiple Suspense boundaries for independent streaming sections, show critical content immediately, stream non-critical content progressively
+See @.cursor/rules/frontend/react.mdc for concurrent rendering features (Suspense, Transitions, Deferred Values).
 
 ### Core Web Vitals & Image Optimization
 - Optimize Core Web Vitals (LCP < 2.5s, FID < 100ms, CLS < 0.1)

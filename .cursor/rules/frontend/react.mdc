@@ -31,12 +31,7 @@ alwaysApply: true
 
 **Don't use useSetState for**: URL-shareable state (use `nuqs`), loading/error states (use TanStack Query)
 
-### Loading/Error State Management
-Never manually manage `isLoading`, `error`, or `isError` states. Use TanStack Query hooks which provide these automatically.
-
-**When to use TanStack Query state**: ANY async operation that benefits from caching or state management (server data fetching, local computations, localStorage reads, mutations, optimistic updates, background refetching)
-
-**For one-off async operations without caching needs**: Use plain async/await in event handlers (no state management hook needed)
+See @.cursor/rules/frontend/react-hooks.mdc for TanStack Query patterns and loading/error state management.
 
 ## Rendering Optimization
 

@@ -30,6 +30,7 @@ alwaysApply: true
 - **Import Boundary Enforcement**: Architecture rules (e.g., `import/no-default-export`)
 - **File Size Limits**: Maximum 300 lines per file (`max-lines`) - helps agents maintain manageable file sizes. Test files (`.test.ts`, `.spec.ts`, `.e2e-spec.ts`, etc.) and UI components (`packages/ui/src/components/**`) are exempt
 - **Turbo Monorepo Rules**: Monorepo-aware linting
+- **ESM Pattern Enforcement**: Prevents CommonJS patterns (`__dirname`, `__filename`) in script files - enforces modern ESM patterns with descriptive variable names
 
 ## Agent Requirements
 **CRITICAL**: All agents MUST follow these rules:
