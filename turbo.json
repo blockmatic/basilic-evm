@@ -126,6 +126,27 @@
         "VITEST_WORKER_ID"
       ]
     },
+    "test:e2e": {
+      "dependsOn": ["^build"],
+      "env": [
+        "NODE_ENV",
+        "CI",
+        "PLAYWRIGHT_TEST_BASE_URL",
+        "PORT",
+        "HOST",
+        "DATABASE_URL",
+        "PGLITE",
+        "OPENAI_API_KEY",
+        "ENCRYPTION_KEY",
+        "RESEND_API_KEY",
+        "EMAIL_FROM",
+        "EMAIL_FROM_NAME",
+        "BETTER_AUTH_SECRET",
+        "BETTER_AUTH_URL",
+        "BETTER_AUTH_TRUSTED_ORIGINS",
+        "NEXT_PUBLIC_API_URL"
+      ]
+    },
     "dev": {
       "dependsOn": [],
       "cache": false,

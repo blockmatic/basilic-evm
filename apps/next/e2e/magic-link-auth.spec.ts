@@ -103,16 +103,28 @@ test.describe('Valid Magic Link Flow', () => {
 })
 
 test.describe('Invalid Magic Link Flow', () => {
-  test('should redirect to login with error message for invalid token', async ({ page }) => {
+  test('should redirect to login with error message for invalid token displayed below input', async ({
+    page,
+  }) => {
     // Navigate to verify URL with invalid token
     await page.goto('/api/auth/magic-link/verify?token=invalid-token-12345')
 
     // Should redirect to login page
     await page.waitForURL(/\/\?.*message=/, { timeout: 5000 })
 
-    // Check error message is displayed
-    const errorMessage = page.locator('text=/Invalid or expired magic link/i')
-    await expect(errorMessage.first()).toBeVisible()
+    // Check error message is displayed below input field (using FieldError component)
+    const emailInput = page.locator('input[type="email"]')
+    await expect(emailInput).toBeVisible()
+
+    // Find the error element that is a sibling of the input (within the same Field)
+    const fieldError = page.locator('[data-slot="field-error"]')
+    await expect(fieldError.first()).toBeVisible()
+    await expect(fieldError.first()).toContainText(/Invalid or expired magic link/i)
+
+    // Verify error is within the same field container as the input
+    const fieldContainer = emailInput.locator('..').locator('[data-slot="field"]')
+    const errorInField = fieldContainer.locator('[data-slot="field-error"]')
+    await expect(errorInField).toBeVisible()
 
     // Verify no session cookie is set
     const cookies = await page.context().cookies()
@@ -120,27 +132,70 @@ test.describe('Invalid Magic Link Flow', () => {
     expect(sessionCookie).toBeUndefined()
   })
 
-  test('should redirect to login with error message for missing token', async ({ page }) => {
+  test('should redirect to login with error message for missing token displayed below input', async ({
+    page,
+  }) => {
     await page.goto('/api/auth/magic-link/verify')
 
     // Should redirect to login page
     await page.waitForURL(/\/\?.*message=/, { timeout: 5000 })
 
-    // Check error message is displayed
-    const errorMessage = page.locator('text=/Invalid or expired magic link/i')
-    await expect(errorMessage.first()).toBeVisible()
+    // Check error message is displayed below input field
+    const emailInput = page.locator('input[type="email"]')
+    await expect(emailInput).toBeVisible()
+
+    const fieldError = page.locator('[data-slot="field-error"]')
+    await expect(fieldError.first()).toBeVisible()
+    await expect(fieldError.first()).toContainText(/Invalid or expired magic link/i)
   })
 
-  test('should redirect to login with error message for expired token', async ({ page }) => {
+  test('should redirect to login with error message for expired token displayed below input', async ({
+    page,
+  }) => {
     // Use a token that looks valid but is expired
     await page.goto('/api/auth/magic-link/verify?token=expired-token-abc123')
 
     // Should redirect to login page
     await page.waitForURL(/\/\?.*message=/, { timeout: 5000 })
 
-    // Check error message is displayed
-    const errorMessage = page.locator('text=/Invalid or expired magic link/i')
-    await expect(errorMessage.first()).toBeVisible()
+    // Check error message is displayed below input field
+    const emailInput = page.locator('input[type="email"]')
+    await expect(emailInput).toBeVisible()
+
+    const fieldError = page.locator('[data-slot="field-error"]')
+    await expect(fieldError.first()).toBeVisible()
+    await expect(fieldError.first()).toContainText(/Invalid or expired magic link/i)
+  })
+})
+
+test.describe('Email Validation', () => {
+  test('should display email validation error below input field', async ({ page }) => {
+    await page.goto('/')
+
+    // Fill in invalid email format
+    const emailInput = page.locator('input[type="email"]')
+    await emailInput.fill('invalid-email')
+
+    // Submit the form
+    const submitButton = page.locator('button[type="submit"]')
+    await submitButton.click()
+
+    // Wait for error to appear below input field
+    await page.waitForTimeout(1000) // Allow time for API call and error display
+
+    // Check error message is displayed below input field using FieldError
+    const fieldError = page.locator('[data-slot="field-error"]')
+    await expect(fieldError.first()).toBeVisible({ timeout: 5000 })
+
+    // Verify error is within the same field container as the input
+    const fieldContainer = emailInput.locator('..').locator('[data-slot="field"]')
+    const errorInField = fieldContainer.locator('[data-slot="field-error"]')
+    await expect(errorInField).toBeVisible()
+
+    // Verify error message contains validation-related text
+    const errorText = await fieldError.first().textContent()
+    expect(errorText).toBeTruthy()
+    expect(errorText?.toLowerCase()).toMatch(/invalid|validation|email/)
   })
 })
 

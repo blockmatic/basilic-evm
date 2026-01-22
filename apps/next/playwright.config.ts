@@ -18,10 +18,20 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  webServer: {
-    command: `PORT=${process.env.PORT || '3000'} pnpm start`,
-    url: process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120000,
-  },
+  webServer: [
+    {
+      command: process.env.CI
+        ? 'pnpm --filter @repo/fastify start'
+        : 'pnpm --filter @repo/fastify dev',
+      url: 'http://localhost:3001/health',
+      reuseExistingServer: !process.env.CI,
+      timeout: 120000,
+    },
+    {
+      command: `PORT=${process.env.PORT || '3000'} pnpm start`,
+      url: process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000',
+      reuseExistingServer: !process.env.CI,
+      timeout: 120000,
+    },
+  ],
 })

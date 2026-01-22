@@ -84,8 +84,11 @@ pnpm build
 - `pnpm build` - Build for production
 - `pnpm start` - Start production server
 - `pnpm lint` - Run ESLint
-- `pnpm test` - Run unit tests
+- `pnpm test` - Run component tests (Vitest)
 - `pnpm test:watch` - Run tests in watch mode
+- `pnpm test:e2e` - Run E2E tests (Playwright)
+- `pnpm test:e2e:ui` - Run E2E tests with UI
+- `pnpm test:e2e:debug` - Debug E2E tests
 
 ### Environment Variables
 
@@ -118,6 +121,23 @@ The app uses two main providers:
 - **NextThemesProvider** - Theme management (light/dark mode)
 
 See `components/providers.tsx` for the provider setup.
+
+## Testing
+
+This app uses multiple testing approaches:
+
+- **Component Tests** (`**/*.spec.tsx`): Vitest with Testing Library - UI-focused tests that may use `fetchMock` for performance
+- **E2E Tests** (`e2e/**/*.spec.ts`): Playwright - Full integration tests using real Fastify server and Next.js server
+
+**E2E Test Setup:**
+
+E2E tests automatically start both servers:
+- Fastify API server on port 3001 (dev mode locally, start mode in CI)
+- Next.js frontend on port 3000
+
+Tests wait for both servers to be ready before running. All E2E tests use real infrastructure - no mocks.
+
+See [Frontend Testing Documentation](@apps/docu/content/docs/testing/frontend-testing.mdx) for complete testing patterns and examples.
 
 ## Vercel Deployment
 

@@ -5,15 +5,17 @@ import { Button } from '@repo/ui/components/button'
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
 } from '@repo/ui/components/field'
 import { Input } from '@repo/ui/components/input'
 import { cn } from '@repo/ui/lib/utils'
-import { useMutation } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { auth } from '@/src/queries/auth'
 
 type LoginFormProps = React.ComponentProps<'form'> & {
   initialError?: string
@@ -23,14 +25,10 @@ export function LoginForm({ className, initialError, ...props }: LoginFormProps)
   const router = useRouter()
   const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
-  const [catalogError, setCatalogError] = useState<CatalogError | null>(
-    initialError
-      ? {
-          code: 'MAGIC_LINK_VERIFICATION_FAILED',
-          message: initialError,
-        }
-      : null,
+  const [emailValidationError, setEmailValidationError] = useState<string | null>(
+    initialError || null,
   )
+  const [catalogError, setCatalogError] = useState<CatalogError | null>(null)
 
   // Clear error from URL after displaying it
   useEffect(() => {
@@ -45,60 +43,67 @@ export function LoginForm({ className, initialError, ...props }: LoginFormProps)
     }
   }, [router, searchParams])
 
-  const mutation = useMutation({
-    mutationFn: async (email: string): Promise<{ success: boolean }> => {
-      const callbackURL = `${window.location.origin}/dashboard`
-      const response = await fetch('/api/auth/sign-in/magic-link', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ email, callbackURL }),
-      })
+  // Update error when initialError prop changes - syncing prop to state
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Syncing prop to state
+    setEmailValidationError(initialError || null)
+  }, [initialError])
 
-      if (!response.ok) {
-        let errorMessage = 'Failed to send magic link'
-        try {
-          const errorData = await response.json()
-          // Better Auth returns error in different formats
-          errorMessage =
-            errorData.message ||
-            errorData.error?.message ||
-            errorData.error ||
-            errorData.code ||
-            'Failed to send magic link'
-        } catch {
-          // If response is not JSON, try to get text
-          const text = await response.text().catch(() => '')
-          errorMessage = text || errorMessage
-        }
-        throw new Error(errorMessage)
-      }
-
-      const data = await response.json()
-      // Better Auth returns {status: true} but we need {success: boolean}
-      return { success: data.status === true || data.success === true }
-    },
-    onError: error => {
-      const catalogErr = captureError({
-        code: 'MAGIC_LINK_SEND_FAILED',
-        error,
-        label: 'Login Form',
-        tags: { app: 'web', feature: 'auth' },
-      })
-      setCatalogError(catalogErr)
-    },
-    onSuccess: () => {
-      setEmail('')
-      setCatalogError(null)
-    },
+  const { refetch, data, error, isFetching } = useQuery({
+    ...auth.sendMagicLink(email),
+    enabled: false, // Don't auto-fetch
   })
+
+  // Handle query errors - syncing external state (TanStack Query) to component state
+  useEffect(() => {
+    if (error) {
+      const errorMessage = error.message || 'Failed to send magic link'
+      // Check if error has code property indicating validation error
+      const errorWithCode = error as Error & { code?: string }
+      const isValidationError =
+        errorWithCode.code === 'VALIDATION_ERROR' ||
+        errorMessage.toLowerCase().includes('validation') ||
+        errorMessage.toLowerCase().includes('invalid email') ||
+        errorMessage.toLowerCase().includes('email')
+
+      if (isValidationError) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- Syncing external query error to component state
+        setEmailValidationError(errorMessage)
+
+        setCatalogError(null)
+      } else {
+        // General error
+        const catalogErr = captureError({
+          code: 'MAGIC_LINK_SEND_FAILED',
+          error,
+          label: 'Login Form',
+          tags: { app: 'web', feature: 'auth' },
+        })
+
+        setCatalogError(catalogErr)
+
+        setEmailValidationError(null)
+      }
+    }
+  }, [error])
+
+  // Handle successful response - syncing external state (TanStack Query) to component state
+  useEffect(() => {
+    if (data?.success) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Syncing external query success to component state
+      setEmail('')
+
+      setEmailValidationError(null)
+
+      setCatalogError(null)
+    }
+  }, [data])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setEmailValidationError(null)
     setCatalogError(null)
-    mutation.mutate(email)
+    refetch()
   }
 
   return (
@@ -119,31 +124,28 @@ export function LoginForm({ className, initialError, ...props }: LoginFormProps)
             required
             value={email}
             onChange={e => setEmail(e.target.value)}
-            disabled={mutation.isPending || mutation.isSuccess}
+            disabled={isFetching || data?.success}
           />
+          {emailValidationError && <FieldError>{emailValidationError}</FieldError>}
         </Field>
         {catalogError && (
           <FieldDescription className="text-destructive text-center">
             {catalogError.message}
           </FieldDescription>
         )}
-        {mutation.isSuccess && (
+        {data?.success && (
           <FieldDescription className="text-center text-green-600 dark:text-green-400">
             Check your email for the magic link
           </FieldDescription>
         )}
         <Field>
-          <Button type="submit" disabled={mutation.isPending || mutation.isSuccess}>
-            {mutation.isPending ? 'Sending...' : 'Send magic link'}
+          <Button type="submit" disabled={isFetching || data?.success}>
+            {isFetching ? 'Sending...' : 'Send magic link'}
           </Button>
         </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
         <Field>
-          <Button
-            variant="outline"
-            type="button"
-            disabled={mutation.isPending || mutation.isSuccess}
-          >
+          <Button variant="outline" type="button" disabled={isFetching || data?.success}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="size-4">
               <path
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"

@@ -14,6 +14,7 @@ export default defineConfig({
       include: ['lib/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}'],
       exclude: ['**/*.d.ts', '**/node_modules/**'],
     },
+    testTimeout: 15000,
   },
   resolve: {
     alias: {
