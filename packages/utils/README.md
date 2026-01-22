@@ -146,7 +146,7 @@ These are only needed if you use specific subpaths:
 
 - `pino` - Required for `@repo/utils/logger` (server-side only)
 - `react` - Required for `@repo/utils/debug`
-- `react-use` - Required for `@repo/utils/debug`
+- `ahooks` - Required for `@repo/utils/debug`
 - `nuqs` - Required for `@repo/utils/debug`
 - `vconsole` - Required for `@repo/utils/debug`
 - `typescript` - Required for TypeScript type checking (optional at runtime)
@@ -160,7 +160,7 @@ These are only needed if you use specific subpaths:
 | `@repo/utils/async` | None | None |
 | `@repo/utils/web3` | `lodash-es`, `viem`, `zod` | `zod-validation-error` |
 | `@repo/utils/logger` | `pino` (server only) | None |
-| `@repo/utils/debug` | `react`, `react-use`, `nuqs`, `vconsole` | None |
+| `@repo/utils/debug` | `react`, `ahooks`, `nuqs`, `vconsole` | None |
 
 ## Best Practices
 

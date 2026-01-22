@@ -146,11 +146,11 @@ const defaultTransactions = [
   },
 ]
 
-export const TransactionsEmail = ({
+export function TransactionsEmail({
   fullName = '',
   transactions = defaultTransactions,
   teamName = '',
-}: Props): React.ReactElement => {
+}: Props): React.ReactElement {
   const hasAppUrl = Boolean(process.env.APP_URL)
   const baseAppUrl = process.env.APP_URL || ''
   const firstName = fullName ? fullName.split(' ').at(0) : ''

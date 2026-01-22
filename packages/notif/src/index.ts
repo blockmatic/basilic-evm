@@ -166,9 +166,9 @@ const create = async <T extends keyof NotificationTypes>({
     )(validatedData, firstUser, teamContext)
 
     if (sampleEmail.emailType === 'customer') {
-      const emailInputs = [
-        createEmailInput({ type, handler, validatedData, user: firstUser, teamContext, options }),
-      ]
+      const emailInputs = validatedData.users.map((user: UserData) =>
+        createEmailInput({ type, handler, validatedData, user, teamContext, options }),
+      )
 
       emails = await emailService.sendBulk({
         emails: emailInputs,

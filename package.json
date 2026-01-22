@@ -36,6 +36,7 @@
     "@biomejs/biome": "^2.3.11",
     "@repo/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "^4.1.18",
+    "ahooks": "^3.9.6",
     "simple-git-hooks": "2.13.1",
     "turbo": "^2.7.5",
     "typescript": "5.9.3"

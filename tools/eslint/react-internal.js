@@ -87,6 +87,14 @@ export const config = [
       // Enforce one component per file - helps agents maintain component separation
       // Allow stateless (functional) components in the same file for utility/helper components
       'react/no-multi-comp': ['error', { ignoreStateless: true }],
+      // Enforce function declaration syntax for named components
+      'react/function-component-definition': [
+        'error',
+        {
+          namedComponents: 'function-declaration',
+          unnamedComponents: 'function-expression',
+        },
+      ],
       // Enforce named exports for React components
       'import/no-default-export': 'error',
     },

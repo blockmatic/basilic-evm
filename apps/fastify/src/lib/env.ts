@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 export const env = createEnv({
   server: {
-    PORT: z.coerce.number().int().positive().default(3000),
+    PORT: z.coerce.number().int().positive().default(3001),
     HOST: z.string().default('0.0.0.0'),
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
     PGLITE: z.coerce.boolean().default(false),

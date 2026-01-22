@@ -14,11 +14,7 @@ interface Props {
   fullName?: string
 }
 
-export const MagicLinkLoginEmail = ({
-  magicLink,
-  expirationMinutes = 15,
-  fullName = '',
-}: Props) => {
+export function MagicLinkLoginEmail({ magicLink, expirationMinutes = 15, fullName = '' }: Props) {
   const firstName = fullName ? fullName.split(' ').at(0) : ''
   const previewText = `${firstName ? `Hi ${firstName}, ` : ''}Sign in to your account`
   const themeClasses = getEmailThemeClasses()

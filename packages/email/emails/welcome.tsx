@@ -7,7 +7,7 @@ interface Props {
   fullName?: string
 }
 
-export const WelcomeEmail = ({ fullName = '' }: Props) => {
+export function WelcomeEmail({ fullName = '' }: Props) {
   const firstName = fullName ? fullName.split(' ').at(0) : ''
   const text = `${firstName ? `Hi ${firstName}, ` : ''}Welcome! We're excited to have you.`
   const themeClasses = getEmailThemeClasses()

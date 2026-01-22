@@ -15,7 +15,7 @@ interface Props {
   thisWasMeUrl?: string
 }
 
-export const LoginNotificationEmail = ({
+export function LoginNotificationEmail({
   timestamp,
   ipAddress,
   location,
@@ -24,7 +24,7 @@ export const LoginNotificationEmail = ({
   fullName = '',
   secureAccountUrl,
   thisWasMeUrl,
-}: Props) => {
+}: Props) {
   const firstName = fullName ? fullName.split(' ').at(0) : ''
   const previewText = `${firstName ? `Hi ${firstName}, ` : ''}New sign-in detected`
   const themeClasses = getEmailThemeClasses()

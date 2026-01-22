@@ -82,7 +82,7 @@ const authPlugin: FastifyPluginAsync = async fastify => {
     // Build body - only for methods that support bodies (not GET/HEAD)
     const method = request.method.toUpperCase()
     const contentType = request.headers['content-type']?.toLowerCase() ?? ''
-    let body: BodyInit | undefined
+    let body: string | Buffer | Uint8Array | ArrayBuffer | undefined
     let shouldRemoveContentLength = false
 
     if (request.body && method !== 'GET' && method !== 'HEAD') {

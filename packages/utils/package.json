@@ -40,10 +40,10 @@
     "test": "echo \"no test\""
   },
   "peerDependencies": {
+    "ahooks": "*",
     "nuqs": "*",
     "pino": "*",
     "react": "*",
-    "react-use": "*",
     "typescript": "^5.0.0",
     "vconsole": "*",
     "viem": "*",
@@ -51,6 +51,9 @@
     "zod-validation-error": "*"
   },
   "peerDependenciesMeta": {
+    "ahooks": {
+      "optional": true
+    },
     "nuqs": {
       "optional": true
     },
@@ -58,9 +61,6 @@
       "optional": true
     },
     "react": {
-      "optional": true
-    },
-    "react-use": {
       "optional": true
     },
     "typescript": {
@@ -80,10 +80,10 @@
     "@types/node": "22.x",
     "@types/react": "^19.2.9",
     "eslint": "^9.39.2",
+    "ahooks": "^3.9.6",
     "lodash-es": "^4.17.23",
     "nuqs": "^2.8.6",
     "react": "^19.2.3",
-    "react-use": "^17.6.0",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "vconsole": "^3.15.1",

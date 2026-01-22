@@ -10,6 +10,38 @@ import { env } from './env.js'
 
 const resend = new Resend(env.RESEND_API_KEY)
 
+type EmailProvider = {
+  emails: {
+    send: (options: {
+      from: string
+      to: string
+      subject: string
+      html: string
+      text?: string
+    }) => Promise<{ data: { id: string }; error: null }>
+  }
+}
+
+// Test email provider - can be set before getAuth() is called
+// Use global to ensure it's shared across all module instances
+declare global {
+  var __betterAuthTestEmailProvider: EmailProvider | null | undefined
+}
+
+let testEmailProvider: EmailProvider | null = null
+
+/**
+ * Set the email provider for tests.
+ * Must be called before getAuth() is called.
+ */
+export function setTestEmailProvider(provider: EmailProvider | null) {
+  testEmailProvider = provider
+  // Also set on global to ensure it's shared across module instances
+  if (typeof globalThis !== 'undefined') {
+    globalThis.__betterAuthTestEmailProvider = provider
+  }
+}
+
 // Initialize auth instance - db will be initialized on first use
 // Better Auth adapter will access db when needed
 let authInstance: ReturnType<typeof betterAuth> | null = null
@@ -17,6 +49,14 @@ let authInstance: ReturnType<typeof betterAuth> | null = null
 export async function getAuth() {
   if (!authInstance) {
     const db = await getDb()
+    // Check both local and global for test provider
+    const emailProvider =
+      testEmailProvider ??
+      (typeof globalThis !== 'undefined'
+        ? (globalThis.__betterAuthTestEmailProvider ?? null)
+        : null) ??
+      resend
+
     // Better Auth with Drizzle adapter does NOT auto-create tables
     // All tables must be created via Drizzle migrations (see src/db/migrate.ts)
     // The drizzleAdapter expects tables to already exist - it will NOT create them
@@ -38,7 +78,7 @@ export async function getAuth() {
         magicLink({
           sendMagicLink: async ({ email, url }: { email: string; url: string }) => {
             try {
-              await resend.emails.send({
+              await emailProvider.emails.send({
                 from: `${env.EMAIL_FROM_NAME} <${env.EMAIL_FROM}>`,
                 to: email,
                 subject: 'Sign in to your account',
@@ -90,6 +130,14 @@ export async function getAuth() {
     })
   }
   return authInstance
+}
+
+/**
+ * Reset the auth instance cache.
+ * Used in tests to ensure a fresh auth instance with a new email provider.
+ */
+export function resetAuthInstance() {
+  authInstance = null
 }
 
 // Type export for Better Auth instance

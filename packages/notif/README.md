@@ -9,20 +9,24 @@ Provides a unified notification service with support for email notifications. In
 ## Usage
 
 ```ts
-import { NotificationService } from '@repo/notif'
+import { Notifications } from '@repo/notif'
 
-const service = new NotificationService({
-  email: {
-    apiKey: process.env.RESEND_API_KEY,
-  },
-})
+const service = new Notifications()
 
-await service.send({
-  type: 'invoice-paid',
-  data: {
-    invoiceId: 'inv_123',
-    amount: 1000,
-  },
+await service.create('login_notification', {
+  users: [
+    {
+      id: 'user-uuid',
+      full_name: 'John Doe',
+      email: 'john@example.com',
+      team_id: 'team-uuid',
+    },
+  ],
+  timestamp: new Date().toISOString(),
+  ipAddress: '192.168.1.1',
+  location: 'San Francisco, CA',
+  device: 'Chrome on Windows',
+  userAgent: 'Mozilla/5.0...',
 })
 ```
 
