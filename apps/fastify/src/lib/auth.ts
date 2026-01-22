@@ -55,7 +55,7 @@ export async function getAuth() {
                 label: 'sendMagicLink failed',
                 data: {
                   emailDomain: email.split('@')[1] || '[redacted]',
-                  magicLinkSent: true,
+                  magicLinkSent: false,
                 },
                 tags: {
                   app: 'api',

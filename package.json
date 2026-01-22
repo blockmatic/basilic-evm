@@ -41,7 +41,7 @@
     "typescript": "5.9.3"
   },
   "engines": {
-    "node": ">=22"
+    "node": "22.x"
   },
   "packageManager": "pnpm@10.28.0",
   "simple-git-hooks": {

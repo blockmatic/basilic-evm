@@ -2,7 +2,7 @@ import type { FastifyRequest } from 'fastify'
 
 export const requireAuth = (request: FastifyRequest) => {
   if (!request.session) {
-    throw new Error('Unauthorized')
+    throw request.server.httpErrors.unauthorized()
   }
   return request.session
 }

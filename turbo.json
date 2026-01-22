@@ -72,8 +72,7 @@
         "BETTER_AUTH_TRUSTED_ORIGINS",
         "RESEND_API_KEY",
         "EMAIL_FROM",
-        "EMAIL_FROM_NAME",
-        "VITEST_WORKER_ID"
+        "EMAIL_FROM_NAME"
       ]
     },
     "lint:eslint:fix": {
@@ -98,8 +97,7 @@
         "BETTER_AUTH_TRUSTED_ORIGINS",
         "RESEND_API_KEY",
         "EMAIL_FROM",
-        "EMAIL_FROM_NAME",
-        "VITEST_WORKER_ID"
+        "EMAIL_FROM_NAME"
       ]
     },
     "checktypes": {

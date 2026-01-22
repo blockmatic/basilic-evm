@@ -61,7 +61,7 @@
     "@sentry/browser": "^10.36.0",
     "@sentry/nextjs": "^10.36.0",
     "@sentry/node": "^10.36.0",
-    "@types/node": "^25.0.10",
+    "@types/node": "22.x",
     "@types/react": "^19.2.9",
     "eslint": "^9.39.2",
     "react": "^19.2.3",

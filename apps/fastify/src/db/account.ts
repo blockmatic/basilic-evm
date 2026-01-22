@@ -24,6 +24,8 @@ export function encryptAccountTokens<T extends NewAccount | Partial<Account>>(ac
       const encryptedValue = encrypt(value)
       if (encryptedValue) {
         encrypted[field] = encryptedValue as T[typeof field]
+      } else {
+        throw new Error(`encryption failed for field ${field}`)
       }
     }
   }

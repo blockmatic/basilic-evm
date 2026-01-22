@@ -1,7 +1,6 @@
 import { captureError } from '@repo/error/node'
 import type { FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
-import type { Response } from 'undici-types'
 import { getDb } from '../db/index.js'
 import { type Auth, getAuth } from '../lib/auth.js'
 import { env } from '../lib/env.js'
@@ -82,7 +81,7 @@ const authPlugin: FastifyPluginAsync = async fastify => {
     // Delegate to Better Auth
     try {
       // Better Auth handler returns a standard Fetch API Response
-      const authResponse: Response = await auth.handler(req)
+      const authResponse = await auth.handler(req)
 
       // Forward response
       reply.status(authResponse.status)

@@ -78,7 +78,7 @@
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/lodash-es": "latest",
-    "@types/node": "^25.0.10",
+    "@types/node": "22.x",
     "@types/react": "^19.2.9",
     "eslint": "^9.39.2",
     "lodash-es": "^4.17.23",

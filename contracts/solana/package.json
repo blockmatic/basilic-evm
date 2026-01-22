@@ -18,11 +18,11 @@
   },
   "devDependencies": {
     "@types/chai": "^5.2.3",
-    "@types/node": "^25.0.10",
+    "@types/node": "22.x",
     "ts-mocha": "^11.1.0",
     "typescript": "^5.9.3"
   },
   "engines": {
-    "node": ">=22"
+    "node": "22.x"
   }
 }

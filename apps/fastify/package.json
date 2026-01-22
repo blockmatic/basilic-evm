@@ -5,7 +5,7 @@
   "description": "This project was bootstrapped with Fastify-CLI.",
   "main": "app.ts",
   "engines": {
-    "node": ">=22"
+    "node": "22.x"
   },
   "directories": {
     "test": "test"
@@ -69,7 +69,7 @@
   "devDependencies": {
     "@electric-sql/pglite": "^0.3.15",
     "@repo/eslint-config": "workspace:*",
-    "@types/node": "^25.0.10",
+    "@types/node": "22.x",
     "@types/pg": "^8.16.0",
     "@vitest/coverage-v8": "^4.0.17",
     "c8": "^10.1.3",
