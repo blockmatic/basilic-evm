@@ -1,0 +1,46 @@
+{
+  "name": "@repo/notif",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    "./types/*": {
+      "types": "./dist/types/*.d.ts",
+      "import": "./dist/types/*.js"
+    },
+    "./node": {
+      "types": "./dist/env.d.ts",
+      "import": "./dist/env.js"
+    }
+  },
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "biome check .",
+    "lint:eslint": "eslint . --max-warnings 0",
+    "lint:eslint:fix": "eslint . --fix --max-warnings 0",
+    "format": "biome format --write .",
+    "checktypes": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@repo/email": "workspace:*",
+    "@repo/utils": "workspace:*",
+    "nanoid": "^5.1.6",
+    "resend": "^6.5.2",
+    "zod": "^4.1.13"
+  },
+  "peerDependencies": {
+    "@t3-oss/env-core": "^0.13.10"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@t3-oss/env-core": "^0.13.10",
+    "@types/node": "^22.19.7",
+    "@types/react": "^19.2.8",
+    "eslint": "^9.39.2",
+    "react": "^19.2.3",
+    "typescript": "^5.9.3"
+  }
+}
