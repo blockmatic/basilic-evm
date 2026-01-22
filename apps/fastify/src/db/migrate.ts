@@ -64,6 +64,7 @@ export async function runMigrations(logger?: {
       } else {
         // In runtime mode, get instance from db connection
         // The instance is available at db._.session.client for PGLite connections
+        // biome-ignore lint/suspicious/noExplicitAny: Drizzle PGLite connection structure is not fully typed
         // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Drizzle PGLite connection structure is not fully typed
         pgliteInstance = (db as any)._.session.client
       }
