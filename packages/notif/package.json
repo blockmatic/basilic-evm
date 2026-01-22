@@ -27,8 +27,8 @@
     "@repo/email": "workspace:*",
     "@repo/utils": "workspace:*",
     "nanoid": "^5.1.6",
-    "resend": "^6.5.2",
-    "zod": "^4.1.13"
+    "resend": "^6.8.0",
+    "zod": "^4.3.5"
   },
   "peerDependencies": {
     "@t3-oss/env-core": "^0.13.10"
@@ -37,8 +37,8 @@
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@t3-oss/env-core": "^0.13.10",
-    "@types/node": "^22.19.7",
-    "@types/react": "^19.2.8",
+    "@types/node": "^25.0.10",
+    "@types/react": "^19.2.9",
     "eslint": "^9.39.2",
     "react": "^19.2.3",
     "typescript": "^5.9.3"

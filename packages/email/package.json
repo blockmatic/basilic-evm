@@ -29,22 +29,22 @@
     "start": "email start"
   },
   "dependencies": {
-    "@react-email/components": "1.0.1",
-    "@react-email/render": "2.0.0",
-    "@react-email/tailwind": "2.0.1",
+    "@react-email/components": "1.0.6",
+    "@react-email/render": "2.0.4",
+    "@react-email/tailwind": "2.0.3",
     "@repo/ui": "workspace:*",
     "date-fns": "^4.1.0",
-    "react-email": "5.0.6"
+    "react-email": "5.2.5"
   },
   "peerDependencies": {
     "react": "^19.0.0"
   },
   "devDependencies": {
-    "@react-email/preview-server": "5.0.6",
+    "@react-email/preview-server": "5.2.5",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@types/node": "^22.19.7",
-    "@types/react": "^19.2.8",
+    "@types/node": "^25.0.10",
+    "@types/react": "^19.2.9",
     "eslint": "^9.39.2",
     "react": "^19.2.3",
     "typescript": "^5.9.3"

@@ -29,7 +29,8 @@
     "setup:evm": "node scripts/setup-evm-tools.mjs",
     "setup:solana": "node scripts/setup-solana-tools.mjs",
     "setup:database": "node scripts/setup-database.mjs",
-    "qa": "pnpm i && pnpm lint:fix && pnpm checktypes && pnpm run build && pnpm run test"
+    "qa": "pnpm i && pnpm lint:fix && pnpm checktypes && pnpm run build && pnpm run test",
+    "update-deps": "pnpm up --latest --recursive"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.11",
