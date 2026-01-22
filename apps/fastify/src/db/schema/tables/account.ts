@@ -12,6 +12,8 @@ export const account = pgTable(
       .references(() => users.id, { onDelete: 'cascade' }),
     accountId: text('account_id').notNull(),
     providerId: text('provider_id').notNull(),
+    // OAuth tokens are encrypted at rest using AES-256-GCM
+    // Use encryptAccountTokens() before insert/update and decryptAccountTokens() after select
     accessToken: text('access_token'),
     refreshToken: text('refresh_token'),
     idToken: text('id_token'),
