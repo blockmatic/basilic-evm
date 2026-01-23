@@ -166,6 +166,20 @@ export type GetResponses = {
     200: unknown;
 };
 
+export type GetApiTestLastMagicLinkData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/test/last-magic-link';
+};
+
+export type GetApiTestLastMagicLinkResponses = {
+    /**
+     * Default Response
+     */
+    200: unknown;
+};
+
 export type GetWalletsData = {
     body?: never;
     path?: never;

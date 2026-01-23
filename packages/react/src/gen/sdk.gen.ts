@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ChatData, ChatErrors, ChatResponses, ChatStreamData, ChatStreamErrors, ChatStreamResponses, DeleteApiAuthBy__Data, DeleteApiAuthBy__Responses, DeleteWalletData, DeleteWalletErrors, DeleteWalletResponses, GetApiAuthBy__Data, GetApiAuthBy__Responses, GetData, GetResponses, GetWalletsData, GetWalletsResponses, HeadApiAuthBy__Data, HeadApiAuthBy__Responses, HealthCheckData, HealthCheckResponses, OptionsApiAuthBy__Data, OptionsApiAuthBy__Responses, PatchApiAuthBy__Data, PatchApiAuthBy__Responses, PostApiAuthBy__Data, PostApiAuthBy__Responses, PutApiAuthBy__Data, PutApiAuthBy__Responses, TraceApiAuthBy__Data, TraceApiAuthBy__Responses } from './types.gen';
+import type { ChatData, ChatErrors, ChatResponses, ChatStreamData, ChatStreamErrors, ChatStreamResponses, DeleteApiAuthBy__Data, DeleteApiAuthBy__Responses, DeleteWalletData, DeleteWalletErrors, DeleteWalletResponses, GetApiAuthBy__Data, GetApiAuthBy__Responses, GetApiTestLastMagicLinkData, GetApiTestLastMagicLinkResponses, GetData, GetResponses, GetWalletsData, GetWalletsResponses, HeadApiAuthBy__Data, HeadApiAuthBy__Responses, HealthCheckData, HealthCheckResponses, OptionsApiAuthBy__Data, OptionsApiAuthBy__Responses, PatchApiAuthBy__Data, PatchApiAuthBy__Responses, PostApiAuthBy__Data, PostApiAuthBy__Responses, PutApiAuthBy__Data, PutApiAuthBy__Responses, TraceApiAuthBy__Data, TraceApiAuthBy__Responses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -42,6 +42,8 @@ export const traceApiAuthBy__ = <ThrowOnError extends boolean = false>(options: 
 export const healthCheck = <ThrowOnError extends boolean = false>(options?: Options<HealthCheckData, ThrowOnError>) => (options?.client ?? client).get<HealthCheckResponses, unknown, ThrowOnError>({ url: '/health', ...options });
 
 export const get = <ThrowOnError extends boolean = false>(options?: Options<GetData, ThrowOnError>) => (options?.client ?? client).get<GetResponses, unknown, ThrowOnError>({ url: '/', ...options });
+
+export const getApiTestLastMagicLink = <ThrowOnError extends boolean = false>(options?: Options<GetApiTestLastMagicLinkData, ThrowOnError>) => (options?.client ?? client).get<GetApiTestLastMagicLinkResponses, unknown, ThrowOnError>({ url: '/api/test/last-magic-link', ...options });
 
 export const getWallets = <ThrowOnError extends boolean = false>(options?: Options<GetWalletsData, ThrowOnError>) => (options?.client ?? client).get<GetWalletsResponses, unknown, ThrowOnError>({ url: '/wallets', ...options });
 

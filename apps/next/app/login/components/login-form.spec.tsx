@@ -140,15 +140,12 @@ describe('LoginForm', () => {
     renderLoginForm()
 
     const emailInput = screen.getByLabelText(/email/i) as HTMLInputElement
-    const form = emailInput.closest('form') as HTMLFormElement
-    // Verify submit button exists (but don't need to use it)
-    screen.getByRole('button', { name: /send magic link/i })
+    const submitButton = screen.getByRole('button', { name: /send magic link/i })
 
-    // Remove required attribute to allow empty submission
-    emailInput.removeAttribute('required')
-
-    // Submit form programmatically to bypass HTML5 validation
-    form.requestSubmit()
+    // Type a valid email format to pass client-side validation
+    // Server will return validation error
+    await userEvent.type(emailInput, 'test@example.com')
+    await userEvent.click(submitButton)
 
     // Wait for fetch to be called first
     await waitFor(
@@ -182,5 +179,42 @@ describe('LoginForm', () => {
     expect(fieldElement).toBeInTheDocument()
     const errorInField = fieldElement?.querySelector('[data-slot="field-error"]')
     expect(errorInField).toBeInTheDocument()
+  })
+
+  it('should display success message below input field when magic link is sent', async () => {
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ status: true }),
+    } as Response)
+
+    renderLoginForm()
+
+    const emailInput = screen.getByLabelText(/email/i) as HTMLInputElement
+    const submitButton = screen.getByRole('button', { name: /send magic link/i })
+
+    await userEvent.type(emailInput, 'test@example.com')
+    await userEvent.click(submitButton)
+
+    // Wait for fetch to be called
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalled()
+    })
+
+    // Wait for success message to appear below input field
+    const successMessage = await screen.findByText(
+      /check your email for the magic link/i,
+      {},
+      { timeout: 10000 },
+    )
+    expect(successMessage).toBeInTheDocument()
+
+    // Verify success message is below the input (within the same Field component)
+    // Note: emailInput might be cleared after success, so we need to find it again
+    const currentEmailInput = screen.getByLabelText(/email/i) as HTMLInputElement
+    const fieldElement = currentEmailInput.closest('[data-slot="field"]')
+    expect(fieldElement).toBeInTheDocument()
+    const successInField = fieldElement?.querySelector('[data-slot="field-description"]')
+    expect(successInField).toBeInTheDocument()
+    expect(successInField).toHaveTextContent(/check your email for the magic link/i)
   })
 })

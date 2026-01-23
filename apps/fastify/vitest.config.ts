@@ -168,10 +168,15 @@ export default defineConfig({
         /^\/.*\/src\/.*/,
         /^\.\.\/.*/,
         /^\.\/.*/,
+        // Ensure React Email packages are processed by Vite
+        /@repo\/email/,
+        /@react-email/,
       ],
     },
   },
   optimizeDeps: {
+    // Include React and react-dom so they're available when @react-email/render needs them
+    include: ['react', 'react-dom', '@react-email/render', '@react-email/components'],
     exclude: [],
   },
 })

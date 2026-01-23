@@ -1,8 +1,12 @@
 import { Body, Container, Heading, Preview, Section, Text } from '@react-email/components'
-import { Button } from '../components/button'
-import { Footer } from '../components/footer'
-import { Logo } from '../components/logo'
-import { EmailThemeProvider, getEmailInlineStyles, getEmailThemeClasses } from '../components/theme'
+import { Button } from '../components/button.js'
+import { Footer } from '../components/footer.js'
+import { Logo } from '../components/logo.js'
+import {
+  EmailThemeProvider,
+  getEmailInlineStyles,
+  getEmailThemeClasses,
+} from '../components/theme.js'
 
 interface Props {
   timestamp: string

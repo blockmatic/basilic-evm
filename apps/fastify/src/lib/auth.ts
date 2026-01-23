@@ -1,3 +1,5 @@
+import MagicLinkLoginEmail from '@repo/email/emails/magic-link-login'
+import { render } from '@repo/email/render'
 import { captureError } from '@repo/error/node'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
@@ -76,15 +78,14 @@ export async function getAuth() {
         magicLink({
           sendMagicLink: async ({ email, url }: { email: string; url: string }) => {
             try {
+              const html = await render(
+                MagicLinkLoginEmail({ magicLink: url, expirationMinutes: 15 }),
+              )
               await emailProvider.emails.send({
                 from: `${env.EMAIL_FROM_NAME} <${env.EMAIL_FROM}>`,
                 to: email,
                 subject: 'Sign in to your account',
-                html: `
-              <p>Hello,</p>
-              <p>Click the link below to sign in:</p>
-              <a href="${url}">Sign In</a>
-            `,
+                html,
               })
             } catch (error) {
               captureError({

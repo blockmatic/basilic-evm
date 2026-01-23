@@ -27,9 +27,17 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import React from 'react'
 import { afterAll, beforeAll } from 'vitest'
 import { resetDbInstance } from './src/db/index.js'
 import { closeTestDatabase, getTestDatabase } from './test/utils/db.js'
+
+// Make React available globally for React Email components
+// React Email components use JSX which requires React to be available at runtime
+// Even with the new JSX transform (react-jsx), React needs to be accessible when components execute
+if (typeof globalThis !== 'undefined') {
+  globalThis.React = React
+}
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)

@@ -21,6 +21,10 @@ export default function AuthCallbackPage() {
     refetchOnWindowFocus: false,
   })
 
+  // Type guard to ensure session has the expected shape
+  const hasValidSession =
+    session && typeof session === 'object' && 'user' in session && session.user !== null
+
   useEffect(() => {
     if (error) {
       // Server-injected error - redirect to login with error message
@@ -30,7 +34,7 @@ export default function AuthCallbackPage() {
       return () => clearTimeout(timeoutId)
     }
 
-    if (!isLoading && !isError && session?.user) {
+    if (!isLoading && !isError && hasValidSession) {
       // Session exists - redirect to dashboard
       const timeoutId = setTimeout(() => {
         router.push('/dashboard?authenticated=true')
@@ -38,21 +42,21 @@ export default function AuthCallbackPage() {
       return () => clearTimeout(timeoutId)
     }
 
-    if (!isLoading && (isError || !session?.user)) {
+    if (!isLoading && (isError || !hasValidSession)) {
       // No session - redirect to login
       const timeoutId = setTimeout(() => {
         router.push('/')
       }, 1000)
       return () => clearTimeout(timeoutId)
     }
-  }, [error, isLoading, isError, session, router])
+  }, [error, isLoading, isError, session, router, hasValidSession])
 
   // Determine status from query state and server-injected error
   const status: 'loading' | 'success' | 'error' = error
     ? 'error'
     : isLoading
       ? 'loading'
-      : session?.user
+      : hasValidSession
         ? 'success'
         : 'error'
 

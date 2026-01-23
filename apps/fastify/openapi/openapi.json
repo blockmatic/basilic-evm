@@ -189,6 +189,15 @@
         }
       }
     },
+    "/api/test/last-magic-link": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Default Response"
+          }
+        }
+      }
+    },
     "/wallets": {
       "get": {
         "responses": {

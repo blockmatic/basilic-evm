@@ -15,7 +15,13 @@ import { cn } from '@repo/ui/lib/utils'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { z } from 'zod'
 import { auth } from '@/src/queries/auth'
+
+const emailSchema = z
+  .string()
+  .min(1, 'Email is required')
+  .email('Please enter a valid email address')
 
 type LoginFormProps = React.ComponentProps<'form'> & {
   initialError?: string
@@ -29,6 +35,7 @@ export function LoginForm({ className, initialError, ...props }: LoginFormProps)
     initialError || null,
   )
   const [catalogError, setCatalogError] = useState<CatalogError | null>(null)
+  const [isSuccess, setIsSuccess] = useState(false)
 
   // Clear error from URL after displaying it
   useEffect(() => {
@@ -44,9 +51,12 @@ export function LoginForm({ className, initialError, ...props }: LoginFormProps)
   }, [router, searchParams])
 
   // Update error when initialError prop changes - syncing prop to state
+  // Only update if initialError is actually provided (not undefined)
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- Syncing prop to state
-    setEmailValidationError(initialError || null)
+    if (initialError !== undefined) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Syncing prop to state
+      setEmailValidationError(initialError || null)
+    }
   }, [initialError])
 
   const { refetch, data, error, isFetching } = useQuery({
@@ -91,23 +101,52 @@ export function LoginForm({ className, initialError, ...props }: LoginFormProps)
   useEffect(() => {
     if (data?.success) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- Syncing external query success to component state
+      setIsSuccess(true)
       setEmail('')
-
       setEmailValidationError(null)
-
       setCatalogError(null)
     }
   }, [data])
 
+  const validateEmail = (emailValue: string): string | null => {
+    const result = emailSchema.safeParse(emailValue)
+    if (!result.success) {
+      return result.error.issues[0]?.message || 'Please enter a valid email address'
+    }
+    return null
+  }
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value)
+    // Clear validation error and success state when user starts typing
+    if (emailValidationError) {
+      setEmailValidationError(null)
+    }
+    if (isSuccess) {
+      setIsSuccess(false)
+    }
+  }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    const validationError = validateEmail(email)
+    if (validationError) {
+      setEmailValidationError(validationError)
+      setCatalogError(null)
+      return
+    }
     setEmailValidationError(null)
     setCatalogError(null)
     refetch()
   }
 
   return (
-    <form className={cn('flex flex-col gap-6', className)} onSubmit={handleSubmit} {...props}>
+    <form
+      className={cn('flex flex-col gap-6', className)}
+      onSubmit={handleSubmit}
+      noValidate
+      {...props}
+    >
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <h1 className="text-2xl font-bold">Login to your account</h1>
@@ -123,29 +162,29 @@ export function LoginForm({ className, initialError, ...props }: LoginFormProps)
             placeholder="m@example.com"
             required
             value={email}
-            onChange={e => setEmail(e.target.value)}
-            disabled={isFetching || data?.success}
+            onChange={handleEmailChange}
+            disabled={isFetching || isSuccess}
           />
           {emailValidationError && <FieldError>{emailValidationError}</FieldError>}
+          {isSuccess && (
+            <FieldDescription className="text-green-600 dark:text-green-400">
+              Check your email for the magic link
+            </FieldDescription>
+          )}
         </Field>
         {catalogError && (
           <FieldDescription className="text-destructive text-center">
             {catalogError.message}
           </FieldDescription>
         )}
-        {data?.success && (
-          <FieldDescription className="text-center text-green-600 dark:text-green-400">
-            Check your email for the magic link
-          </FieldDescription>
-        )}
         <Field>
-          <Button type="submit" disabled={isFetching || data?.success}>
+          <Button type="submit" disabled={isFetching || isSuccess}>
             {isFetching ? 'Sending...' : 'Send magic link'}
           </Button>
         </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
         <Field>
-          <Button variant="outline" type="button" disabled={isFetching || data?.success}>
+          <Button variant="outline" type="button" disabled={isFetching || isSuccess}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="size-4">
               <path
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"

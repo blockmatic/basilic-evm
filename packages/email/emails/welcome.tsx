@@ -1,7 +1,11 @@
 import { Body, Container, Heading, Preview, Text } from '@react-email/components'
-import { Footer } from '../components/footer'
-import { Logo } from '../components/logo'
-import { EmailThemeProvider, getEmailInlineStyles, getEmailThemeClasses } from '../components/theme'
+import { Footer } from '../components/footer.js'
+import { Logo } from '../components/logo.js'
+import {
+  EmailThemeProvider,
+  getEmailInlineStyles,
+  getEmailThemeClasses,
+} from '../components/theme.js'
 
 interface Props {
   fullName?: string
