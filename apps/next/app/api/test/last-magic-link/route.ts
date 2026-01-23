@@ -3,7 +3,7 @@ import { env } from '@/lib/env'
 export async function GET(): Promise<Response> {
   // Only available in test/development environments (for E2E tests)
   const allowedEnvs = ['test', 'development']
-  if (!process.env.NODE_ENV || !allowedEnvs.includes(process.env.NODE_ENV)) {
+  if (!env.NODE_ENV || !allowedEnvs.includes(env.NODE_ENV)) {
     return new Response(JSON.stringify({ error: 'Not available in non-test environment' }), {
       status: 404,
       headers: { 'Content-Type': 'application/json' },

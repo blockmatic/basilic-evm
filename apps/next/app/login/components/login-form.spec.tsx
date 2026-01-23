@@ -141,7 +141,8 @@ describe('LoginForm', () => {
 
     const emailInput = screen.getByLabelText(/email/i) as HTMLInputElement
     const form = emailInput.closest('form') as HTMLFormElement
-    const _submitButton = screen.getByRole('button', { name: /send magic link/i })
+    // Verify submit button exists (but don't need to use it)
+    screen.getByRole('button', { name: /send magic link/i })
 
     // Remove required attribute to allow empty submission
     emailInput.removeAttribute('required')

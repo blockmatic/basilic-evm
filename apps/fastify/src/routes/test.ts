@@ -1,5 +1,7 @@
 import type { FastifyPluginAsync } from 'fastify'
 
+import { env } from '../lib/env.js'
+
 type FakeEmailProvider = {
   extractToken: () => string | null
 }
@@ -19,7 +21,7 @@ export function setSharedFakeEmail(provider: FakeEmailProvider | null) {
 const test: FastifyPluginAsync = async (fastify): Promise<void> => {
   // Only register test routes in test/development environments (for E2E tests)
   const allowedEnvs = ['test', 'development']
-  if (!process.env.NODE_ENV || !allowedEnvs.includes(process.env.NODE_ENV)) {
+  if (!env.NODE_ENV || !allowedEnvs.includes(env.NODE_ENV)) {
     return
   }
 

@@ -1,10 +1,12 @@
 import { redirect } from 'next/navigation'
 
+import { env } from '@/lib/env'
+
 import { DashboardContent } from './components/dashboard-content'
 
 async function getSession() {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/get-session`, {
+    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/auth/get-session`, {
       method: 'GET',
       credentials: 'include',
       cache: 'no-store',
