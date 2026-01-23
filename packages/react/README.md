@@ -14,7 +14,15 @@ import { useHealthCheck } from '@repo/react'
 
 function App() {
   return (
-    <ReactApiProvider config={{ baseUrl: process.env.NEXT_PUBLIC_API_URL! }}>
+    <ReactApiProvider 
+      baseUrl={process.env.NEXT_PUBLIC_API_URL!}
+      getAuthToken={async () => {
+        // Return JWT token (without Bearer prefix)
+        // For Next.js: Token is stored in HttpOnly cookie, accessed via BFF
+        // For other apps: Retrieve from secure storage
+        return token
+      }}
+    >
       <MyComponent />
     </ReactApiProvider>
   )
@@ -25,6 +33,12 @@ function MyComponent() {
   // data is fully typed from OpenAPI spec
 }
 ```
+
+**Authentication:**
+- Provide `getAuthToken` callback to inject JWT tokens in all API requests
+- Token is automatically sent as `Authorization: Bearer <token>` header
+- For Next.js apps, the BFF pattern handles token storage in HttpOnly cookies
+- Client components make API calls through BFF proxy routes
 
 ## Architecture
 

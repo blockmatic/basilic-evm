@@ -6,11 +6,19 @@
     "description": "Basilic API documentation"
   },
   "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
     "schemas": {}
   },
   "paths": {
     "/api/auth/{*}": {
       "get": {
+        "tags": ["auth"],
+        "security": [],
         "parameters": [
           {
             "schema": {
@@ -28,6 +36,8 @@
         }
       },
       "head": {
+        "tags": ["auth"],
+        "security": [],
         "parameters": [
           {
             "schema": {
@@ -45,6 +55,8 @@
         }
       },
       "trace": {
+        "tags": ["auth"],
+        "security": [],
         "parameters": [
           {
             "schema": {
@@ -62,6 +74,8 @@
         }
       },
       "delete": {
+        "tags": ["auth"],
+        "security": [],
         "parameters": [
           {
             "schema": {
@@ -79,6 +93,8 @@
         }
       },
       "options": {
+        "tags": ["auth"],
+        "security": [],
         "parameters": [
           {
             "schema": {
@@ -96,6 +112,8 @@
         }
       },
       "patch": {
+        "tags": ["auth"],
+        "security": [],
         "parameters": [
           {
             "schema": {
@@ -113,6 +131,8 @@
         }
       },
       "put": {
+        "tags": ["auth"],
+        "security": [],
         "parameters": [
           {
             "schema": {
@@ -130,6 +150,8 @@
         }
       },
       "post": {
+        "tags": ["auth"],
+        "security": [],
         "parameters": [
           {
             "schema": {
@@ -153,6 +175,7 @@
         "summary": "Returns server health status with current ISO datetime",
         "tags": ["health"],
         "description": "Health check endpoint",
+        "security": [],
         "responses": {
           "200": {
             "description": "Default Response",
@@ -182,6 +205,8 @@
     },
     "/": {
       "get": {
+        "tags": ["public"],
+        "security": [],
         "responses": {
           "200": {
             "description": "Default Response"
@@ -191,6 +216,8 @@
     },
     "/api/test/last-magic-link": {
       "get": {
+        "tags": ["test"],
+        "security": [],
         "responses": {
           "200": {
             "description": "Default Response"
@@ -200,9 +227,69 @@
     },
     "/wallets": {
       "get": {
+        "operationId": "listWallets",
+        "summary": "List wallet identities",
+        "tags": ["wallet"],
+        "description": "List wallets linked to the current user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Default Response"
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["wallets"],
+                  "properties": {
+                    "wallets": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": ["id", "userId", "chain", "address", "createdAt"],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "userId": {
+                            "type": "string"
+                          },
+                          "chain": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "enum": ["eip155"]
+                              },
+                              {
+                                "type": "string",
+                                "enum": ["solana"]
+                              }
+                            ]
+                          },
+                          "address": {
+                            "type": "string"
+                          },
+                          "walletProvider": {
+                            "type": "string"
+                          },
+                          "createdAt": {
+                            "format": "date-time",
+                            "type": "string"
+                          },
+                          "lastUsedAt": {
+                            "format": "date-time",
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -238,6 +325,11 @@
             "in": "path",
             "name": "address",
             "required": true
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
           }
         ],
         "responses": {
@@ -332,6 +424,11 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Default Response",
@@ -442,6 +539,11 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Streaming text response",
@@ -495,5 +597,10 @@
         }
       }
     }
-  }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
 }

@@ -3,7 +3,7 @@ import { render } from '@repo/email/render'
 import { captureError } from '@repo/error/node'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-import { jwt, magicLink } from 'better-auth/plugins'
+import { bearer, jwt, magicLink } from 'better-auth/plugins'
 import { Resend } from 'resend'
 import { getDb } from '../db/index.js'
 import * as schema from '../db/schema/index.js'
@@ -115,29 +115,17 @@ export async function getAuth() {
             }
           },
         }),
+        bearer(),
         jwt({
-          // JWT tokens expire in 7 days (matching session expiration)
-          expiresIn: env.JWT_EXPIRES_IN,
+          jwt: {
+            expirationTime: `${env.JWT_EXPIRES_IN}s`,
+          },
         }),
         web3Plugin(),
       ],
       session: {
-        cookieName: 'better-auth.session_token',
         expiresIn: 60 * 60 * 24 * 7, // 7 days
         updateAge: 60 * 60 * 24, // 1 day
-        cookieCache: {
-          enabled: true,
-          maxAge: 60 * 5, // 5 minutes
-        },
-      },
-      advanced: {
-        cookiePrefix: 'better-auth',
-        defaultCookieAttributes: {
-          secure: env.NODE_ENV === 'production',
-          httpOnly: true,
-          sameSite: 'lax',
-          path: '/',
-        },
       },
     })
   }

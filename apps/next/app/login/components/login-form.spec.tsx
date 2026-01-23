@@ -67,7 +67,6 @@ describe('LoginForm', () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
       })
       const body = JSON.parse(callArgs[1]?.body as string)
       expect(body.email).toBe('test@example.com')

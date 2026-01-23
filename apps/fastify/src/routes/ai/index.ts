@@ -38,6 +38,7 @@ const aiRoutes: FastifyPluginAsync = async (fastify, _opts) => {
         description: 'Chat with AI using OpenAI',
         summary: 'Generate AI chat response',
         tags: ['ai'],
+        security: [{ bearerAuth: [] }],
         body: ChatRequestSchema,
         response: {
           200: ChatResponseSchema,
@@ -72,6 +73,7 @@ const aiRoutes: FastifyPluginAsync = async (fastify, _opts) => {
         description: 'Stream AI chat response using OpenAI',
         summary: 'Stream AI chat response',
         tags: ['ai'],
+        security: [{ bearerAuth: [] }],
         body: ChatRequestSchema,
         response: {
           200: Type.String({ description: 'Streaming text response' }),

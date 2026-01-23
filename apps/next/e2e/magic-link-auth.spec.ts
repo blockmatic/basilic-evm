@@ -126,10 +126,10 @@ test.describe('Invalid Magic Link Flow', () => {
     const errorInField = fieldContainer.locator('[data-slot="field-error"]')
     await expect(errorInField).toBeVisible()
 
-    // Verify no session cookie is set
+    // Verify no JWT cookie is set
     const cookies = await page.context().cookies()
-    const sessionCookie = cookies.find(cookie => cookie.name.includes('session_token'))
-    expect(sessionCookie).toBeUndefined()
+    const jwtCookie = cookies.find(cookie => cookie.name === 'better-auth.jwt_token')
+    expect(jwtCookie).toBeUndefined()
   })
 
   test('should redirect to login with error message for missing token displayed below input', async ({
@@ -252,10 +252,10 @@ test.describe('JWT Session Refresh', () => {
 
     await verifyMagicLink(page, token)
 
-    // Get session cookie
+    // Get JWT cookie
     const cookies = await page.context().cookies()
-    const sessionCookie = cookies.find(cookie => cookie.name.includes('session_token'))
-    expect(sessionCookie).toBeDefined()
+    const jwtCookie = cookies.find(cookie => cookie.name === 'better-auth.jwt_token')
+    expect(jwtCookie).toBeDefined()
 
     // Make authenticated request to session endpoint
     const response = await page.request.get('/api/auth/get-session')

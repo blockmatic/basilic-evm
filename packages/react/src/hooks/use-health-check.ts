@@ -2,8 +2,8 @@ import type { HealthCheckData, HealthCheckResponse } from '@repo/core'
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { useQuery } from '@tanstack/react-query'
 import { useReactApiConfig } from '../context.js'
-import { serializeQueryKeyValue } from '../gen/core/queryKeySerializer.gen.js'
-import { healthCheck } from '../gen/index.js'
+import { serializeQueryKeyValue } from '../gen/core/queryKeySerializer.gen'
+import { healthCheck } from '../gen/index'
 
 export function useHealthCheck(
   params?: Pick<HealthCheckData, 'query' | 'path'>,

@@ -183,10 +183,10 @@ test.describe('Magic Link Auth E2E', () => {
     const response = await fetch('http://localhost:3001/api/test/last-magic-link')
     const { token } = await response.json()
     
-    // Verify magic link (uses real Fastify auth endpoint)
-    await page.goto(`/api/auth/magic-link/verify?token=${token}`)
+    // Verify magic link (uses Next.js BFF + Fastify)
+    await page.goto(`/api/auth/magic-link/verify?token=${token}&callbackURL=/dashboard`)
     
-    // Verify authenticated state (real session cookie)
+    // Verify authenticated state (HttpOnly JWT cookie)
     await expect(page.locator('text=Dashboard')).toBeVisible()
   })
 })

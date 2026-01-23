@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { type ReactNode, useState } from 'react'
-import { getAuthToken } from '@/lib/auth-token'
 import { env } from '@/lib/env'
 
 export function Providers({ children }: { children: ReactNode }) {
@@ -13,16 +12,7 @@ export function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ReactApiProvider
-        baseUrl={env.NEXT_PUBLIC_API_URL}
-        getAuthToken={async () => {
-          // Browser API access - must be client-side
-          if (typeof window !== 'undefined') {
-            return getAuthToken()
-          }
-          return null
-        }}
-      >
+      <ReactApiProvider baseUrl={env.NEXT_PUBLIC_API_URL}>
         <NuqsAdapter>
           <NextThemesProvider
             attribute="class"

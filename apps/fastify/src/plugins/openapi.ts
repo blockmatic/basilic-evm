@@ -12,6 +12,15 @@ const openapi: FastifyPluginAsync = async fastify => {
         version: '1.0.0',
         description: 'Basilic API documentation',
       },
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: 'http',
+            scheme: 'bearer',
+          },
+        },
+      },
+      security: [{ bearerAuth: [] }],
     },
   })
 

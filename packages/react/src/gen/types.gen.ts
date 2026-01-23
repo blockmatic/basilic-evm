@@ -180,19 +180,31 @@ export type GetApiTestLastMagicLinkResponses = {
     200: unknown;
 };
 
-export type GetWalletsData = {
+export type ListWalletsData = {
     body?: never;
     path?: never;
     query?: never;
     url: '/wallets';
 };
 
-export type GetWalletsResponses = {
+export type ListWalletsResponses = {
     /**
      * Default Response
      */
-    200: unknown;
+    200: {
+        wallets: Array<{
+            id: string;
+            userId: string;
+            chain: 'eip155' | 'solana';
+            address: string;
+            walletProvider?: string;
+            createdAt: string;
+            lastUsedAt?: string;
+        }>;
+    };
 };
+
+export type ListWalletsResponse = ListWalletsResponses[keyof ListWalletsResponses];
 
 export type DeleteWalletData = {
     body?: never;

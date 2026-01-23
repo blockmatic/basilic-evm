@@ -25,22 +25,31 @@ const test: FastifyPluginAsync = async (fastify): Promise<void> => {
     return
   }
 
-  fastify.get('/api/test/last-magic-link', async (_request, reply) => {
-    // Try to access fake email provider from fastify instance (for unit tests)
-    const testApp = fastify as typeof fastify & { fakeEmail?: FakeEmailProvider }
-    const fakeEmail = testApp.fakeEmail ?? sharedFakeEmail
+  fastify.get(
+    '/api/test/last-magic-link',
+    {
+      schema: {
+        tags: ['test'],
+        security: [],
+      },
+    },
+    async (_request, reply) => {
+      // Try to access fake email provider from fastify instance (for unit tests)
+      const testApp = fastify as typeof fastify & { fakeEmail?: FakeEmailProvider }
+      const fakeEmail = testApp.fakeEmail ?? sharedFakeEmail
 
-    if (!fakeEmail) {
-      return reply.code(500).send({ error: 'Fake email provider not available' })
-    }
+      if (!fakeEmail) {
+        return reply.code(500).send({ error: 'Fake email provider not available' })
+      }
 
-    const token = fakeEmail.extractToken()
-    if (!token) {
-      return reply.code(404).send({ error: 'No magic link token found' })
-    }
+      const token = fakeEmail.extractToken()
+      if (!token) {
+        return reply.code(404).send({ error: 'No magic link token found' })
+      }
 
-    return { token }
-  })
+      return { token }
+    },
+  )
 }
 
 export default test

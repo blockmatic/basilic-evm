@@ -1,7 +1,7 @@
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { useQuery } from '@tanstack/react-query'
 import { useReactApiConfig } from '../context.js'
-import { getApiAuthBy__ } from '../gen/index.js'
+import { getApiAuthBy__ } from '../gen/index'
 
 type SessionResponse = {
   user: {

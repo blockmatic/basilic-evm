@@ -1,73 +1,24 @@
 import { logger } from '@repo/utils/logger'
-import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { getServerAuthToken } from '@/lib/auth-server'
+import { env } from '@/lib/env'
 
 import { DashboardContent } from './components/dashboard-content'
 
 async function getSession() {
   try {
-    // Get cookies from the incoming request
-    const cookieStore = await cookies()
-    const allCookies = cookieStore.getAll()
-    const cookieHeader = allCookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ')
-
-    // Get request headers to construct the API URL
-    const headersList = await headers()
-    const host = headersList.get('host') || 'localhost:3000'
-    const protocol = headersList.get('x-forwarded-proto') || 'http'
-    const baseUrl = `${protocol}://${host}`
-    const apiUrl = `${baseUrl}/api/auth/get-session`
-
-    logger.info(
-      {
-        cookieCount: allCookies.length,
-        hasSessionCookie: cookieStore.has('better-auth.session_token'),
-        cookieNames: allCookies.map(c => c.name),
-        cookieValues: allCookies.map(c => ({
-          name: c.name,
-          valueLength: c.value.length,
-          valuePreview: c.value.substring(0, 20) + '...',
-        })),
-        cookieHeaderLength: cookieHeader.length,
-        cookieHeaderPreview: cookieHeader.substring(0, 200),
-        apiUrl,
-        baseUrl,
-        host,
-        protocol,
-      },
-      'Dashboard: Starting session check',
-    )
-
-    const fetchHeaders: Record<string, string> = {}
-    if (cookieHeader) {
-      fetchHeaders.Cookie = cookieHeader
+    const { token } = await getServerAuthToken()
+    if (!token) {
+      return null
     }
 
-    logger.debug(
-      {
-        apiUrl,
-        fetchHeaders,
-        hasCookieHeader: !!fetchHeaders.Cookie,
-      },
-      'Dashboard: Making fetch request',
-    )
-
-    const response = await fetch(apiUrl, {
+    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/auth/get-session`, {
       method: 'GET',
-      headers: fetchHeaders,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       cache: 'no-store',
     })
-
-    logger.info(
-      {
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok,
-        hasSetCookie: response.headers.has('set-cookie'),
-        responseHeaders: Object.fromEntries(response.headers.entries()),
-      },
-      'Dashboard: Received response',
-    )
 
     if (!response.ok) {
       const errorText = await response.text().catch(() => '')
@@ -89,18 +40,6 @@ async function getSession() {
       logger.debug({ status: response.status }, 'Dashboard: Response body is null or invalid JSON')
       return null
     }
-
-    logger.info(
-      {
-        hasUser: !!data?.user,
-        dataKeys: data ? Object.keys(data) : [],
-        userKeys: data?.user ? Object.keys(data.user) : null,
-        fullData: JSON.stringify(data).substring(0, 500),
-        dataType: typeof data,
-        dataIsNull: data === null,
-      },
-      'Dashboard: Session check result',
-    )
 
     return data?.user ?? null
   } catch (error) {

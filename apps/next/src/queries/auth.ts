@@ -10,7 +10,6 @@ export const auth = createQueryKeys('auth', {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify({ email, callbackURL }),
       })
 

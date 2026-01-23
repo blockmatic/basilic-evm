@@ -69,7 +69,8 @@
         "BETTER_AUTH_TRUSTED_ORIGINS",
         "RESEND_API_KEY",
         "EMAIL_FROM",
-        "EMAIL_FROM_NAME"
+        "EMAIL_FROM_NAME",
+        "USE_FAKE_EMAIL"
       ]
     },
     "lint:eslint:fix": {
@@ -94,7 +95,8 @@
         "BETTER_AUTH_TRUSTED_ORIGINS",
         "RESEND_API_KEY",
         "EMAIL_FROM",
-        "EMAIL_FROM_NAME"
+        "EMAIL_FROM_NAME",
+        "USE_FAKE_EMAIL"
       ]
     },
     "checktypes": {
@@ -123,7 +125,8 @@
         "BETTER_AUTH_SECRET",
         "BETTER_AUTH_URL",
         "BETTER_AUTH_TRUSTED_ORIGINS",
-        "VITEST_WORKER_ID"
+        "VITEST_WORKER_ID",
+        "USE_FAKE_EMAIL"
       ]
     },
     "test:e2e": {

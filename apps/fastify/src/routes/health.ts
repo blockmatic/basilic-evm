@@ -17,6 +17,7 @@ const healthRoutes: FastifyPluginAsync = async fastify => {
         description: 'Health check endpoint',
         summary: 'Returns server health status with current ISO datetime',
         tags: ['health'],
+        security: [],
         response: {
           200: HealthResponseSchema,
         },

@@ -7,17 +7,44 @@ import { requireAuth } from '../lib/auth-helpers.js'
 
 const walletRoutes: FastifyPluginAsync = async fastify => {
   // List user's wallets
-  fastify.get('/wallets', async request => {
-    const { user } = requireAuth(request)
-    const db = await getDb()
+  fastify.get(
+    '/wallets',
+    {
+      schema: {
+        operationId: 'listWallets',
+        description: 'List wallets linked to the current user',
+        summary: 'List wallet identities',
+        tags: ['wallet'],
+        security: [{ bearerAuth: [] }],
+        response: {
+          200: Type.Object({
+            wallets: Type.Array(
+              Type.Object({
+                id: Type.String(),
+                userId: Type.String(),
+                chain: Type.Union([Type.Literal('eip155'), Type.Literal('solana')]),
+                address: Type.String(),
+                walletProvider: Type.Optional(Type.String()),
+                createdAt: Type.String({ format: 'date-time' }),
+                lastUsedAt: Type.Optional(Type.String({ format: 'date-time' })),
+              }),
+            ),
+          }),
+        },
+      },
+    },
+    async request => {
+      const { user } = requireAuth(request)
+      const db = await getDb()
 
-    const wallets = await db
-      .select()
-      .from(walletIdentities)
-      .where(eq(walletIdentities.userId, user.id))
+      const wallets = await db
+        .select()
+        .from(walletIdentities)
+        .where(eq(walletIdentities.userId, user.id))
 
-    return { wallets }
-  })
+      return { wallets }
+    },
+  )
 
   // Unlink wallet
   fastify.delete(
@@ -28,6 +55,7 @@ const walletRoutes: FastifyPluginAsync = async fastify => {
         description: 'Unlink a wallet from the current user',
         summary: 'Delete wallet identity',
         tags: ['wallet'],
+        security: [{ bearerAuth: [] }],
         params: Type.Object({
           chain: Type.Union([Type.Literal('eip155'), Type.Literal('solana')]),
           address: Type.String(),

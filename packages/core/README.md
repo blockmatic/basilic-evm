@@ -13,12 +13,18 @@ import { createClient } from '@repo/core'
 
 const client = createClient({
   baseUrl: 'https://api.example.com',
-  getAuthToken: async () => token,
+  getAuthToken: async () => token, // JWT token (Bearer prefix applied automatically)
   getHeaders: async () => ({ 'X-Custom': 'value' }),
 })
 
 const result = await client.users.getUser({ params: { id: '123' } })
 ```
+
+**Authentication:**
+- The `getAuthToken` callback should return the raw JWT token (without "Bearer " prefix)
+- The client automatically adds `Bearer ` prefix when sending requests
+- For Next.js apps, tokens are stored in HttpOnly cookies server-side (see Next.js BFF pattern)
+- For other clients, store JWT securely and provide via `getAuthToken` callback
 
 ## Architecture
 

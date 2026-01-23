@@ -1,5 +1,5 @@
-import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
+import type { TestApp } from '../utils/fastify.js'
 import { buildTestApp } from '../utils/fastify.js'
 
 vi.setConfig({
@@ -8,7 +8,7 @@ vi.setConfig({
 })
 
 describe('Auth Integration', () => {
-  let fastify: FastifyInstance
+  let fastify: TestApp
 
   beforeAll(async () => {
     fastify = await buildTestApp()
@@ -41,6 +41,62 @@ describe('Auth Integration', () => {
       expect(body.session).toBeNull()
     } else {
       // Empty response is also acceptable
+      expect(body).toBeNull()
+    }
+  })
+
+  it('should return session when using bearer token', async () => {
+    const email = 'session@example.com'
+
+    await fastify.inject({
+      method: 'POST',
+      url: '/api/auth/sign-in/magic-link',
+      payload: {
+        email,
+      },
+    })
+
+    const token = fastify.fakeEmail.extractToken()
+    expect(token).toBeTruthy()
+
+    const verifyResponse = await fastify.inject({
+      method: 'GET',
+      url: `/api/auth/magic-link/verify?token=${token}&format=jwt`,
+    })
+    expect(verifyResponse.statusCode).toBe(200)
+
+    const { token: jwtToken } = JSON.parse(verifyResponse.body)
+    expect(jwtToken).toBeTruthy()
+
+    const sessionResponse = await fastify.inject({
+      method: 'GET',
+      url: '/api/auth/get-session',
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    })
+
+    expect(sessionResponse.statusCode).toBe(200)
+    const body = sessionResponse.body ? JSON.parse(sessionResponse.body) : null
+    expect(body?.user).not.toBeNull()
+    expect(body?.user?.email).toBe(email)
+  })
+
+  it('should ignore cookie-based session headers', async () => {
+    const response = await fastify.inject({
+      method: 'GET',
+      url: '/api/auth/get-session',
+      headers: {
+        Cookie: 'better-auth.session_token=fake-session',
+      },
+    })
+
+    expect(response.statusCode).toBe(200)
+    const body = response.body ? JSON.parse(response.body) : null
+    if (body) {
+      expect(body.user).toBeNull()
+      expect(body.session).toBeNull()
+    } else {
       expect(body).toBeNull()
     }
   })

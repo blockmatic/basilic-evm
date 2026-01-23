@@ -1,5 +1,4 @@
 import { Img, Section } from '@react-email/components'
-import React from 'react'
 
 const baseUrl = process.env.EMAIL_ASSETS_URL || ''
 const isAbsoluteUrl = baseUrl && /^https?:\/\//.test(baseUrl)

@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ChatData, ChatErrors, ChatResponses, ChatStreamData, ChatStreamErrors, ChatStreamResponses, DeleteApiAuthBy__Data, DeleteApiAuthBy__Responses, DeleteWalletData, DeleteWalletErrors, DeleteWalletResponses, GetApiAuthBy__Data, GetApiAuthBy__Responses, GetApiTestLastMagicLinkData, GetApiTestLastMagicLinkResponses, GetData, GetResponses, GetWalletsData, GetWalletsResponses, HeadApiAuthBy__Data, HeadApiAuthBy__Responses, HealthCheckData, HealthCheckResponses, OptionsApiAuthBy__Data, OptionsApiAuthBy__Responses, PatchApiAuthBy__Data, PatchApiAuthBy__Responses, PostApiAuthBy__Data, PostApiAuthBy__Responses, PutApiAuthBy__Data, PutApiAuthBy__Responses, TraceApiAuthBy__Data, TraceApiAuthBy__Responses } from './types.gen';
+import type { ChatData, ChatErrors, ChatResponses, ChatStreamData, ChatStreamErrors, ChatStreamResponses, DeleteApiAuthBy__Data, DeleteApiAuthBy__Responses, DeleteWalletData, DeleteWalletErrors, DeleteWalletResponses, GetApiAuthBy__Data, GetApiAuthBy__Responses, GetApiTestLastMagicLinkData, GetApiTestLastMagicLinkResponses, GetData, GetResponses, HeadApiAuthBy__Data, HeadApiAuthBy__Responses, HealthCheckData, HealthCheckResponses, ListWalletsData, ListWalletsResponses, OptionsApiAuthBy__Data, OptionsApiAuthBy__Responses, PatchApiAuthBy__Data, PatchApiAuthBy__Responses, PostApiAuthBy__Data, PostApiAuthBy__Responses, PutApiAuthBy__Data, PutApiAuthBy__Responses, TraceApiAuthBy__Data, TraceApiAuthBy__Responses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -45,14 +45,27 @@ export const get = <ThrowOnError extends boolean = false>(options?: Options<GetD
 
 export const getApiTestLastMagicLink = <ThrowOnError extends boolean = false>(options?: Options<GetApiTestLastMagicLinkData, ThrowOnError>) => (options?.client ?? client).get<GetApiTestLastMagicLinkResponses, unknown, ThrowOnError>({ url: '/api/test/last-magic-link', ...options });
 
-export const getWallets = <ThrowOnError extends boolean = false>(options?: Options<GetWalletsData, ThrowOnError>) => (options?.client ?? client).get<GetWalletsResponses, unknown, ThrowOnError>({ url: '/wallets', ...options });
+/**
+ * List wallet identities
+ *
+ * List wallets linked to the current user
+ */
+export const listWallets = <ThrowOnError extends boolean = false>(options?: Options<ListWalletsData, ThrowOnError>) => (options?.client ?? client).get<ListWalletsResponses, unknown, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/wallets',
+    ...options
+});
 
 /**
  * Delete wallet identity
  *
  * Unlink a wallet from the current user
  */
-export const deleteWallet = <ThrowOnError extends boolean = false>(options: Options<DeleteWalletData, ThrowOnError>) => (options.client ?? client).delete<DeleteWalletResponses, DeleteWalletErrors, ThrowOnError>({ url: '/wallets/{chain}/{address}', ...options });
+export const deleteWallet = <ThrowOnError extends boolean = false>(options: Options<DeleteWalletData, ThrowOnError>) => (options.client ?? client).delete<DeleteWalletResponses, DeleteWalletErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/wallets/{chain}/{address}',
+    ...options
+});
 
 /**
  * Generate AI chat response
@@ -60,6 +73,7 @@ export const deleteWallet = <ThrowOnError extends boolean = false>(options: Opti
  * Chat with AI using OpenAI
  */
 export const chat = <ThrowOnError extends boolean = false>(options: Options<ChatData, ThrowOnError>) => (options.client ?? client).post<ChatResponses, ChatErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/ai/chat',
     ...options,
     headers: {
@@ -74,6 +88,7 @@ export const chat = <ThrowOnError extends boolean = false>(options: Options<Chat
  * Stream AI chat response using OpenAI
  */
 export const chatStream = <ThrowOnError extends boolean = false>(options: Options<ChatStreamData, ThrowOnError>) => (options.client ?? client).post<ChatStreamResponses, ChatStreamErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
     url: '/ai/chat/stream',
     ...options,
     headers: {

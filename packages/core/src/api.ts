@@ -1,7 +1,7 @@
 import type { CoreClientOptions } from './config.js'
 import { ApiError } from './errors.js'
-import { createClient, createConfig } from './gen/client/index.js'
-import * as gen from './gen/index.js'
+import { createClient, createConfig } from './gen/client/index'
+import * as gen from './gen/index'
 
 // Create client factory with auth headers
 function createApiClient(options: CoreClientOptions) {
@@ -51,4 +51,4 @@ export function createApi(options: CoreClientOptions) {
 }
 
 // Export types from generated code
-export type { HealthCheckResponse } from './gen/types.gen.js'
+export type { HealthCheckResponse } from './gen/types.gen'
