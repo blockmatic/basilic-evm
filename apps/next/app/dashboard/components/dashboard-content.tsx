@@ -1,7 +1,7 @@
 import { Alert, AlertDescription } from '@repo/ui/components/alert'
 import { CheckCircle2 } from 'lucide-react'
-import Link from 'next/link'
 import { ApiHealthBadge } from '@/components/api-health-badge'
+import { SignOutButton } from './sign-out-button'
 
 type User = {
   email?: string | null
@@ -59,12 +59,7 @@ export function DashboardContent({ user, showSuccessMessage }: DashboardContentP
         <div className="rounded-lg border bg-card p-6">
           <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
           <div className="flex flex-wrap gap-4">
-            <Link
-              href="/api/auth/sign-out"
-              className="rounded-md bg-destructive px-4 py-2 text-destructive-foreground hover:bg-destructive/90 text-sm font-medium transition-colors"
-            >
-              Sign Out
-            </Link>
+            <SignOutButton />
           </div>
         </div>
       </div>

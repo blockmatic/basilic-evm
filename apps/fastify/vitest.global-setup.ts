@@ -24,6 +24,8 @@ process.env.BETTER_AUTH_TRUSTED_ORIGINS = process.env.BETTER_AUTH_TRUSTED_ORIGIN
 process.env.RESEND_API_KEY = process.env.RESEND_API_KEY || 're_test_key'
 process.env.EMAIL_FROM = process.env.EMAIL_FROM || 'test@example.com'
 process.env.EMAIL_FROM_NAME = process.env.EMAIL_FROM_NAME || 'Test App'
+// Always use fake email provider in tests (emails won't be sent, stored in memory)
+process.env.USE_FAKE_EMAIL = 'true'
 
 import type { GlobalSetupContext } from 'vitest/node'
 

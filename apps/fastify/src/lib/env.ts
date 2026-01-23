@@ -58,6 +58,13 @@ export const env = createEnv({
       .regex(/^[0-9a-fA-F]+$/, 'Must be a 32-byte hex string'),
     // Auth configuration
     BETTER_AUTH_SECRET: z.string().min(32),
+    // JWT configuration (optional - uses BETTER_AUTH_SECRET if JWT_SECRET not set)
+    JWT_SECRET: z.string().min(32).optional(),
+    JWT_EXPIRES_IN: z.coerce
+      .number()
+      .int()
+      .positive()
+      .default(60 * 60 * 24 * 7), // 7 days
     BETTER_AUTH_URL: z
       .string()
       .optional()
@@ -70,9 +77,10 @@ export const env = createEnv({
         if (val) {
           return val
         }
-        // Otherwise use localhost with PORT for local development
-        const port = process.env.PORT || '3000'
-        return `http://localhost:${port}`
+        // For local development, Better Auth baseURL should be the frontend URL (port 3000)
+        // even though Fastify runs on port 3001, because auth endpoints are proxied through Next.js
+        // This ensures cookies are set for the correct domain
+        return 'http://localhost:3000'
       })
       .pipe(z.string().url()),
     BETTER_AUTH_TRUSTED_ORIGINS: z
@@ -93,11 +101,18 @@ export const env = createEnv({
           .filter(Boolean)
         origins.push(...explicitOrigins)
 
-        // Include localhost for local development (if not already included)
-        const port = process.env.PORT || '3000'
-        const localhostOrigin = `http://localhost:${port}`
-        if (!origins.includes(localhostOrigin)) {
-          origins.push(localhostOrigin)
+        // For local development, include both frontend (3000) and backend (3001) origins
+        // Frontend origin is where auth endpoints are publicly accessible
+        // Backend origin is where Better Auth actually runs
+        const frontendOrigin = 'http://localhost:3000'
+        const backendPort = process.env.PORT || '3001'
+        const backendOrigin = `http://localhost:${backendPort}`
+
+        if (!origins.includes(frontendOrigin)) {
+          origins.push(frontendOrigin)
+        }
+        if (!origins.includes(backendOrigin)) {
+          origins.push(backendOrigin)
         }
 
         return origins
@@ -106,6 +121,7 @@ export const env = createEnv({
     RESEND_API_KEY: z.string().min(1),
     EMAIL_FROM: z.string().email(),
     EMAIL_FROM_NAME: z.string().default('App'),
+    USE_FAKE_EMAIL: z.coerce.boolean().default(false),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,

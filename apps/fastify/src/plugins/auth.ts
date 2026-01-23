@@ -33,9 +33,31 @@ const authPlugin: FastifyPluginAsync = async fastify => {
   // Add auth instance to fastify
   fastify.decorate('auth', auth)
 
-  // Session validation hook
+  // Session validation hook - checks both session cookies and JWT tokens
   fastify.addHook('onRequest', async request => {
     try {
+      // Check for JWT token in Authorization header
+      const authHeader = request.headers.authorization
+      if (authHeader?.startsWith('Bearer ')) {
+        const token = authHeader.substring(7)
+        try {
+          // Verify JWT token and get session
+          // Better Auth's getSession should handle JWT tokens when passed in Authorization header
+          const session = await auth.api.getSession({
+            headers: {
+              ...request.headers,
+              authorization: `Bearer ${token}`,
+            },
+          })
+          request.session = session
+          return
+        } catch {
+          // If JWT validation fails, fall through to cookie-based session check
+          // This allows both methods to work independently
+        }
+      }
+
+      // Fallback to cookie-based session (default behavior)
       const session = await auth.api.getSession({
         headers: request.headers,
       })
@@ -62,6 +84,117 @@ const authPlugin: FastifyPluginAsync = async fastify => {
 
   // Mount Better Auth routes at /api/auth/*
   fastify.all('/api/auth/*', async (request, reply) => {
+    // Handle JWT format for magic link verification
+    const urlObj = new URL(request.url, env.BETTER_AUTH_URL)
+    const isMagicLinkVerify = urlObj.pathname === '/api/auth/magic-link/verify'
+    const formatJwt = urlObj.searchParams.get('format') === 'jwt'
+
+    if (isMagicLinkVerify && formatJwt && request.method === 'GET') {
+      // Handle JWT format: verify magic link and return JWT token
+      try {
+        // Call Better Auth's magic link verification internally
+        const verifyUrl = new URL(request.url, env.BETTER_AUTH_URL)
+        verifyUrl.searchParams.delete('format') // Remove format param for Better Auth
+
+        const verifyHeaders = new Headers()
+        for (const [key, val] of Object.entries(request.headers)) {
+          if (val != null) {
+            if (Array.isArray(val)) {
+              for (const v of val) {
+                verifyHeaders.append(key, String(v))
+              }
+            } else {
+              verifyHeaders.append(key, String(val))
+            }
+          }
+        }
+
+        const verifyReq = new Request(verifyUrl.toString(), {
+          method: 'GET',
+          headers: verifyHeaders,
+        })
+
+        const verifyResponse = await auth.handler(verifyReq)
+
+        // If verification failed, return the error response
+        if (verifyResponse.status !== 200 && verifyResponse.status !== 302) {
+          reply.status(verifyResponse.status)
+          verifyResponse.headers.forEach((value: string, key: string) => {
+            if (key.toLowerCase() !== 'set-cookie') {
+              reply.header(key, value)
+            }
+          })
+          const text = verifyResponse.body ? await verifyResponse.text() : null
+          return text
+        }
+
+        // Extract session cookie from verification response
+        const setCookieHeaders = verifyResponse.headers.getSetCookie()
+        const sessionCookie = setCookieHeaders.find(cookie =>
+          cookie.includes('better-auth.session_token'),
+        )
+
+        if (!sessionCookie) {
+          reply.status(401).send({ error: 'Failed to create session' })
+          return null
+        }
+
+        // Extract cookie value
+        const cookieMatch = sessionCookie.match(/better-auth\.session_token=([^;]+)/)
+        if (!cookieMatch) {
+          reply.status(401).send({ error: 'Failed to extract session token' })
+          return null
+        }
+
+        // Get JWT token using Better Auth's token endpoint
+        const tokenHeaders = new Headers()
+        tokenHeaders.append('Cookie', `better-auth.session_token=${cookieMatch[1]}`)
+
+        const tokenReq = new Request(new URL('/api/auth/token', env.BETTER_AUTH_URL).toString(), {
+          method: 'GET',
+          headers: tokenHeaders,
+        })
+
+        const tokenResponse = await auth.handler(tokenReq)
+
+        if (tokenResponse.status !== 200) {
+          reply.status(tokenResponse.status)
+          const text = tokenResponse.body ? await tokenResponse.text() : null
+          return text
+        }
+
+        const tokenData = await tokenResponse.json()
+
+        // Return JWT token in response body
+        reply.status(200).header('Content-Type', 'application/json').send({
+          token: tokenData.token,
+        })
+        return null
+      } catch (error) {
+        const catalogError = captureError({
+          code: 'INTERNAL_ERROR',
+          error: error instanceof Error ? error : new Error(String(error)),
+          logger: request.log,
+          label: 'magic link JWT verification failed',
+          data: {
+            method: request.method,
+            url: request.url,
+          },
+          tags: {
+            app: 'api',
+            module: 'auth-service',
+            route: request.url,
+          },
+        })
+
+        reply.status(500).send({
+          code: catalogError.code,
+          message: catalogError.message,
+        })
+        return null
+      }
+    }
+
     // Build full URL using trusted env.BETTER_AUTH_URL as base
     const url = new URL(request.url, env.BETTER_AUTH_URL)
 

@@ -1,6 +1,7 @@
 import { Body, Container, Heading, Link, Preview, Section, Text } from '@react-email/components'
 import { cn } from '@repo/ui/lib/utils'
 import { format, isValid, parseISO } from 'date-fns'
+import type React from 'react'
 import { Footer } from '../components/footer.js'
 import { Logo } from '../components/logo.js'
 import {

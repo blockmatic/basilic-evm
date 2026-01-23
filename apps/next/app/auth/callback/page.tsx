@@ -1,117 +1,75 @@
-'use client'
+import { logger } from '@repo/utils/logger'
+import { redirect } from 'next/navigation'
+import { env } from '@/lib/env'
+import { AuthCallbackClient } from './components/auth-callback-client'
+import { StoreTokenClient } from './components/store-token'
 
-import { useSession } from '@repo/react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+type AuthCallbackPageProps = {
+  searchParams: Promise<{
+    token?: string
+    format?: string
+    error?: string
+    message?: string
+  }>
+}
 
-export default function AuthCallbackPage() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
+export default async function AuthCallbackPage({ searchParams }: AuthCallbackPageProps) {
+  const params = await searchParams
+  const token = params.token
+  const formatJwt = params.format === 'jwt'
+  const error = params.error || params.message
 
-  // Get server-injected error from URL params (set by API route on invalid token)
-  const error = searchParams.get('error') || searchParams.get('message')
+  // Handle errors first
+  if (error) {
+    logger.debug({ error }, 'AuthCallbackPage: Redirecting to login with error')
+    redirect(`/?message=${encodeURIComponent(error)}`)
+  }
 
-  // Use TanStack Query to check session status
-  const {
-    data: session,
-    isLoading,
-    isError,
-  } = useSession({
-    retry: false,
-    refetchOnWindowFocus: false,
-  })
+  // Handle JWT format flow
+  if (formatJwt && token) {
+    try {
+      // Fetch JWT token server-side
+      const baseUrl = env.NEXT_PUBLIC_API_URL
+      const verifyUrl = `${baseUrl}/api/auth/magic-link/verify?token=${encodeURIComponent(token)}&format=jwt`
 
-  // Type guard to ensure session has the expected shape
-  const hasValidSession =
-    session && typeof session === 'object' && 'user' in session && session.user !== null
+      logger.debug({ verifyUrl }, 'AuthCallbackPage: Fetching JWT token server-side')
 
-  useEffect(() => {
-    if (error) {
-      // Server-injected error - redirect to login with error message
-      const timeoutId = setTimeout(() => {
-        router.push(`/?message=${encodeURIComponent(error)}`)
-      }, 2000)
-      return () => clearTimeout(timeoutId)
+      const response = await fetch(verifyUrl, {
+        cache: 'no-store',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        logger.error(
+          { status: response.status, statusText: response.statusText },
+          'AuthCallbackPage: JWT token fetch failed',
+        )
+        redirect('/?message=Invalid or expired magic link')
+      }
+
+      const data = await response.json()
+      if (data.token && typeof data.token === 'string') {
+        logger.debug(
+          { hasToken: !!data.token, tokenLength: data.token.length },
+          'AuthCallbackPage: JWT token received, passing to client component',
+        )
+        // Pass token to client component for localStorage storage
+        return <StoreTokenClient token={data.token} />
+      }
+
+      logger.error({ data }, 'AuthCallbackPage: Invalid token response format')
+      redirect('/?message=Invalid or expired magic link')
+    } catch (error) {
+      logger.error(
+        { error: error instanceof Error ? error.message : String(error) },
+        'AuthCallbackPage: Error fetching JWT token',
+      )
+      redirect('/?message=Failed to verify magic link')
     }
+  }
 
-    if (!isLoading && !isError && hasValidSession) {
-      // Session exists - redirect to dashboard
-      const timeoutId = setTimeout(() => {
-        router.push('/dashboard?authenticated=true')
-      }, 500)
-      return () => clearTimeout(timeoutId)
-    }
-
-    if (!isLoading && (isError || !hasValidSession)) {
-      // No session - redirect to login
-      const timeoutId = setTimeout(() => {
-        router.push('/')
-      }, 1000)
-      return () => clearTimeout(timeoutId)
-    }
-  }, [error, isLoading, isError, session, router, hasValidSession])
-
-  // Determine status from query state and server-injected error
-  const status: 'loading' | 'success' | 'error' = error
-    ? 'error'
-    : isLoading
-      ? 'loading'
-      : hasValidSession
-        ? 'success'
-        : 'error'
-
-  return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="text-center space-y-4">
-        {status === 'loading' && (
-          <>
-            <div className="mx-auto size-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-            <p className="text-muted-foreground">Verifying your magic link...</p>
-          </>
-        )}
-        {status === 'success' && (
-          <>
-            <div className="mx-auto size-8 rounded-full bg-green-500 flex items-center justify-center">
-              <svg
-                className="size-5 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-            <p className="text-muted-foreground">Success! Redirecting to dashboard...</p>
-          </>
-        )}
-        {status === 'error' && (
-          <>
-            <div className="mx-auto size-8 rounded-full bg-destructive flex items-center justify-center">
-              <svg
-                className="size-5 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </div>
-            <p className="text-destructive">
-              {error || 'Verification failed. Redirecting to login...'}
-            </p>
-          </>
-        )}
-      </div>
-    </div>
-  )
+  // Cookie-based flow - use existing client component logic
+  return <AuthCallbackClient />
 }

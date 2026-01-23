@@ -9,10 +9,11 @@ import { setTestEmailProvider } from './src/lib/auth.js'
 import { env } from './src/lib/env.js'
 import { setSharedFakeEmail } from './src/routes/test.js'
 
-// Dynamically import FakeEmailProvider only in development/test
+// Dynamically import FakeEmailProvider only when explicitly enabled
 async function setupFakeEmailProvider() {
-  const allowedEnvs = ['test', 'development']
-  if (env.NODE_ENV && allowedEnvs.includes(env.NODE_ENV)) {
+  // Only use fake email provider if explicitly enabled via USE_FAKE_EMAIL env var
+  // This allows development to use real Resend emails by default
+  if (env.USE_FAKE_EMAIL) {
     try {
       const { FakeEmailProvider } = await import('./test/utils/fake-email.js')
       const fakeEmailProvider = new FakeEmailProvider()

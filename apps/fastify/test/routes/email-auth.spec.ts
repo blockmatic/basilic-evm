@@ -306,4 +306,171 @@ describe('Magic Link Authentication', () => {
       expect(sessionBody.session).not.toBeNull()
     })
   })
+
+  describe('Magic Link JWT Flow', () => {
+    it('should return JWT token when format=jwt', async () => {
+      const email = 'jwt@example.com'
+
+      // Send magic link
+      await fastify.inject({
+        method: 'POST',
+        url: '/api/auth/sign-in/magic-link',
+        payload: {
+          email,
+        },
+      })
+
+      // Extract token from email
+      const token = fastify.fakeEmail.extractToken()
+      expect(token).toBeTruthy()
+
+      // Verify token with format=jwt parameter
+      const verifyResponse = await fastify.inject({
+        method: 'GET',
+        url: `/api/auth/magic-link/verify?token=${token}&format=jwt`,
+      })
+
+      // Should return 200 with JWT token in response body
+      expect(verifyResponse.statusCode).toBe(200)
+
+      const body = JSON.parse(verifyResponse.body)
+      expect(body).toHaveProperty('token')
+      expect(typeof body.token).toBe('string')
+      expect(body.token.length).toBeGreaterThan(0)
+
+      // Should NOT set session cookie when format=jwt
+      const setCookieHeader = verifyResponse.headers['set-cookie']
+      if (setCookieHeader) {
+        const cookies = Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader]
+        const sessionCookie = cookies.find(cookie => cookie.includes('better-auth.session_token'))
+        expect(sessionCookie).toBeUndefined()
+      }
+    })
+
+    it('should authenticate with JWT token in Authorization header', async () => {
+      const email = 'jwtauth@example.com'
+
+      // Send magic link
+      await fastify.inject({
+        method: 'POST',
+        url: '/api/auth/sign-in/magic-link',
+        payload: {
+          email,
+        },
+      })
+
+      // Extract token and verify with format=jwt
+      const magicLinkToken = fastify.fakeEmail.extractToken()
+      expect(magicLinkToken).toBeTruthy()
+
+      const verifyResponse = await fastify.inject({
+        method: 'GET',
+        url: `/api/auth/magic-link/verify?token=${magicLinkToken}&format=jwt`,
+      })
+
+      expect(verifyResponse.statusCode).toBe(200)
+      const { token: jwtToken } = JSON.parse(verifyResponse.body)
+      expect(jwtToken).toBeTruthy()
+
+      // Access protected route with JWT token
+      const walletsResponse = await fastify.inject({
+        method: 'GET',
+        url: '/wallets',
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      })
+
+      // Should succeed (200 with empty wallets array for new user)
+      expect(walletsResponse.statusCode).toBe(200)
+      const walletsBody = JSON.parse(walletsResponse.body)
+      expect(walletsBody).toHaveProperty('wallets')
+      expect(Array.isArray(walletsBody.wallets)).toBe(true)
+    })
+
+    it('should work alongside session cookies', async () => {
+      const emailCookie = 'cookie@example.com'
+      const emailJwt = 'jwt@example.com'
+
+      // Test session cookie flow
+      await fastify.inject({
+        method: 'POST',
+        url: '/api/auth/sign-in/magic-link',
+        payload: {
+          email: emailCookie,
+        },
+      })
+
+      const cookieToken = fastify.fakeEmail.extractToken()
+      const cookieVerifyResponse = await fastify.inject({
+        method: 'GET',
+        url: `/api/auth/magic-link/verify?token=${cookieToken}`,
+      })
+
+      expect([200, 302]).toContain(cookieVerifyResponse.statusCode)
+      const cookieHeader = cookieVerifyResponse.headers['set-cookie']
+      expect(cookieHeader).toBeDefined()
+
+      // Test JWT flow
+      await fastify.inject({
+        method: 'POST',
+        url: '/api/auth/sign-in/magic-link',
+        payload: {
+          email: emailJwt,
+        },
+      })
+
+      const jwtToken = fastify.fakeEmail.extractToken()
+      const jwtVerifyResponse = await fastify.inject({
+        method: 'GET',
+        url: `/api/auth/magic-link/verify?token=${jwtToken}&format=jwt`,
+      })
+
+      expect(jwtVerifyResponse.statusCode).toBe(200)
+      const { token: jwtAuthToken } = JSON.parse(jwtVerifyResponse.body)
+      expect(jwtAuthToken).toBeTruthy()
+
+      // Both methods should work independently
+      // Session cookie flow
+      const cookies = Array.isArray(cookieHeader) ? cookieHeader : [cookieHeader]
+      const sessionCookie = cookies.find(cookie => cookie.includes('better-auth.session_token'))
+      const cookieMatch = sessionCookie?.match(/better-auth\.session_token=([^;]+)/)
+      const cookieValue = cookieMatch?.[1]
+
+      const walletsCookieResponse = await fastify.inject({
+        method: 'GET',
+        url: '/wallets',
+        headers: {
+          Cookie: `better-auth.session_token=${cookieValue}`,
+        },
+      })
+      expect(walletsCookieResponse.statusCode).toBe(200)
+
+      // JWT flow
+      const walletsJwtResponse = await fastify.inject({
+        method: 'GET',
+        url: '/wallets',
+        headers: {
+          Authorization: `Bearer ${jwtAuthToken}`,
+        },
+      })
+      expect(walletsJwtResponse.statusCode).toBe(200)
+    })
+
+    it('should return error for invalid token with format=jwt', async () => {
+      const response = await fastify.inject({
+        method: 'GET',
+        url: '/api/auth/magic-link/verify?token=invalid-token-12345&format=jwt',
+      })
+
+      // Should return error status
+      expect([400, 401, 404]).toContain(response.statusCode)
+
+      // Should not return token
+      if (response.statusCode === 200) {
+        const body = JSON.parse(response.body)
+        expect(body).not.toHaveProperty('token')
+      }
+    })
+  })
 })

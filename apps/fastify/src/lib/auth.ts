@@ -3,7 +3,7 @@ import { render } from '@repo/email/render'
 import { captureError } from '@repo/error/node'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-import { magicLink } from 'better-auth/plugins'
+import { jwt, magicLink } from 'better-auth/plugins'
 import { Resend } from 'resend'
 import { getDb } from '../db/index.js'
 import * as schema from '../db/schema/index.js'
@@ -20,7 +20,10 @@ type EmailProvider = {
       subject: string
       html: string
       text?: string
-    }) => Promise<{ data: { id: string }; error: null }>
+    }) => Promise<
+      | { data: { id: string }; error: null }
+      | { data: null; error: { message: string; name?: string } }
+    >
   }
 }
 
@@ -81,12 +84,18 @@ export async function getAuth() {
               const html = await render(
                 MagicLinkLoginEmail({ magicLink: url, expirationMinutes: 15 }),
               )
-              await emailProvider.emails.send({
+              const response = await emailProvider.emails.send({
                 from: `${env.EMAIL_FROM_NAME} <${env.EMAIL_FROM}>`,
                 to: email,
                 subject: 'Sign in to your account',
                 html,
               })
+              // Check for Resend API errors (when using real Resend client)
+              if ('error' in response && response.error) {
+                throw new Error(
+                  `Failed to send email: ${response.error.message || JSON.stringify(response.error)}`,
+                )
+              }
             } catch (error) {
               captureError({
                 code: 'INTERNAL_ERROR',
@@ -105,6 +114,10 @@ export async function getAuth() {
               throw error
             }
           },
+        }),
+        jwt({
+          // JWT tokens expire in 7 days (matching session expiration)
+          expiresIn: env.JWT_EXPIRES_IN,
         }),
         web3Plugin(),
       ],
