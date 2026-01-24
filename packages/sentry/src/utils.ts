@@ -1,8 +1,22 @@
 import type { ErrorWithMessage } from './types.js'
 
 /**
- * Type guard to check if error has a message property
- * Based on Kent C. Dodds pattern for type-safe error handling
+ * Type guard to check if an error has a message property.
+ *
+ * Based on Kent C. Dodds pattern for type-safe error handling. Safely checks
+ * if an unknown value is an error-like object with a string message property.
+ *
+ * @param error - Unknown error value to check
+ * @returns True if error has a message property, false otherwise
+ *
+ * @example
+ * ```ts
+ * function handleError(error: unknown) {
+ *   if (isErrorWithMessage(error)) {
+ *     console.error(error.message) // Type-safe access
+ *   }
+ * }
+ * ```
  */
 export function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
   return (
@@ -14,8 +28,24 @@ export function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
 }
 
 /**
- * Converts unknown error to ErrorWithMessage
- * Handles all possible thrown values (Error, string, object, etc.)
+ * Converts an unknown error to an ErrorWithMessage.
+ *
+ * Handles all possible thrown values (Error, string, object, etc.) and safely
+ * converts them to an ErrorWithMessage interface. Always returns a valid object
+ * with a message property, even if conversion fails.
+ *
+ * @param maybeError - Unknown error value to convert
+ * @returns ErrorWithMessage object with a message property
+ *
+ * @example
+ * ```ts
+ * try {
+ *   throw 'String error'
+ * } catch (error) {
+ *   const errorWithMessage = toErrorWithMessage(error)
+ *   console.error(errorWithMessage.message) // 'String error'
+ * }
+ * ```
  */
 export function toErrorWithMessage(maybeError: unknown): ErrorWithMessage {
   if (isErrorWithMessage(maybeError)) {
@@ -31,8 +61,24 @@ export function toErrorWithMessage(maybeError: unknown): ErrorWithMessage {
 }
 
 /**
- * Extracts error message from unknown error type
- * Type-safe error message extraction following Kent C. Dodds pattern
+ * Extracts an error message from an unknown error type.
+ *
+ * Type-safe error message extraction following Kent C. Dodds pattern.
+ * Safely converts any error value to a string message, handling all possible
+ * thrown values (Error, string, object, etc.).
+ *
+ * @param error - Unknown error value
+ * @returns Error message string
+ *
+ * @example
+ * ```ts
+ * try {
+ *   // Some operation
+ * } catch (error) {
+ *   const message = getErrorMessage(error) // Always returns a string
+ *   console.error(message)
+ * }
+ * ```
  */
 export function getErrorMessage(error: unknown): string {
   return toErrorWithMessage(error).message

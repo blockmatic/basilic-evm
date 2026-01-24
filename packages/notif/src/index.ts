@@ -26,6 +26,11 @@ type CreateEmailInputInput<T extends keyof NotificationTypes> = {
   options?: NotificationOptions
 }
 
+/**
+ * Creates an email input from notification data and user.
+ *
+ * @internal
+ */
 const createEmailInput = <T extends keyof NotificationTypes>({
   type,
   handler,
@@ -65,6 +70,13 @@ type CreateInput<T extends keyof NotificationTypes> = {
   options?: NotificationOptions
 }
 
+/**
+ * Internal function to create a notification.
+ *
+ * Validates payload, creates activities, and optionally sends emails.
+ *
+ * @internal
+ */
 const create = async <T extends keyof NotificationTypes>({
   emailService,
   type,
@@ -207,7 +219,35 @@ const create = async <T extends keyof NotificationTypes>({
   }
 }
 
+/**
+ * Creates a notification service instance.
+ *
+ * Factory function that returns a service with a `create` method for sending notifications.
+ * This is the preferred way to use the notification service (over the `Notifications` class).
+ *
+ * @returns Notification service with `create` method
+ *
+ * @example
+ * ```ts
+ * const notifications = createNotifications()
+ *
+ * await notifications.create('login_notification', {
+ *   users: [{ id: '123', full_name: 'John', email: 'john@example.com', team_id: 'team-1' }],
+ *   timestamp: new Date().toISOString(),
+ *   ipAddress: '192.168.1.1',
+ *   location: 'San Francisco',
+ *   device: 'Chrome',
+ *   userAgent: 'Mozilla/5.0...',
+ * })
+ * ```
+ */
 export const createNotifications = (): {
+  /**
+   * Creates a notification of the specified type.
+   *
+   * @param input - Notification input with type, payload, and optional options
+   * @returns Promise resolving to notification result with activity and email statistics
+   */
   create: <T extends keyof NotificationTypes>(input: CreateInput<T>) => Promise<NotificationResult>
 } => {
   const emailService = createEmailService()
@@ -218,7 +258,26 @@ export const createNotifications = (): {
   }
 }
 
-// Backward compatibility - export class wrapper for existing code
+/**
+ * Notification service class (backward compatibility).
+ *
+ * Class-based wrapper around the `createNotifications` factory function.
+ * Prefer using `createNotifications()` for new code.
+ *
+ * @example
+ * ```ts
+ * const service = new Notifications()
+ *
+ * await service.create('login_notification', {
+ *   users: [{ id: '123', full_name: 'John', email: 'john@example.com', team_id: 'team-1' }],
+ *   timestamp: new Date().toISOString(),
+ *   ipAddress: '192.168.1.1',
+ *   location: 'San Francisco',
+ *   device: 'Chrome',
+ *   userAgent: 'Mozilla/5.0...',
+ * })
+ * ```
+ */
 export class Notifications {
   #service: ReturnType<typeof createNotifications>
 
@@ -226,6 +285,14 @@ export class Notifications {
     this.#service = createNotifications()
   }
 
+  /**
+   * Creates a notification of the specified type.
+   *
+   * @param type - Notification type (e.g., 'login_notification', 'transactions_created')
+   * @param payload - Notification payload data (validated against type schema)
+   * @param options - Optional notification options (sendEmail, priority, etc.)
+   * @returns Promise resolving to notification result with activity and email statistics
+   */
   async create<T extends keyof NotificationTypes>(
     type: T,
     payload: NotificationTypes[T],

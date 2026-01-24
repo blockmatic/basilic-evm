@@ -1,7 +1,6 @@
 import { toErrorWithMessage } from '@repo/utils/error'
 import { logger } from '@repo/utils/logger'
-import { getError } from '../registry.js'
-import type { CaptureErrorOptions, CatalogError } from '../types.js'
+import type { CaptureErrorOptions } from '../types.js'
 
 // Module-scoped flag for warning suppression (shows once per app runtime)
 let sentryWarningShown = false
@@ -28,15 +27,8 @@ interface SentryAdapter {
  * @internal This is an internal implementation detail, not part of public API
  */
 export function createCaptureError(Sentry: SentryAdapter) {
-  return function captureError(options: CaptureErrorOptions): CatalogError {
+  return function captureError(options: CaptureErrorOptions): void {
     const errorWithMessage = toErrorWithMessage(options.error)
-
-    // Get catalog error (fallback to UNEXPECTED_ERROR if code not found)
-    const catalogError: CatalogError = (options.code ? getError(options.code) : undefined) ??
-      getError('UNEXPECTED_ERROR') ?? {
-        code: 'UNEXPECTED_ERROR',
-        message: 'An unexpected error occurred',
-      }
 
     // Don't report if explicitly disabled
     if (options.report !== false) {
@@ -81,7 +73,5 @@ export function createCaptureError(Sentry: SentryAdapter) {
         )
       })
     }
-
-    return catalogError
   }
 }

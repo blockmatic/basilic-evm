@@ -109,6 +109,33 @@ function wrapApiWithClient<T>(
   return obj
 }
 
+/**
+ * Creates a type-safe API client with nested namespace API and automatic token refresh.
+ *
+ * The client provides a nested namespace API (e.g., `client.auth.magiclink.request()`)
+ * and automatically handles authentication token injection and refresh on 401 errors.
+ *
+ * @param options - Client configuration options
+ * @returns API client with nested namespace structure matching the OpenAPI spec
+ *
+ * @example
+ * ```ts
+ * const client = createClient({
+ *   baseUrl: 'https://api.example.com',
+ *   getAuthToken: async () => localStorage.getItem('accessToken'),
+ *   getRefreshToken: async () => localStorage.getItem('refreshToken'),
+ *   onTokensRefreshed: async ({ token, refreshToken }) => {
+ *     localStorage.setItem('accessToken', token)
+ *     localStorage.setItem('refreshToken', refreshToken)
+ *   },
+ * })
+ *
+ * // Nested namespace API
+ * await client.auth.magiclink.request({ body: { email, callbackUrl } })
+ * await client.auth.session.logout()
+ * await client.ai.chat({ body: { messages: [...] } })
+ * ```
+ */
 export function createClient(options: CoreClientOptions) {
   // Create hey-api client with baseUrl
   const client = createHeyApiClient(

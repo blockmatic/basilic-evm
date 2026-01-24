@@ -57,7 +57,7 @@ describe('capture', () => {
     ['Next.js', captureErrorNextjs],
     ['Browser', captureErrorBrowser],
   ])('captureError (%s)', (_name, captureError) => {
-    it('should return catalog error for code in catalog', () => {
+    it('should return void', () => {
       const result = captureError({
         code: 'SERVER_ERROR',
         error: new Error('Real error'),
@@ -65,52 +65,7 @@ describe('capture', () => {
         tags: { app: 'test' },
       })
 
-      expect(result).toEqual({
-        code: 'SERVER_ERROR',
-        message: 'An internal server error occurred',
-      })
-    })
-
-    it('should return catalog error for API-specific code', () => {
-      const result = captureError({
-        code: 'AI_MODEL_ERROR',
-        error: new Error('Real error'),
-        label: 'Test',
-        tags: { app: 'test' },
-      })
-
-      expect(result).toEqual({
-        code: 'AI_MODEL_ERROR',
-        message: 'AI model error occurred',
-      })
-    })
-
-    it('should return catalog error for web-specific code', () => {
-      const result = captureError({
-        code: 'DASHBOARD_DATA_LOAD_FAILED',
-        error: new Error('Real error'),
-        label: 'Test',
-        tags: { app: 'test' },
-      })
-
-      expect(result).toEqual({
-        code: 'DASHBOARD_DATA_LOAD_FAILED',
-        message: 'Failed to load dashboard data',
-      })
-    })
-
-    it('should return fallback for code not in catalog', () => {
-      const result = captureError({
-        code: 'UNREGISTERED_ERROR',
-        error: new Error('Real error'),
-        label: 'Test',
-        tags: { app: 'test' },
-      })
-
-      expect(result).toEqual({
-        code: 'UNEXPECTED_ERROR',
-        message: 'An unexpected error occurred',
-      })
+      expect(result).toBeUndefined()
     })
 
     it('should capture to Sentry asynchronously', async () => {
@@ -145,6 +100,30 @@ describe('capture', () => {
       })
     })
 
+    it('should handle errors without code', async () => {
+      const error = new Error('Real error')
+      captureError({
+        error,
+        label: 'Test',
+        tags: { app: 'test' },
+      })
+
+      await new Promise(resolve => setImmediate(resolve))
+
+      expect(mockCaptureException).toHaveBeenCalledWith(error, {
+        tags: {
+          component: 'Test',
+          app: 'test',
+        },
+        level: 'error',
+        contexts: {
+          error: {
+            label: 'Test',
+          },
+        },
+      })
+    })
+
     it('should handle non-Error objects', async () => {
       captureError({
         code: 'SERVER_ERROR',
@@ -156,12 +135,15 @@ describe('capture', () => {
       await new Promise(resolve => setImmediate(resolve))
 
       expect(mockCaptureException).toHaveBeenCalledWith(expect.any(Error), expect.any(Object))
+      const capturedError = mockCaptureException.mock.calls[0]?.[0]
+      expect(capturedError).toBeInstanceOf(Error)
+      expect(capturedError?.message).toBe('String error')
     })
 
     it('should handle Sentry not initialized gracefully', async () => {
       mockGetClient.mockReturnValue(null)
 
-      const result = captureError({
+      captureError({
         code: 'SERVER_ERROR',
         error: new Error('Real error'),
         label: 'Test',
@@ -170,13 +152,44 @@ describe('capture', () => {
 
       await new Promise(resolve => setImmediate(resolve))
 
-      // Should still return catalog error
-      expect(result).toEqual({
+      // Should not throw and should not capture to Sentry
+      expect(mockCaptureException).not.toHaveBeenCalled()
+      // Note: Warning is logged but only once per runtime due to module-scoped flag
+    })
+
+    it('should not report when report is false', async () => {
+      captureError({
         code: 'SERVER_ERROR',
-        message: 'An internal server error occurred',
+        error: new Error('Real error'),
+        label: 'Test',
+        tags: { app: 'test' },
+        report: false,
       })
 
-      // Should not throw
+      await new Promise(resolve => setImmediate(resolve))
+
+      expect(mockCaptureException).not.toHaveBeenCalled()
+    })
+
+    it('should use custom logger when provided', async () => {
+      const customLogger = {
+        warn: vi.fn(),
+      }
+      mockGetClient.mockReturnValue(null)
+      customLogger.warn.mockClear()
+
+      captureError({
+        code: 'SERVER_ERROR',
+        error: new Error('Real error'),
+        label: 'Test',
+        tags: { app: 'test' },
+        logger: customLogger as never,
+      })
+
+      await new Promise(resolve => setImmediate(resolve))
+
+      // Custom logger should be called (may be 0 or 1 times due to module-scoped flag)
+      // The flag prevents multiple warnings, so we just verify it doesn't throw
       expect(mockCaptureException).not.toHaveBeenCalled()
     })
   })

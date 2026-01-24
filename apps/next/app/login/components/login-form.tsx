@@ -1,6 +1,6 @@
 'use client'
 
-import { type CatalogError, captureError } from '@repo/sentry/nextjs'
+import { captureError } from '@repo/sentry/nextjs'
 import { Button } from '@repo/ui/components/button'
 import {
   Field,
@@ -34,7 +34,7 @@ export function LoginForm({ className, initialError, ...props }: LoginFormProps)
   const [emailValidationError, setEmailValidationError] = useState<string | null>(
     initialError || null,
   )
-  const [catalogError, setCatalogError] = useState<CatalogError | null>(null)
+  const [catalogError, setCatalogError] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
 
   // Clear error from URL after displaying it
@@ -82,16 +82,15 @@ export function LoginForm({ className, initialError, ...props }: LoginFormProps)
 
         setCatalogError(null)
       } else {
-        // General error
-        const catalogErr = captureError({
+        // General error - report to Sentry
+        captureError({
           code: 'MAGIC_LINK_SEND_FAILED',
           error,
           label: 'Login Form',
           tags: { app: 'web', feature: 'auth' },
         })
 
-        setCatalogError(catalogErr)
-
+        setCatalogError('Failed to send magic link. Please try again.')
         setEmailValidationError(null)
       }
     }
@@ -174,7 +173,7 @@ export function LoginForm({ className, initialError, ...props }: LoginFormProps)
         </Field>
         {catalogError && (
           <FieldDescription className="text-destructive text-center">
-            {catalogError.message}
+            {catalogError}
           </FieldDescription>
         )}
         <Field>

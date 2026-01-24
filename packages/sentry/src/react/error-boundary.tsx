@@ -2,14 +2,14 @@
 
 import type { ErrorInfo, ReactNode } from 'react'
 import { Component } from 'react'
-import type { CaptureErrorOptions, CatalogError } from '../types.js'
+import type { CaptureErrorOptions } from '../types.js'
 
 export interface AppErrorBoundaryProps {
   children: ReactNode
   /** Application name for tagging (required) */
   app: string
   /** Error capture function - import from @repo/sentry/node, @repo/sentry/nextjs, or @repo/sentry/browser */
-  captureError: (options: CaptureErrorOptions) => CatalogError
+  captureError: (options: CaptureErrorOptions) => void
   /** Optional fallback component */
   fallback?: (props: { error: Error; resetErrorBoundary: () => void }) => ReactNode
   /** Optional onReset callback */
