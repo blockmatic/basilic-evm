@@ -4,134 +4,6 @@ export type ClientOptions = {
     baseUrl: `${string}://${string}` | (string & {});
 };
 
-export type DeleteApiAuthBy__Data = {
-    body?: never;
-    path: {
-        '*': string;
-    };
-    query?: never;
-    url: '/api/auth/{*}';
-};
-
-export type DeleteApiAuthBy__Responses = {
-    /**
-     * Default Response
-     */
-    200: unknown;
-};
-
-export type GetApiAuthBy__Data = {
-    body?: never;
-    path: {
-        '*': string;
-    };
-    query?: never;
-    url: '/api/auth/{*}';
-};
-
-export type GetApiAuthBy__Responses = {
-    /**
-     * Default Response
-     */
-    200: unknown;
-};
-
-export type HeadApiAuthBy__Data = {
-    body?: never;
-    path: {
-        '*': string;
-    };
-    query?: never;
-    url: '/api/auth/{*}';
-};
-
-export type HeadApiAuthBy__Responses = {
-    /**
-     * Default Response
-     */
-    200: unknown;
-};
-
-export type OptionsApiAuthBy__Data = {
-    body?: never;
-    path: {
-        '*': string;
-    };
-    query?: never;
-    url: '/api/auth/{*}';
-};
-
-export type OptionsApiAuthBy__Responses = {
-    /**
-     * Default Response
-     */
-    200: unknown;
-};
-
-export type PatchApiAuthBy__Data = {
-    body?: never;
-    path: {
-        '*': string;
-    };
-    query?: never;
-    url: '/api/auth/{*}';
-};
-
-export type PatchApiAuthBy__Responses = {
-    /**
-     * Default Response
-     */
-    200: unknown;
-};
-
-export type PostApiAuthBy__Data = {
-    body?: never;
-    path: {
-        '*': string;
-    };
-    query?: never;
-    url: '/api/auth/{*}';
-};
-
-export type PostApiAuthBy__Responses = {
-    /**
-     * Default Response
-     */
-    200: unknown;
-};
-
-export type PutApiAuthBy__Data = {
-    body?: never;
-    path: {
-        '*': string;
-    };
-    query?: never;
-    url: '/api/auth/{*}';
-};
-
-export type PutApiAuthBy__Responses = {
-    /**
-     * Default Response
-     */
-    200: unknown;
-};
-
-export type TraceApiAuthBy__Data = {
-    body?: never;
-    path: {
-        '*': string;
-    };
-    query?: never;
-    url: '/api/auth/{*}';
-};
-
-export type TraceApiAuthBy__Responses = {
-    /**
-     * Default Response
-     */
-    200: unknown;
-};
-
 export type HealthCheckData = {
     body?: never;
     path?: never;
@@ -166,86 +38,16 @@ export type GetResponses = {
     200: unknown;
 };
 
-export type GetApiTestLastMagicLinkData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/test/last-magic-link';
-};
-
-export type GetApiTestLastMagicLinkResponses = {
-    /**
-     * Default Response
-     */
-    200: unknown;
-};
-
-export type ListWalletsData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/wallets';
-};
-
-export type ListWalletsResponses = {
-    /**
-     * Default Response
-     */
-    200: {
-        wallets: Array<{
-            id: string;
-            userId: string;
-            chain: 'eip155' | 'solana';
-            address: string;
-            walletProvider?: string;
-            createdAt: string;
-            lastUsedAt?: string;
-        }>;
-    };
-};
-
-export type ListWalletsResponse = ListWalletsResponses[keyof ListWalletsResponses];
-
-export type DeleteWalletData = {
-    body?: never;
-    path: {
-        chain: 'eip155' | 'solana';
-        address: string;
-    };
-    query?: never;
-    url: '/wallets/{chain}/{address}';
-};
-
-export type DeleteWalletErrors = {
-    /**
-     * Default Response
-     */
-    404: {
-        code: string;
-        message: string;
-    };
-};
-
-export type DeleteWalletError = DeleteWalletErrors[keyof DeleteWalletErrors];
-
-export type DeleteWalletResponses = {
-    /**
-     * Default Response
-     */
-    200: {
-        success: true;
-    };
-};
-
-export type DeleteWalletResponse = DeleteWalletResponses[keyof DeleteWalletResponses];
-
 export type ChatData = {
     body: {
         messages: Array<{
             role: 'user' | 'assistant' | 'system';
             content: string;
         }>;
+        stream?: boolean;
         model?: string;
+        temperature?: number;
+        tools?: unknown;
     };
     path?: never;
     query?: never;
@@ -277,25 +79,128 @@ export type ChatResponses = {
      */
     200: {
         text: string;
-    };
+    } | string;
 };
 
 export type ChatResponse = ChatResponses[keyof ChatResponses];
 
-export type ChatStreamData = {
+export type MagiclinkRequestData = {
     body: {
-        messages: Array<{
-            role: 'user' | 'assistant' | 'system';
-            content: string;
-        }>;
-        model?: string;
+        email: string;
+        callbackUrl: string;
     };
     path?: never;
     query?: never;
-    url: '/ai/chat/stream';
+    url: '/auth/magiclink/request';
 };
 
-export type ChatStreamErrors = {
+export type MagiclinkRequestErrors = {
+    /**
+     * Default Response
+     */
+    400: {
+        code: string;
+        message: string;
+    };
+};
+
+export type MagiclinkRequestError = MagiclinkRequestErrors[keyof MagiclinkRequestErrors];
+
+export type MagiclinkRequestResponses = {
+    /**
+     * Default Response
+     */
+    200: {
+        ok: boolean;
+    };
+};
+
+export type MagiclinkRequestResponse = MagiclinkRequestResponses[keyof MagiclinkRequestResponses];
+
+export type MagiclinkVerifyData = {
+    body: {
+        token: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/auth/magiclink/verify';
+};
+
+export type MagiclinkVerifyErrors = {
+    /**
+     * Default Response
+     */
+    401: {
+        code: string;
+        message: string;
+    };
+    /**
+     * Default Response
+     */
+    404: {
+        code: string;
+        message: string;
+    };
+};
+
+export type MagiclinkVerifyError = MagiclinkVerifyErrors[keyof MagiclinkVerifyErrors];
+
+export type MagiclinkVerifyResponses = {
+    /**
+     * Default Response
+     */
+    200: {
+        token: string;
+        refreshToken: string;
+    };
+};
+
+export type MagiclinkVerifyResponse = MagiclinkVerifyResponses[keyof MagiclinkVerifyResponses];
+
+export type LogoutData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/auth/session/logout';
+};
+
+export type LogoutErrors = {
+    /**
+     * Default Response
+     */
+    401: {
+        code: string;
+        message: string;
+    };
+};
+
+export type LogoutError = LogoutErrors[keyof LogoutErrors];
+
+export type LogoutResponses = {
+    /**
+     * Default Response
+     */
+    200: {
+        ok: boolean;
+    };
+    /**
+     * Default Response
+     */
+    204: void;
+};
+
+export type LogoutResponse = LogoutResponses[keyof LogoutResponses];
+
+export type RefreshData = {
+    body: {
+        refreshToken: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/auth/session/refresh';
+};
+
+export type RefreshErrors = {
     /**
      * Default Response
      */
@@ -306,19 +211,22 @@ export type ChatStreamErrors = {
     /**
      * Default Response
      */
-    500: {
+    401: {
         code: string;
         message: string;
     };
 };
 
-export type ChatStreamError = ChatStreamErrors[keyof ChatStreamErrors];
+export type RefreshError = RefreshErrors[keyof RefreshErrors];
 
-export type ChatStreamResponses = {
+export type RefreshResponses = {
     /**
-     * Streaming text response
+     * Default Response
      */
-    200: string;
+    200: {
+        token: string;
+        refreshToken: string;
+    };
 };
 
-export type ChatStreamResponse = ChatStreamResponses[keyof ChatStreamResponses];
+export type RefreshResponse = RefreshResponses[keyof RefreshResponses];

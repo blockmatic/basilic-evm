@@ -30,7 +30,7 @@
     "setup:solana": "node scripts/setup-solana-tools.mjs",
     "setup:database": "node scripts/setup-database.mjs",
     "qa": "pnpm i --no-frozen-lockfile && pnpm lint:fix && turbo run checktypes test --concurrency=100% --filter='!./contracts/**'",
-    "update-deps": "pnpm up --latest --recursive"
+    "update-deps": "pnpm self-update && pnpm update --latest --recursive"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.11",

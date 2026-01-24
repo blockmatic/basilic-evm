@@ -1,6 +1,11 @@
+import { ApiError, createClient } from '@repo/core'
 import { logger } from '@repo/utils/logger'
 import { clearServerAuthToken, getServerAuthToken, setServerAuthToken } from '@/lib/auth-server'
 import { env } from '@/lib/env'
+
+const client = createClient({
+  baseUrl: env.NEXT_PUBLIC_API_URL,
+})
 
 type RouteContext = {
   params: Promise<{
@@ -73,13 +78,18 @@ const getRedirectUrl = ({
   return { redirectUrl: fallbackUrl.toString() }
 }
 
-const handleMagicLinkVerify = async ({ pathSegments, request }: AuthProxyOptions) => {
-  const { targetUrl } = buildFastifyUrl({ pathSegments, request })
+const handleMagicLinkVerify = async ({ request }: Pick<AuthProxyOptions, 'request'>) => {
   const requestUrl = new URL(request.url)
   const callbackURL = requestUrl.searchParams.get('callbackURL')
   const token = requestUrl.searchParams.get('token')
 
+  logger.debug(
+    { token: token ? 'present' : 'missing', callbackURL },
+    'handleMagicLinkVerify: starting verification',
+  )
+
   if (!token) {
+    logger.debug({ callbackURL }, 'handleMagicLinkVerify: no token provided')
     const loginUrl = new URL('/', new URL(request.url).origin)
     loginUrl.searchParams.set('message', 'Invalid or expired magic link')
     return new Response(null, {
@@ -90,25 +100,39 @@ const handleMagicLinkVerify = async ({ pathSegments, request }: AuthProxyOptions
     })
   }
 
-  const verifyUrl = new URL(targetUrl)
-  verifyUrl.searchParams.set('format', 'jwt')
-
   try {
-    const response = await fetch(verifyUrl.toString(), {
-      method: request.method,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      cache: 'no-store',
-    })
+    logger.debug({ token: 'present' }, 'handleMagicLinkVerify: sending verification request')
+    const data = await client.auth.magiclink.verify({ body: { token } })
 
-    if (!response.ok) {
-      const contentType = response.headers.get('content-type') || ''
-      const errorData = contentType.includes('application/json')
-        ? await response.json().catch(() => null)
-        : null
+    logger.debug(
+      { hasToken: !!data.token, tokenLength: data.token.length },
+      'handleMagicLinkVerify: received response',
+    )
+
+    logger.debug(
+      { tokenLength: data.token.length },
+      'handleMagicLinkVerify: setting server auth token',
+    )
+    await setServerAuthToken({ token: data.token })
+    const { redirectUrl } = getRedirectUrl({ request, callbackURL })
+    logger.debug({ redirectUrl }, 'handleMagicLinkVerify: redirecting to success URL')
+
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: redirectUrl,
+      },
+    })
+  } catch (error) {
+    if (error instanceof ApiError) {
       const errorMessage =
-        typeof errorData?.message === 'string' ? errorData.message : 'Invalid or expired magic link'
+        error.status === 401 || error.status === 404
+          ? 'Invalid or expired magic link'
+          : error.message || 'Failed to verify magic link'
+      logger.debug(
+        { status: error.status, errorMessage, errorBody: error.body },
+        'handleMagicLinkVerify: API error',
+      )
       const loginUrl = new URL('/', new URL(request.url).origin)
       loginUrl.searchParams.set('message', errorMessage)
       return new Response(null, {
@@ -119,28 +143,6 @@ const handleMagicLinkVerify = async ({ pathSegments, request }: AuthProxyOptions
       })
     }
 
-    const data = await response.json().catch(() => null)
-    if (!data?.token || typeof data.token !== 'string') {
-      const loginUrl = new URL('/', new URL(request.url).origin)
-      loginUrl.searchParams.set('message', 'Invalid or expired magic link')
-      return new Response(null, {
-        status: 302,
-        headers: {
-          Location: loginUrl.toString(),
-        },
-      })
-    }
-
-    await setServerAuthToken({ token: data.token })
-    const { redirectUrl } = getRedirectUrl({ request, callbackURL })
-
-    return new Response(null, {
-      status: 302,
-      headers: {
-        Location: redirectUrl,
-      },
-    })
-  } catch (error) {
     logger.error({ error }, 'API auth route: magic link verification failed')
     const loginUrl = new URL('/', new URL(request.url).origin)
     loginUrl.searchParams.set('message', 'Failed to verify magic link')
@@ -156,7 +158,7 @@ const handleMagicLinkVerify = async ({ pathSegments, request }: AuthProxyOptions
 const proxyRequest = async ({ pathSegments, request }: AuthProxyOptions) => {
   const { path, targetUrl } = buildFastifyUrl({ pathSegments, request })
   if (path === 'magic-link/verify') {
-    return handleMagicLinkVerify({ pathSegments, request })
+    return handleMagicLinkVerify({ request })
   }
 
   const { token } = await getServerAuthToken()

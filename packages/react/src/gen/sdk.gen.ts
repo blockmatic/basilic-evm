@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ChatData, ChatErrors, ChatResponses, ChatStreamData, ChatStreamErrors, ChatStreamResponses, DeleteApiAuthBy__Data, DeleteApiAuthBy__Responses, DeleteWalletData, DeleteWalletErrors, DeleteWalletResponses, GetApiAuthBy__Data, GetApiAuthBy__Responses, GetApiTestLastMagicLinkData, GetApiTestLastMagicLinkResponses, GetData, GetResponses, HeadApiAuthBy__Data, HeadApiAuthBy__Responses, HealthCheckData, HealthCheckResponses, ListWalletsData, ListWalletsResponses, OptionsApiAuthBy__Data, OptionsApiAuthBy__Responses, PatchApiAuthBy__Data, PatchApiAuthBy__Responses, PostApiAuthBy__Data, PostApiAuthBy__Responses, PutApiAuthBy__Data, PutApiAuthBy__Responses, TraceApiAuthBy__Data, TraceApiAuthBy__Responses } from './types.gen';
+import type { ChatData, ChatErrors, ChatResponses, GetData, GetResponses, HealthCheckData, HealthCheckResponses, LogoutData, LogoutErrors, LogoutResponses, MagiclinkRequestData, MagiclinkRequestErrors, MagiclinkRequestResponses, MagiclinkVerifyData, MagiclinkVerifyErrors, MagiclinkVerifyResponses, RefreshData, RefreshErrors, RefreshResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -18,22 +18,6 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
     meta?: Record<string, unknown>;
 };
 
-export const deleteApiAuthBy__ = <ThrowOnError extends boolean = false>(options: Options<DeleteApiAuthBy__Data, ThrowOnError>) => (options.client ?? client).delete<DeleteApiAuthBy__Responses, unknown, ThrowOnError>({ url: '/api/auth/{*}', ...options });
-
-export const getApiAuthBy__ = <ThrowOnError extends boolean = false>(options: Options<GetApiAuthBy__Data, ThrowOnError>) => (options.client ?? client).get<GetApiAuthBy__Responses, unknown, ThrowOnError>({ url: '/api/auth/{*}', ...options });
-
-export const headApiAuthBy__ = <ThrowOnError extends boolean = false>(options: Options<HeadApiAuthBy__Data, ThrowOnError>) => (options.client ?? client).head<HeadApiAuthBy__Responses, unknown, ThrowOnError>({ url: '/api/auth/{*}', ...options });
-
-export const optionsApiAuthBy__ = <ThrowOnError extends boolean = false>(options: Options<OptionsApiAuthBy__Data, ThrowOnError>) => (options.client ?? client).options<OptionsApiAuthBy__Responses, unknown, ThrowOnError>({ url: '/api/auth/{*}', ...options });
-
-export const patchApiAuthBy__ = <ThrowOnError extends boolean = false>(options: Options<PatchApiAuthBy__Data, ThrowOnError>) => (options.client ?? client).patch<PatchApiAuthBy__Responses, unknown, ThrowOnError>({ url: '/api/auth/{*}', ...options });
-
-export const postApiAuthBy__ = <ThrowOnError extends boolean = false>(options: Options<PostApiAuthBy__Data, ThrowOnError>) => (options.client ?? client).post<PostApiAuthBy__Responses, unknown, ThrowOnError>({ url: '/api/auth/{*}', ...options });
-
-export const putApiAuthBy__ = <ThrowOnError extends boolean = false>(options: Options<PutApiAuthBy__Data, ThrowOnError>) => (options.client ?? client).put<PutApiAuthBy__Responses, unknown, ThrowOnError>({ url: '/api/auth/{*}', ...options });
-
-export const traceApiAuthBy__ = <ThrowOnError extends boolean = false>(options: Options<TraceApiAuthBy__Data, ThrowOnError>) => (options.client ?? client).trace<TraceApiAuthBy__Responses, unknown, ThrowOnError>({ url: '/api/auth/{*}', ...options });
-
 /**
  * Returns server health status with current ISO datetime
  *
@@ -43,34 +27,10 @@ export const healthCheck = <ThrowOnError extends boolean = false>(options?: Opti
 
 export const get = <ThrowOnError extends boolean = false>(options?: Options<GetData, ThrowOnError>) => (options?.client ?? client).get<GetResponses, unknown, ThrowOnError>({ url: '/', ...options });
 
-export const getApiTestLastMagicLink = <ThrowOnError extends boolean = false>(options?: Options<GetApiTestLastMagicLinkData, ThrowOnError>) => (options?.client ?? client).get<GetApiTestLastMagicLinkResponses, unknown, ThrowOnError>({ url: '/api/test/last-magic-link', ...options });
-
-/**
- * List wallet identities
- *
- * List wallets linked to the current user
- */
-export const listWallets = <ThrowOnError extends boolean = false>(options?: Options<ListWalletsData, ThrowOnError>) => (options?.client ?? client).get<ListWalletsResponses, unknown, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/wallets',
-    ...options
-});
-
-/**
- * Delete wallet identity
- *
- * Unlink a wallet from the current user
- */
-export const deleteWallet = <ThrowOnError extends boolean = false>(options: Options<DeleteWalletData, ThrowOnError>) => (options.client ?? client).delete<DeleteWalletResponses, DeleteWalletErrors, ThrowOnError>({
-    security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/wallets/{chain}/{address}',
-    ...options
-});
-
 /**
  * Generate AI chat response
  *
- * Chat with AI using OpenAI
+ * Chat with AI using OpenAI. Supports both streaming and non-streaming responses.
  */
 export const chat = <ThrowOnError extends boolean = false>(options: Options<ChatData, ThrowOnError>) => (options.client ?? client).post<ChatResponses, ChatErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
@@ -83,13 +43,51 @@ export const chat = <ThrowOnError extends boolean = false>(options: Options<Chat
 });
 
 /**
- * Stream AI chat response
+ * Request magic link
  *
- * Stream AI chat response using OpenAI
+ * Request magic link for authentication
  */
-export const chatStream = <ThrowOnError extends boolean = false>(options: Options<ChatStreamData, ThrowOnError>) => (options.client ?? client).post<ChatStreamResponses, ChatStreamErrors, ThrowOnError>({
+export const magiclinkRequest = <ThrowOnError extends boolean = false>(options: Options<MagiclinkRequestData, ThrowOnError>) => (options.client ?? client).post<MagiclinkRequestResponses, MagiclinkRequestErrors, ThrowOnError>({
+    url: '/auth/magiclink/request',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Verify magic link
+ *
+ * Verify magic link token and return JWTs
+ */
+export const magiclinkVerify = <ThrowOnError extends boolean = false>(options: Options<MagiclinkVerifyData, ThrowOnError>) => (options.client ?? client).post<MagiclinkVerifyResponses, MagiclinkVerifyErrors, ThrowOnError>({
+    url: '/auth/magiclink/verify',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
+ * Logout
+ *
+ * Logout user and invalidate session
+ */
+export const logout = <ThrowOnError extends boolean = false>(options?: Options<LogoutData, ThrowOnError>) => (options?.client ?? client).post<LogoutResponses, LogoutErrors, ThrowOnError>({
     security: [{ scheme: 'bearer', type: 'http' }],
-    url: '/ai/chat/stream',
+    url: '/auth/session/logout',
+    ...options
+});
+
+/**
+ * Refresh token
+ *
+ * Refresh access token
+ */
+export const refresh = <ThrowOnError extends boolean = false>(options: Options<RefreshData, ThrowOnError>) => (options.client ?? client).post<RefreshResponses, RefreshErrors, ThrowOnError>({
+    url: '/auth/session/refresh',
     ...options,
     headers: {
         'Content-Type': 'application/json',

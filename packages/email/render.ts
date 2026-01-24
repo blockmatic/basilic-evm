@@ -12,11 +12,16 @@ const ensureReactGlobal = () => {
   }
 }
 
+// Ensure React is available globally at module load time
+// This provides a defensive measure in case components are evaluated before render() is called
+ensureReactGlobal()
+
 /**
  * Render an email template component to HTML string.
  * Uses @react-email/render which supports async rendering and Suspense.
  */
 export const render = async (component: ReactNode): Promise<string> => {
+  // Ensure React is set globally before rendering (defensive check)
   ensureReactGlobal()
   return reactEmailRender(component)
 }

@@ -1,4 +1,5 @@
 import { Body, Container, Heading, Preview, Section, Text } from '@react-email/components'
+import 'react'
 import { Button } from '../components/button.js'
 import { Footer } from '../components/footer.js'
 import { Logo } from '../components/logo.js'

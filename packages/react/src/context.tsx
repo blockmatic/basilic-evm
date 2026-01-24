@@ -1,11 +1,9 @@
 import { createContext, useContext } from 'react'
-import type { createReactApiConfig } from './setup.js'
+import type { ReactApiConfigValue } from './setup.js'
 
-type ReactApiConfigContext = ReturnType<typeof createReactApiConfig>
+const ReactApiContext = createContext<ReactApiConfigValue | null>(null)
 
-const ReactApiContext = createContext<ReactApiConfigContext | null>(null)
-
-export function useReactApiConfig() {
+export function useReactApiConfig(): ReactApiConfigValue {
   const context = useContext(ReactApiContext)
   if (!context) {
     throw new Error('useReactApiConfig must be used within ReactApiProvider')

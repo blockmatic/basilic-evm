@@ -15,9 +15,12 @@
     "dev": "node --import tsx scripts/wait-and-watch.mjs",
     "lint:eslint": "eslint . --max-warnings 0",
     "lint:eslint:fix": "eslint . --fix --max-warnings 0",
+    "lint:fix": "pnpm run lint:eslint:fix && pnpm run lint:biome:fix",
+    "lint:biome": "biome check .",
+    "lint:biome:fix": "biome check . --write",
     "prepack": "pnpm build && node ../../scripts/prepare-publish.mjs",
     "postpack": "node ../../scripts/restore-publish.mjs",
-    "generate": "openapi-ts",
+    "generate": "openapi-ts && node --import tsx scripts/generate-wrapper.mjs",
     "test": "echo \"no test\""
   },
   "devDependencies": {
