@@ -3,26 +3,14 @@ description: Next.js standards
 glob: "**/*.{tsx,css}"
 alwaysApply: true
 ---
-# Next.js Rules
 
 ## React Server Components (CRITICAL)
-**ALWAYS default to Server Components. Only use `'use client'` when absolutely necessary.**
+ALWAYS default to Server Components. Only `'use client'` when necessary: interactive features (`onClick`/`onChange`/`onSubmit`), Browser APIs (`window`/`document`/`localStorage`), React hooks (`useState`/`useEffect`/`useContext`), client-side libraries, event listeners
 
-**When to Use Client Components**: Interactive features (`onClick`, `onChange`, `onSubmit`), Browser APIs (`window`, `document`, `localStorage`), React hooks (`useState`, `useEffect`, `useContext`), third-party libraries requiring client-side execution, event listeners/real-time subscriptions
-
-**Anti-Patterns**: Unnecessary client components, entire page as client when only small part needs interactivity
+❌ Unnecessary client components, entire page as client
 
 ## Performance Optimization
+See @.cursor/rules/frontend/react.mdc for concurrent rendering (Suspense/Transitions/Deferred Values)
 
-See @.cursor/rules/frontend/react.mdc for concurrent rendering features (Suspense, Transitions, Deferred Values).
-
-### Core Web Vitals & Image Optimization
-- Optimize Core Web Vitals (LCP < 2.5s, FID < 100ms, CLS < 0.1)
-- Optimize images: WebP format, proper size data, lazy loading
-
-## Related
-- @.cursor/rules/base/linting.mdc - Hybrid Biome + ESLint architecture
-- @.cursor/rules/frontend/react-hooks.mdc - TanStack Query patterns
-- @.cursor/rules/frontend/react.mdc - Component patterns
-- @.cursor/rules/base/environment.mdc - Environment variable patterns
-- @.cursor/rules/base/typescript.mdc - Code style guidelines
+### Core Web Vitals & Images
+Optimize Core Web Vitals (LCP <2.5s, FID <100ms, CLS <0.1), images (WebP, proper sizes, lazy loading)
