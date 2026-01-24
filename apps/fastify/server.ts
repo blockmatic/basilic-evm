@@ -1,29 +1,26 @@
 import 'dotenv/config'
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { initSentry } from '@repo/sentry/node'
+import { tryCatch } from '@repo/utils/error'
+import { logger } from '@repo/utils/logger'
 import Fastify from 'fastify'
 import app from './src/app.js'
 import { waitForDatabase } from './src/db/health.js'
+import { getDb } from './src/db/index.js'
 import { runMigrations } from './src/db/migrate.js'
 import { setTestEmailProvider } from './src/lib/auth.js'
 import { env } from './src/lib/env.js'
-import { setSharedFakeEmail } from './src/routes/test.js'
 
 // Dynamically import FakeEmailProvider only when explicitly enabled
 async function setupFakeEmailProvider() {
   // Only use fake email provider if explicitly enabled via USE_FAKE_EMAIL env var
   // This allows development to use real Resend emails by default
-  if (env.USE_FAKE_EMAIL) {
-    try {
-      const { FakeEmailProvider } = await import('./test/utils/fake-email.js')
-      const fakeEmailProvider = new FakeEmailProvider()
-      setTestEmailProvider(fakeEmailProvider)
-      setSharedFakeEmail(fakeEmailProvider)
-    } catch {
-      // If import fails (e.g., in production build), silently skip
-      // This is expected in production where test files aren't included
-    }
-  }
+  if (!env.USE_FAKE_EMAIL) return
+
+  return tryCatch(async () => {
+    const { FakeEmailProvider } = await import('./test/utils/fake-email.js')
+    setTestEmailProvider(new FakeEmailProvider())
+  })
 }
 
 // Initialize Sentry BEFORE Fastify instance creation
@@ -69,7 +66,10 @@ async function initialize(): Promise<void> {
     // 1. Wait for database connection
     await waitForDatabase(logger)
 
-    // 2. Run migrations
+    // 2. Initialize database connection (sets db for isDbReady())
+    await getDb()
+
+    // 3. Run migrations
     await runMigrations(logger)
   } catch (err) {
     fastify.log.error({ err }, 'Initialization failed')

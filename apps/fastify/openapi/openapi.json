@@ -29,12 +29,12 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["ok", "initialized", "now"],
+                  "required": ["ok", "dbReady", "now"],
                   "properties": {
                     "ok": {
                       "type": "boolean"
                     },
-                    "initialized": {
+                    "dbReady": {
                       "type": "boolean"
                     },
                     "now": {
@@ -56,6 +56,60 @@
         "responses": {
           "200": {
             "description": "Default Response"
+          }
+        }
+      }
+    },
+    "/wallets": {
+      "get": {
+        "operationId": "getWallets",
+        "summary": "Get wallets",
+        "tags": ["wallets"],
+        "description": "Get user wallets (protected route for testing)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["wallets"],
+                  "properties": {
+                    "wallets": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["code", "message"],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -152,6 +206,25 @@
             }
           },
           "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["code", "message"],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
             "description": "Default Response",
             "content": {
               "application/json": {
