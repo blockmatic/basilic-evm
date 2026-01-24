@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
-import { initSentry } from '@repo/error/node'
+import { initSentry } from '@repo/sentry/node'
 import Fastify from 'fastify'
 import app from './src/app.js'
 import { waitForDatabase } from './src/db/health.js'

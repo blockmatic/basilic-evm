@@ -3,7 +3,7 @@ import { fastify } from '../session.spec.js'
 
 describe('POST /auth/session/refresh', () => {
   beforeEach(() => {
-    fastify.fakeEmail!.clear()
+    fastify.fakeEmail?.clear()
   })
 
   it('should refresh token and return 200 { token, refreshToken }', async () => {
@@ -18,7 +18,7 @@ describe('POST /auth/session/refresh', () => {
       },
     })
 
-    const token = fastify.fakeEmail!.extractToken()
+    const token = fastify.fakeEmail?.extractToken()
     expect(token).toBeTruthy()
 
     const verifyResponse = await fastify.inject({

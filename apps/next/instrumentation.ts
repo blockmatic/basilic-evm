@@ -1,4 +1,4 @@
-import { initSentry } from '@repo/error/nextjs'
+import { initSentry } from '@repo/sentry/nextjs'
 import { env } from './lib/env'
 
 export async function register() {

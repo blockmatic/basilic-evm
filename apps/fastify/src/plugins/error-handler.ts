@@ -1,4 +1,4 @@
-import { captureError, mapHttpStatusToErrorCode } from '@repo/error/node'
+import { captureError, mapHttpStatusToErrorCode } from '@repo/sentry/node'
 import type { FastifyError, FastifyInstance } from 'fastify'
 import fp from 'fastify-plugin'
 

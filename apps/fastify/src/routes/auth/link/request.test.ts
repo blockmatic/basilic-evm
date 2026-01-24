@@ -3,7 +3,7 @@ import { fastify } from '../link.spec.js'
 
 describe('POST /auth/magiclink/request', () => {
   beforeEach(() => {
-    fastify.fakeEmail!.clear()
+    fastify.fakeEmail?.clear()
   })
 
   it('should send magic link email', async () => {
@@ -19,7 +19,7 @@ describe('POST /auth/magiclink/request', () => {
     })
 
     expect(response.statusCode).toBe(200)
-    const sentEmail = fastify.fakeEmail!.last()
+    const sentEmail = fastify.fakeEmail?.last()
     expect(sentEmail).toBeDefined()
     expect(sentEmail?.to).toBe(email)
   })

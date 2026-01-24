@@ -1,18 +1,24 @@
 'use client'
 
+import { createClient } from '@repo/core'
 import { ReactApiProvider } from '@repo/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
-import { type ReactNode, useState } from 'react'
+import type { ReactNode } from 'react'
 import { env } from '@/lib/env'
 
-export function Providers({ children }: { children: ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient())
+// Create clients at module level (singleton pattern)
+const queryClient = new QueryClient()
 
+const coreClient = createClient({
+  baseUrl: env.NEXT_PUBLIC_API_URL,
+})
+
+export function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <ReactApiProvider baseUrl={env.NEXT_PUBLIC_API_URL}>
+      <ReactApiProvider client={coreClient}>
         <NuqsAdapter>
           <NextThemesProvider
             attribute="class"

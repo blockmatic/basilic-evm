@@ -2,7 +2,7 @@ import { Readable } from 'node:stream'
 import { createOpenAI } from '@ai-sdk/openai'
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { Type } from '@sinclair/typebox'
-import { generateText, streamText } from 'ai'
+import { generateText, streamText, type ToolSet } from 'ai'
 import type { FastifyPluginAsync } from 'fastify'
 import { env } from '../../lib/env.js'
 import { ErrorResponseSchema } from '../schemas.js'
@@ -70,50 +70,36 @@ const chatRoute: FastifyPluginAsync = async fastify => {
       )
 
       if (shouldStream) {
-        const streamOptions: {
-          model: ReturnType<typeof openai>
-          messages: typeof messages
-          temperature?: number
-          tools?: any
-        } = {
+        const streamOptions = {
           model: openai(model ?? 'gpt-4o-mini'),
           messages,
-        }
-        if (temperature !== undefined) {
-          streamOptions.temperature = temperature
-        }
-        if (tools != null && typeof tools === 'object' && Object.keys(tools).length > 0) {
-          streamOptions.tools = tools as any
+          ...(temperature !== undefined && { temperature }),
+          ...(tools != null &&
+            typeof tools === 'object' &&
+            Object.keys(tools).length > 0 && { tools: tools as ToolSet }),
         }
 
-        const result = streamText(streamOptions as any)
+        const result = streamText(streamOptions)
 
         reply.header('Content-Type', 'text/event-stream')
         reply.header('Cache-Control', 'no-cache')
         reply.header('Connection', 'keep-alive')
 
-        // Convert async iterable to Node.js Readable stream
+        // Convert async iterable to Node.js Readable stream and pipe to response
         const nodeStream = Readable.from(result.textStream)
-        return reply.send(nodeStream as any)
+        return reply.send(nodeStream as never)
       }
 
-      const generateOptions: {
-        model: ReturnType<typeof openai>
-        messages: typeof messages
-        temperature?: number
-        tools?: any
-      } = {
+      const generateOptions = {
         model: openai(model ?? 'gpt-4o-mini'),
         messages,
-      }
-      if (temperature !== undefined) {
-        generateOptions.temperature = temperature
-      }
-      if (tools != null && typeof tools === 'object' && Object.keys(tools).length > 0) {
-        generateOptions.tools = tools as any
+        ...(temperature !== undefined && { temperature }),
+        ...(tools != null &&
+          typeof tools === 'object' &&
+          Object.keys(tools).length > 0 && { tools: tools as ToolSet }),
       }
 
-      const result = await generateText(generateOptions as any)
+      const result = await generateText(generateOptions)
 
       return reply.code(200).send({
         text: result.text,

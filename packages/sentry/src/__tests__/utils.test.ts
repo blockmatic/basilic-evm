@@ -1,5 +1,5 @@
+import { getErrorMessage, isErrorWithMessage, toErrorWithMessage } from '@repo/utils/error'
 import { describe, expect, it } from 'vitest'
-import { getErrorMessage, isErrorWithMessage, toErrorWithMessage } from '../utils.js'
 
 describe('utils', () => {
   describe('isErrorWithMessage', () => {

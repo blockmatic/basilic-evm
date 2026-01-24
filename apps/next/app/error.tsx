@@ -1,6 +1,6 @@
 'use client'
 
-import { captureError } from '@repo/error/nextjs'
+import { captureError } from '@repo/sentry/nextjs'
 
 // eslint-disable-next-line import/no-default-export -- Next.js requires default export for error.tsx
 export default function ErrorPage({

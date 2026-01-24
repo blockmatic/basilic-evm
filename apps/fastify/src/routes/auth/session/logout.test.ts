@@ -3,7 +3,7 @@ import { fastify } from '../session.spec.js'
 
 describe('POST /auth/session/logout', () => {
   beforeEach(() => {
-    fastify.fakeEmail!.clear()
+    fastify.fakeEmail?.clear()
   })
 
   it('should logout user and return 204 or 200 { ok: true }', async () => {
@@ -18,7 +18,7 @@ describe('POST /auth/session/logout', () => {
       },
     })
 
-    const token = fastify.fakeEmail!.extractToken()
+    const token = fastify.fakeEmail?.extractToken()
     expect(token).toBeTruthy()
 
     const verifyResponse = await fastify.inject({

@@ -3,7 +3,7 @@ import { fastify } from '../link.spec.js'
 
 describe('POST /auth/link/verify', () => {
   beforeEach(() => {
-    fastify.fakeEmail!.clear()
+    fastify.fakeEmail?.clear()
   })
 
   it('should verify token and return 200 { token } JSON (no redirects)', async () => {
@@ -18,7 +18,7 @@ describe('POST /auth/link/verify', () => {
       },
     })
 
-    const token = fastify.fakeEmail!.extractToken()
+    const token = fastify.fakeEmail?.extractToken()
     expect(token).toBeTruthy()
 
     const verifyResponse = await fastify.inject({

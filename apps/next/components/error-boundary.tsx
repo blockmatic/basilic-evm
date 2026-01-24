@@ -1,6 +1,6 @@
 'use client'
 
-import { captureError, initSentry } from '@repo/error/nextjs'
+import { captureError, initSentry } from '@repo/sentry/nextjs'
 import { useEffect } from 'react'
 import { type FallbackProps, ErrorBoundary as ReactErrorBoundary } from 'react-error-boundary'
 import { env } from '@/lib/env'

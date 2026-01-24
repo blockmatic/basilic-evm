@@ -3,7 +3,7 @@ import { fastify } from '../magiclink.spec.js'
 
 describe('POST /auth/magiclink/request', () => {
   beforeEach(() => {
-    fastify.fakeEmail!.clear()
+    fastify.fakeEmail?.clear()
   })
 
   describe('Email Validation', () => {
@@ -67,11 +67,11 @@ describe('POST /auth/magiclink/request', () => {
 
       expect(response.statusCode).toBe(200)
 
-      const sentEmail = fastify.fakeEmail!.last()
+      const sentEmail = fastify.fakeEmail?.last()
       expect(sentEmail).toBeDefined()
       expect(sentEmail?.to).toBe(email)
       expect(sentEmail?.subject).toBe('Sign in to your account')
-      const magicLink = fastify.fakeEmail!.extractMagicLink(sentEmail)
+      const magicLink = fastify.fakeEmail?.extractMagicLink(sentEmail)
       expect(magicLink).toBeTruthy()
       expect(magicLink).toContain('token=')
     })
@@ -88,10 +88,10 @@ describe('POST /auth/magiclink/request', () => {
         },
       })
 
-      const sentEmail = fastify.fakeEmail!.last()
+      const sentEmail = fastify.fakeEmail?.last()
       expect(sentEmail).toBeDefined()
 
-      const magicLink = fastify.fakeEmail!.extractMagicLink(sentEmail)
+      const magicLink = fastify.fakeEmail?.extractMagicLink(sentEmail)
       expect(magicLink).toBeTruthy()
       expect(magicLink).toContain('callback')
       expect(magicLink).toContain('token=')
@@ -109,7 +109,7 @@ describe('POST /auth/magiclink/request', () => {
         },
       })
 
-      const token = fastify.fakeEmail!.extractToken()
+      const token = fastify.fakeEmail?.extractToken()
       expect(token).toBeTruthy()
       expect(typeof token).toBe('string')
       expect(token?.length).toBeGreaterThan(0)

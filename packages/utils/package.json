@@ -28,6 +28,10 @@
     "./debug": {
       "types": "./src/debug/index.ts",
       "import": "./dist/debug/index.js"
+    },
+    "./error": {
+      "types": "./src/error/index.ts",
+      "import": "./dist/error/index.js"
     }
   },
   "scripts": {

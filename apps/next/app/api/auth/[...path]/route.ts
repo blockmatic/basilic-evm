@@ -104,6 +104,11 @@ const handleMagicLinkVerify = async ({ request }: Pick<AuthProxyOptions, 'reques
     logger.debug({ token: 'present' }, 'handleMagicLinkVerify: sending verification request')
     const data = await client.auth.magiclink.verify({ body: { token } })
 
+    // Type guard: client wrapper throws on error, so data is guaranteed to be success response
+    if (!data || typeof data !== 'object' || !('token' in data) || typeof data.token !== 'string') {
+      throw new Error('Invalid response from magic link verification')
+    }
+
     logger.debug(
       { hasToken: !!data.token, tokenLength: data.token.length },
       'handleMagicLinkVerify: received response',

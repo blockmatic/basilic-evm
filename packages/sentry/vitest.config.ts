@@ -6,4 +6,9 @@ export default defineConfig({
     globals: true,
     environment: 'node',
   },
+  server: {
+    deps: {
+      inline: [/@repo\/utils/],
+    },
+  },
 })

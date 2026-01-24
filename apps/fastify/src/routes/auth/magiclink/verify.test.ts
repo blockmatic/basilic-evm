@@ -3,7 +3,7 @@ import { fastify } from '../magiclink.spec.js'
 
 describe('POST /auth/magiclink/verify', () => {
   beforeEach(() => {
-    fastify.fakeEmail!.clear()
+    fastify.fakeEmail?.clear()
   })
 
   it('should verify valid magic link token and return JWT tokens', async () => {
@@ -18,7 +18,7 @@ describe('POST /auth/magiclink/verify', () => {
       },
     })
 
-    const token = fastify.fakeEmail!.extractToken()
+    const token = fastify.fakeEmail?.extractToken()
     expect(token).toBeTruthy()
 
     const verifyResponse = await fastify.inject({
@@ -74,7 +74,7 @@ describe('POST /auth/magiclink/verify', () => {
       },
     })
 
-    const token = fastify.fakeEmail!.extractToken()
+    const token = fastify.fakeEmail?.extractToken()
     expect(token).toBeTruthy()
 
     const verifyResponse = await fastify.inject({
@@ -116,14 +116,14 @@ describe('POST /auth/magiclink/verify', () => {
     })
     expect(sendResponse.statusCode).toBe(200)
 
-    const sentEmail = fastify.fakeEmail!.last()
+    const sentEmail = fastify.fakeEmail?.last()
     expect(sentEmail).toBeDefined()
     expect(sentEmail?.to).toBe(email)
 
-    const magicLink = fastify.fakeEmail!.extractMagicLink()
+    const magicLink = fastify.fakeEmail?.extractMagicLink()
     expect(magicLink).toBeTruthy()
 
-    const token = fastify.fakeEmail!.extractToken()
+    const token = fastify.fakeEmail?.extractToken()
     expect(token).toBeTruthy()
 
     const verifyResponse = await fastify.inject({

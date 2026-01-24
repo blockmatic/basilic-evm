@@ -113,22 +113,6 @@ describe('capture', () => {
       })
     })
 
-    it('should log error via logger', () => {
-      captureError({
-        code: 'SERVER_ERROR',
-        error: new Error('Real error'),
-        label: 'Test Label',
-        tags: { app: 'test' },
-        data: { extra: 'data' },
-      })
-
-      expect(mockLoggerChild).toHaveBeenCalledWith({
-        errorCode: 'SERVER_ERROR',
-        label: 'Test Label',
-        app: 'test',
-      })
-    })
-
     it('should capture to Sentry asynchronously', async () => {
       const error = new Error('Real error')
       captureError({

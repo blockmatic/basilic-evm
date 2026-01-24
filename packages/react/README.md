@@ -10,6 +10,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createClient } from '@repo/core'
 import { useState } from 'react'
 
+// Create a client
+const queryClient = new QueryClient()
+
 // Create core client instance with authentication
 const coreClient = createClient({
   baseUrl: 'https://api.example.com',
@@ -30,8 +33,6 @@ const coreClient = createClient({
 })
 
 function App() {
-  const [queryClient] = useState(() => new QueryClient())
-
   return (
     <QueryClientProvider client={queryClient}>
       <ReactApiProvider client={coreClient}>

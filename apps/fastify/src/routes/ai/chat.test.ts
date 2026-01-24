@@ -61,7 +61,7 @@ describe.skip('POST /ai/chat', () => {
     })
     expect(requestResponse.statusCode).toBe(200)
 
-    const token = fastify.fakeEmail!.extractToken()
+    const token = fastify.fakeEmail?.extractToken()
     expect(token).toBeTruthy()
 
     const verifyResponse = await fastify.inject({

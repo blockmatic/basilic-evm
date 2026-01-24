@@ -1,9 +1,9 @@
 {
-  "name": "@repo/error",
+  "name": "@repo/sentry",
   "version": "0.0.1",
   "type": "module",
   "private": true,
-  "description": "Error handling utilities with Sentry integration and centralized error catalog",
+  "description": "Sentry integration and error reporting utilities",
   "license": "PROPRIETARY",
   "exports": {
     "./core": {

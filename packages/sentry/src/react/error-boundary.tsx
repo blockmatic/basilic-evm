@@ -8,7 +8,7 @@ export interface AppErrorBoundaryProps {
   children: ReactNode
   /** Application name for tagging (required) */
   app: string
-  /** Error capture function - import from @repo/error/node, @repo/error/nextjs, or @repo/error/browser */
+  /** Error capture function - import from @repo/sentry/node, @repo/sentry/nextjs, or @repo/sentry/browser */
   captureError: (options: CaptureErrorOptions) => CatalogError
   /** Optional fallback component */
   fallback?: (props: { error: Error; resetErrorBoundary: () => void }) => ReactNode

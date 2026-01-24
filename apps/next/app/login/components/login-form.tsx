@@ -1,6 +1,6 @@
 'use client'
 
-import { type CatalogError, captureError } from '@repo/error/nextjs'
+import { type CatalogError, captureError } from '@repo/sentry/nextjs'
 import { Button } from '@repo/ui/components/button'
 import {
   Field,
