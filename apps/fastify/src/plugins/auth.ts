@@ -1,11 +1,9 @@
 import { captureError } from '@repo/error/node'
+import { eq } from 'drizzle-orm'
 import type { FastifyPluginAsync } from 'fastify'
 import fp from 'fastify-plugin'
 import { getDb } from '../db/index.js'
-import { type Auth, getAuth } from '../lib/auth.js'
-import { proxyBetterAuthRequest } from '../lib/auth-proxy.js'
-import { getSessionFromToken } from '../lib/auth-session.js'
-import { env } from '../lib/env.js'
+import { sessions, users } from '../db/schema/index.js'
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -21,20 +19,9 @@ declare module 'fastify' {
       }
     } | null
   }
-
-  interface FastifyInstance {
-    auth: Auth
-  }
 }
 
 const authPlugin: FastifyPluginAsync = async fastify => {
-  // Ensure db is initialized before creating auth
-  await getDb()
-  const auth = await getAuth()
-
-  // Add auth instance to fastify
-  fastify.decorate('auth', auth)
-
   // Session validation hook - JWT-only Bearer token support
   fastify.addHook('onRequest', async request => {
     try {
@@ -45,49 +32,74 @@ const authPlugin: FastifyPluginAsync = async fastify => {
       }
 
       const token = authHeader.substring(7).trim()
-      const normalizedToken = token.startsWith('Bearer ') ? token.substring(7).trim() : token
-      const { session } = await getSessionFromToken({ token: normalizedToken })
-      request.session = session
+
+      // Verify JWT
+      const decoded = fastify.jwt.verify<{
+        typ?: string
+        sub?: string
+        sid?: string
+        exp?: number
+      }>(token)
+
+      // Only accept access tokens
+      if (decoded.typ !== 'access' || !decoded.sub || !decoded.sid) {
+        request.session = null
+        return
+      }
+
+      // Load session from DB to verify it exists and is not expired
+      const db = await getDb()
+      const [session] = await db.select().from(sessions).where(eq(sessions.id, decoded.sid))
+
+      if (!session || session.expiresAt < new Date()) {
+        request.session = null
+        return
+      }
+
+      // Load user
+      const [user] = await db.select().from(users).where(eq(users.id, decoded.sub))
+      if (!user) {
+        request.session = null
+        return
+      }
+
+      request.session = {
+        user: {
+          id: user.id,
+          email: user.email ?? null,
+        },
+        session: {
+          id: session.id,
+          userId: session.userId,
+          expiresAt: session.expiresAt,
+        },
+      }
     } catch (error) {
-      captureError({
-        code: 'INTERNAL_ERROR',
-        error: error instanceof Error ? error : new Error(String(error)),
-        logger: request.log,
-        label: 'auth.api.getSession failed',
-        data: {
-          method: request.method,
-          url: request.url,
-        },
-        tags: {
-          app: 'api',
-          module: 'auth-service',
-          route: request.url,
-        },
-      })
+      // JWT verification errors are expected for invalid tokens
+      // Only log unexpected errors
+      if (error instanceof Error && !error.message.includes('jwt')) {
+        captureError({
+          code: 'INTERNAL_ERROR',
+          error,
+          logger: request.log,
+          label: 'auth.api.getSession failed',
+          data: {
+            method: request.method,
+            url: request.url,
+          },
+          tags: {
+            app: 'api',
+            module: 'auth-service',
+            route: request.url,
+          },
+        })
+      }
       request.session = null
     }
   })
-
-  // Mount Better Auth routes at /api/auth/*
-  fastify.all(
-    '/api/auth/*',
-    {
-      schema: {
-        tags: ['auth'],
-        security: [],
-      },
-    },
-    async (request, reply) =>
-      proxyBetterAuthRequest({
-        auth,
-        baseUrl: env.BETTER_AUTH_URL,
-        request,
-        reply,
-      }),
-  )
 }
 
 export default fp(authPlugin, {
   name: 'auth',
-  dependencies: [],
+  dependencies: ['jwt'],
 })

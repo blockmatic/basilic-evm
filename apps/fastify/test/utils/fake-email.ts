@@ -1,21 +1,11 @@
+import type { EmailProvider } from '../../src/lib/email.js'
+
 type Email = {
   to: string
   subject: string
   html: string
   text?: string
   from?: string
-}
-
-type EmailProvider = {
-  emails: {
-    send: (options: {
-      from: string
-      to: string
-      subject: string
-      html: string
-      text?: string
-    }) => Promise<{ data: { id: string }; error: null }>
-  }
 }
 
 export class FakeEmailProvider implements EmailProvider {

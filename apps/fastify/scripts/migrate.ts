@@ -11,9 +11,9 @@ import { migrate } from 'drizzle-orm/node-postgres/migrator'
 import { Pool } from 'pg'
 import { env } from '../src/lib/env.js'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const projectRoot = join(__dirname, '..')
+const scriptFile = fileURLToPath(import.meta.url)
+const scriptDir = dirname(scriptFile)
+const projectRoot = join(scriptDir, '..')
 
 async function readMigrationFiles(): Promise<string[]> {
   const migrationsDir = join(projectRoot, 'src', 'db', 'migrations')

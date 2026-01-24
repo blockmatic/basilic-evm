@@ -6,9 +6,9 @@ import type { Plugin } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { defineConfig } from 'vitest/config'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const projectRoot = resolve(__dirname)
+const configFile = fileURLToPath(import.meta.url)
+const configDir = dirname(configFile)
+const projectRoot = resolve(configDir)
 
 // Set required environment variables BEFORE loading .env file
 // This ensures env.ts validation passes when imported during test initialization
@@ -132,7 +132,7 @@ const resolveJsToTsPlugin = (): Plugin => ({
 export default defineConfig({
   plugins: [resolveJsToTsPlugin(), tsconfigPaths()],
   test: {
-    include: ['**/*.{test,spec,e2e-spec}.?(c|m)[jt]s?(x)'],
+    include: ['**/*.spec.ts'],
     setupFiles: ['./vitest.setup.ts'],
     globalSetup: ['./vitest.global-setup.ts'],
     globals: true,

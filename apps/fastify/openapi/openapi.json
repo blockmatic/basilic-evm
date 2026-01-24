@@ -15,160 +15,6 @@
     "schemas": {}
   },
   "paths": {
-    "/api/auth/{*}": {
-      "get": {
-        "tags": ["auth"],
-        "security": [],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "in": "path",
-            "name": "*",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Default Response"
-          }
-        }
-      },
-      "head": {
-        "tags": ["auth"],
-        "security": [],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "in": "path",
-            "name": "*",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Default Response"
-          }
-        }
-      },
-      "trace": {
-        "tags": ["auth"],
-        "security": [],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "in": "path",
-            "name": "*",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Default Response"
-          }
-        }
-      },
-      "delete": {
-        "tags": ["auth"],
-        "security": [],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "in": "path",
-            "name": "*",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Default Response"
-          }
-        }
-      },
-      "options": {
-        "tags": ["auth"],
-        "security": [],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "in": "path",
-            "name": "*",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Default Response"
-          }
-        }
-      },
-      "patch": {
-        "tags": ["auth"],
-        "security": [],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "in": "path",
-            "name": "*",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Default Response"
-          }
-        }
-      },
-      "put": {
-        "tags": ["auth"],
-        "security": [],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "in": "path",
-            "name": "*",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Default Response"
-          }
-        }
-      },
-      "post": {
-        "tags": ["auth"],
-        "security": [],
-        "parameters": [
-          {
-            "schema": {
-              "type": "string"
-            },
-            "in": "path",
-            "name": "*",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Default Response"
-          }
-        }
-      }
-    },
     "/health": {
       "get": {
         "operationId": "healthCheck",
@@ -214,23 +60,67 @@
         }
       }
     },
-    "/api/test/last-magic-link": {
-      "get": {
-        "tags": ["test"],
-        "security": [],
-        "responses": {
-          "200": {
-            "description": "Default Response"
-          }
-        }
-      }
-    },
-    "/wallets": {
-      "get": {
-        "operationId": "listWallets",
-        "summary": "List wallet identities",
-        "tags": ["wallet"],
-        "description": "List wallets linked to the current user",
+    "/ai/chat": {
+      "post": {
+        "operationId": "chat",
+        "summary": "Generate AI chat response",
+        "tags": ["ai"],
+        "description": "Chat with AI using OpenAI. Supports both streaming and non-streaming responses.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["messages"],
+                "properties": {
+                  "messages": {
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": ["role", "content"],
+                      "properties": {
+                        "role": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "enum": ["user"]
+                            },
+                            {
+                              "type": "string",
+                              "enum": ["assistant"]
+                            },
+                            {
+                              "type": "string",
+                              "enum": ["system"]
+                            }
+                          ]
+                        },
+                        "content": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "stream": {
+                    "type": "boolean"
+                  },
+                  "model": {
+                    "default": "gpt-4o-mini",
+                    "type": "string"
+                  },
+                  "temperature": {
+                    "minimum": 0,
+                    "maximum": 2,
+                    "type": "number"
+                  },
+                  "tools": {}
+                }
+              }
+            }
+          },
+          "required": true
+        },
         "security": [
           {
             "bearerAuth": []
@@ -242,49 +132,57 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "required": ["wallets"],
-                  "properties": {
-                    "wallets": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "required": ["id", "userId", "chain", "address", "createdAt"],
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "userId": {
-                            "type": "string"
-                          },
-                          "chain": {
-                            "anyOf": [
-                              {
-                                "type": "string",
-                                "enum": ["eip155"]
-                              },
-                              {
-                                "type": "string",
-                                "enum": ["solana"]
-                              }
-                            ]
-                          },
-                          "address": {
-                            "type": "string"
-                          },
-                          "walletProvider": {
-                            "type": "string"
-                          },
-                          "createdAt": {
-                            "format": "date-time",
-                            "type": "string"
-                          },
-                          "lastUsedAt": {
-                            "format": "date-time",
-                            "type": "string"
-                          }
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "required": ["text"],
+                      "properties": {
+                        "text": {
+                          "type": "string"
                         }
                       }
+                    },
+                    {
+                      "description": "Streaming text response",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["code", "message"],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["code", "message"],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
                     }
                   }
                 }
@@ -294,44 +192,34 @@
         }
       }
     },
-    "/wallets/{chain}/{address}": {
-      "delete": {
-        "operationId": "deleteWallet",
-        "summary": "Delete wallet identity",
-        "tags": ["wallet"],
-        "description": "Unlink a wallet from the current user",
-        "parameters": [
-          {
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "enum": ["eip155"]
-                },
-                {
-                  "type": "string",
-                  "enum": ["solana"]
+    "/auth/magiclink/request": {
+      "post": {
+        "operationId": "magiclinkRequest",
+        "summary": "Request magic link",
+        "tags": ["auth"],
+        "description": "Request magic link for authentication",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "callbackUrl"],
+                "properties": {
+                  "email": {
+                    "format": "email",
+                    "type": "string"
+                  },
+                  "callbackUrl": {
+                    "format": "uri",
+                    "type": "string"
+                  }
                 }
-              ]
-            },
-            "in": "path",
-            "name": "chain",
-            "required": true
+              }
+            }
           },
-          {
-            "schema": {
-              "type": "string"
-            },
-            "in": "path",
-            "name": "address",
-            "required": true
-          }
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+          "required": true
+        },
+        "security": [],
         "responses": {
           "200": {
             "description": "Default Response",
@@ -339,11 +227,94 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["success"],
+                  "required": ["ok"],
                   "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "enum": [true]
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["code", "message"],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/magiclink/verify": {
+      "post": {
+        "operationId": "magiclinkVerify",
+        "summary": "Verify magic link",
+        "tags": ["auth"],
+        "description": "Verify magic link token and return JWTs",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["token"],
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["token", "refreshToken"],
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    },
+                    "refreshToken": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["code", "message"],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
                     }
                   }
                 }
@@ -372,58 +343,12 @@
         }
       }
     },
-    "/ai/chat": {
+    "/auth/session/logout": {
       "post": {
-        "operationId": "chat",
-        "summary": "Generate AI chat response",
-        "tags": ["ai"],
-        "description": "Chat with AI using OpenAI",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["messages"],
-                "properties": {
-                  "messages": {
-                    "minItems": 1,
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "required": ["role", "content"],
-                      "properties": {
-                        "role": {
-                          "anyOf": [
-                            {
-                              "type": "string",
-                              "enum": ["user"]
-                            },
-                            {
-                              "type": "string",
-                              "enum": ["assistant"]
-                            },
-                            {
-                              "type": "string",
-                              "enum": ["system"]
-                            }
-                          ]
-                        },
-                        "content": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  },
-                  "model": {
-                    "default": "gpt-4o-mini",
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          },
-          "required": true
-        },
+        "operationId": "logout",
+        "summary": "Logout",
+        "tags": ["auth"],
+        "description": "Logout user and invalidate session",
         "security": [
           {
             "bearerAuth": []
@@ -436,36 +361,20 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["text"],
+                  "required": ["ok"],
                   "properties": {
-                    "text": {
-                      "type": "string"
+                    "ok": {
+                      "type": "boolean"
                     }
                   }
                 }
               }
             }
           },
-          "400": {
-            "description": "Default Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": ["code", "message"],
-                  "properties": {
-                    "code": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
+          "204": {
+            "description": "Default Response"
           },
-          "500": {
+          "401": {
             "description": "Default Response",
             "content": {
               "application/json": {
@@ -487,50 +396,20 @@
         }
       }
     },
-    "/ai/chat/stream": {
+    "/auth/session/refresh": {
       "post": {
-        "operationId": "chatStream",
-        "summary": "Stream AI chat response",
-        "tags": ["ai"],
-        "description": "Stream AI chat response using OpenAI",
+        "operationId": "refresh",
+        "summary": "Refresh token",
+        "tags": ["auth"],
+        "description": "Refresh access token",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["messages"],
+                "required": ["refreshToken"],
                 "properties": {
-                  "messages": {
-                    "minItems": 1,
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "required": ["role", "content"],
-                      "properties": {
-                        "role": {
-                          "anyOf": [
-                            {
-                              "type": "string",
-                              "enum": ["user"]
-                            },
-                            {
-                              "type": "string",
-                              "enum": ["assistant"]
-                            },
-                            {
-                              "type": "string",
-                              "enum": ["system"]
-                            }
-                          ]
-                        },
-                        "content": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  },
-                  "model": {
-                    "default": "gpt-4o-mini",
+                  "refreshToken": {
                     "type": "string"
                   }
                 }
@@ -539,19 +418,23 @@
           },
           "required": true
         },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "security": [],
         "responses": {
           "200": {
-            "description": "Streaming text response",
+            "description": "Default Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "description": "Streaming text response",
-                  "type": "string"
+                  "type": "object",
+                  "required": ["token", "refreshToken"],
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    },
+                    "refreshToken": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -575,7 +458,7 @@
               }
             }
           },
-          "500": {
+          "401": {
             "description": "Default Response",
             "content": {
               "application/json": {

@@ -2,15 +2,12 @@ import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import type { FastifyInstance } from 'fastify'
 import Fastify from 'fastify'
 import app from '../../src/app.js'
-import { resetAuthInstance, setTestEmailProvider } from '../../src/lib/auth.js'
+import { setTestEmailProvider } from '../../src/lib/auth.js'
 import { FakeEmailProvider } from './fake-email.js'
 
 export async function buildTestApp(): Promise<FastifyInstance> {
   // Create fake email provider first
   const fakeEmailProvider = new FakeEmailProvider()
-
-  // Reset auth instance to ensure fresh instance with test email provider
-  resetAuthInstance()
 
   // Set test email provider BEFORE creating Fastify instance
   setTestEmailProvider(fakeEmailProvider)

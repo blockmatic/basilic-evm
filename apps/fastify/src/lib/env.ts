@@ -58,13 +58,23 @@ export const env = createEnv({
       .regex(/^[0-9a-fA-F]+$/, 'Must be a 32-byte hex string'),
     // Auth configuration
     BETTER_AUTH_SECRET: z.string().min(32),
-    // JWT configuration (optional - uses BETTER_AUTH_SECRET if JWT_SECRET not set)
-    JWT_SECRET: z.string().min(32).optional(),
-    JWT_EXPIRES_IN: z.coerce
-      .number()
-      .int()
-      .positive()
-      .default(60 * 60 * 24 * 7), // 7 days
+    // JWT configuration
+    JWT_SECRET: z
+      .string()
+      .min(32)
+      .optional()
+      .transform(val => val ?? process.env.BETTER_AUTH_SECRET ?? ''),
+    ACCESS_JWT_EXPIRES_IN_SECONDS: z.coerce.number().int().positive().default(900), // 15 minutes
+    REFRESH_JWT_EXPIRES_IN_SECONDS: z.coerce.number().int().positive().default(604800), // 7 days
+    JWT_ISSUER: z.string().default('api.yourapp.com'),
+    JWT_AUDIENCE: z
+      .string()
+      .default('api.yourapp.com')
+      .transform(val => val.split(',').map(aud => aud.trim())),
+    MAGIC_LINK_CALLBACK_HOST_ALLOWLIST: z
+      .string()
+      .optional()
+      .transform(val => (val ? val.split(',').map(host => host.trim()) : undefined)),
     BETTER_AUTH_URL: z
       .string()
       .optional()
