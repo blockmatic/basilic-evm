@@ -5,7 +5,6 @@ import { isDbReady } from '../db/index.js'
 export const HealthResponseSchema = Type.Object({
   ok: Type.Boolean(),
   dbReady: Type.Boolean(),
-  now: Type.String({ format: 'date-time' }),
 })
 
 const healthRoutes: FastifyPluginAsync = async fastify => {
@@ -32,7 +31,6 @@ const healthRoutes: FastifyPluginAsync = async fastify => {
       return reply.code(200).send({
         ok: true,
         dbReady,
-        now: new Date().toISOString(),
       })
     },
   )

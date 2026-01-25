@@ -557,13 +557,16 @@ importers:
       '@repo/core':
         specifier: workspace:*
         version: link:../core
+      '@repo/ui':
+        specifier: workspace:*
+        version: link:../ui
       react:
         specifier: ^19.0.0
         version: 19.2.3
+      zod:
+        specifier: ^4.3.5
+        version: 4.3.6
     devDependencies:
-      '@hey-api/openapi-ts':
-        specifier: ^0.90.8
-        version: 0.90.9(magicast@0.5.1)(typescript@5.9.3)
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:../../tools/eslint
@@ -582,21 +585,12 @@ importers:
       '@typescript/native-preview':
         specifier: '*'
         version: 7.0.0-dev.20260124.1
-      chokidar-cli:
-        specifier: ^3.0.0
-        version: 3.0.0
-      concurrently:
-        specifier: ^9.2.1
-        version: 9.2.1
       eslint:
         specifier: '*'
         version: 9.39.2(jiti@2.6.1)
       tsup:
         specifier: '*'
         version: 8.5.1(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
-      tsx:
-        specifier: ^4.21.0
-        version: 4.21.0
 
   packages/sentry:
     dependencies:

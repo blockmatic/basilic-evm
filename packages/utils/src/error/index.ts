@@ -1,4 +1,38 @@
-import type { ErrorWithMessage } from './types.js'
+import type { ErrorWithMessage, Result } from './types.js'
+
+/**
+ * Wraps a promise or async function in a try-catch and returns a Result type.
+ * Returns `{ data: T, error?: undefined }` on success or `{ data?: undefined, error: E }` on failure.
+ * Errors are normalized to ErrorWithMessage for consistent error handling.
+ * Both `data` and `error` properties exist for destructuring convenience.
+ *
+ * @param promiseOrFn - The promise to wrap or async function to call
+ * @returns A Result object with both `data` and `error` properties (one is always undefined)
+ *
+ * @example
+ * ```ts
+ * // With promise - destructuring works
+ * const { error, data } = await tryCatch(fetchUser(id))
+ * if (error) return console.error(error.message)
+ * console.log(data) // TypeScript knows data is defined here
+ *
+ * // With async function (lazy evaluation)
+ * const { error } = await tryCatch(async () => {
+ *   await initializeOptionalFeature()
+ * })
+ * if (error) logger.error(error.message)
+ * ```
+ */
+export async function tryCatch<T = void, E extends ErrorWithMessage = ErrorWithMessage>(
+  promiseOrFn: Promise<T> | (() => Promise<T>),
+): Promise<Result<T, E>> {
+  try {
+    const promise = typeof promiseOrFn === 'function' ? promiseOrFn() : promiseOrFn
+    return { data: await promise, error: undefined }
+  } catch (e: unknown) {
+    return { data: undefined, error: toErrorWithMessage(e) as E }
+  }
+}
 
 /**
  * Type guard to check if error has a message property

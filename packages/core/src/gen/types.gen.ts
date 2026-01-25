@@ -17,26 +17,11 @@ export type HealthCheckResponses = {
      */
     200: {
         ok: boolean;
-        initialized: boolean;
-        now: string;
+        dbReady: boolean;
     };
 };
 
 export type HealthCheckResponse = HealthCheckResponses[keyof HealthCheckResponses];
-
-export type GetData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/';
-};
-
-export type GetResponses = {
-    /**
-     * Default Response
-     */
-    200: unknown;
-};
 
 export type ChatData = {
     body: {
@@ -59,6 +44,13 @@ export type ChatErrors = {
      * Default Response
      */
     400: {
+        code: string;
+        message: string;
+    };
+    /**
+     * Default Response
+     */
+    401: {
         code: string;
         message: string;
     };
@@ -230,3 +222,54 @@ export type RefreshResponses = {
 };
 
 export type RefreshResponse = RefreshResponses[keyof RefreshResponses];
+
+export type TestAuthedData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/test/authed/';
+};
+
+export type TestAuthedErrors = {
+    /**
+     * Default Response
+     */
+    401: {
+        code: string;
+        message: string;
+    };
+};
+
+export type TestAuthedError = TestAuthedErrors[keyof TestAuthedErrors];
+
+export type TestAuthedResponses = {
+    /**
+     * Default Response
+     */
+    200: {
+        user: {
+            id: string;
+            email: string | unknown;
+        };
+    };
+};
+
+export type TestAuthedResponse = TestAuthedResponses[keyof TestAuthedResponses];
+
+export type GetLastMagicLinkTokenData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/test/magic-link/last';
+};
+
+export type GetLastMagicLinkTokenResponses = {
+    /**
+     * Default Response
+     */
+    200: {
+        token: string | unknown;
+    };
+};
+
+export type GetLastMagicLinkTokenResponse = GetLastMagicLinkTokenResponses[keyof GetLastMagicLinkTokenResponses];

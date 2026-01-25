@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ChatData, ChatErrors, ChatResponses, GetData, GetResponses, HealthCheckData, HealthCheckResponses, LogoutData, LogoutErrors, LogoutResponses, MagiclinkRequestData, MagiclinkRequestErrors, MagiclinkRequestResponses, MagiclinkVerifyData, MagiclinkVerifyErrors, MagiclinkVerifyResponses, RefreshData, RefreshErrors, RefreshResponses } from './types.gen';
+import type { ChatData, ChatErrors, ChatResponses, GetLastMagicLinkTokenData, GetLastMagicLinkTokenResponses, HealthCheckData, HealthCheckResponses, LogoutData, LogoutErrors, LogoutResponses, MagiclinkRequestData, MagiclinkRequestErrors, MagiclinkRequestResponses, MagiclinkVerifyData, MagiclinkVerifyErrors, MagiclinkVerifyResponses, RefreshData, RefreshErrors, RefreshResponses, TestAuthedData, TestAuthedErrors, TestAuthedResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -24,8 +24,6 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
  * Health check endpoint
  */
 export const healthCheck = <ThrowOnError extends boolean = false>(options?: Options<HealthCheckData, ThrowOnError>) => (options?.client ?? client).get<HealthCheckResponses, unknown, ThrowOnError>({ url: '/health', ...options });
-
-export const get = <ThrowOnError extends boolean = false>(options?: Options<GetData, ThrowOnError>) => (options?.client ?? client).get<GetResponses, unknown, ThrowOnError>({ url: '/', ...options });
 
 /**
  * Generate AI chat response
@@ -94,3 +92,21 @@ export const refresh = <ThrowOnError extends boolean = false>(options: Options<R
         ...options.headers
     }
 });
+
+/**
+ * Test authenticated endpoint
+ *
+ * Dummy authenticated endpoint for testing (requires Bearer token)
+ */
+export const testAuthed = <ThrowOnError extends boolean = false>(options?: Options<TestAuthedData, ThrowOnError>) => (options?.client ?? client).get<TestAuthedResponses, TestAuthedErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/test/authed/',
+    ...options
+});
+
+/**
+ * Get last magic link token
+ *
+ * Get last magic link token from fake email provider (test only)
+ */
+export const getLastMagicLinkToken = <ThrowOnError extends boolean = false>(options?: Options<GetLastMagicLinkTokenData, ThrowOnError>) => (options?.client ?? client).get<GetLastMagicLinkTokenResponses, unknown, ThrowOnError>({ url: '/test/magic-link/last', ...options });

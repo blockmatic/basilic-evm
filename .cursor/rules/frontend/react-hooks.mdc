@@ -4,32 +4,9 @@ glob: "**/*.{tsx,css}"
 alwaysApply: true
 ---
 
-## Core Principles
-Use TanStack Query for ANY async with caching/state management, hooks naming: `use-kebab-case.ts`
-
-## TanStack Query Patterns
-
-### Query Key Factory (CRITICAL)
-Always use `@lukemorales/query-key-factory`. Files: `src/queries/articles.ts`, `src/queries/users.ts`, `src/queries/index.ts`
-
-❌ `useQuery({ queryKey: ['articles', id] })`  ✅ `useQuery(articles.detail(id))`
-❌ `queryClient.invalidateQueries({ queryKey: ['articles'] })`  ✅ `queryClient.invalidateQueries({ queryKey: articles._def })`
-
-## Async Operations
-
-### TanStack Query Versatility (CRITICAL)
-`useQuery` accepts ANY async `queryFn` (not just HTTP): server fetching, local computations, localStorage, file ops, database queries. Benefits: caching, deduping, background refetch, stale-while-revalidate, devtools
-
-Use for any async with caching/stale/repeated execution. For one-off promises, use async/await. See @.cursor/rules/frontend/react.mdc
-
-## Memoization Hooks
-**Default: Don't use `useMemo`/`useCallback`** - React 19.2.3 + Fiber handle most cases
-
-**When to use**: Context provider values, expensive computations (not simple arrays), stable function refs (consumers need stable identity AND stable deps), third-party lib requirements
-
-**When NOT to use**: Frequent dep changes, simple ops, inline functions, JSX memoization, useEffect deps with frequent state changes
-
-Start without, add only when profiling reveals bottleneck. Prefer `React.memo` over `useCallback`
-
-## Custom Hooks
-Combine queries into cohesive hooks, extract query logic for reusability, use query key factory, never manually manage `isLoading`/`error`/`isError`
+- Use TanStack Query for ANY async calls in client side react component. 
+- Hooks naming: `use-kebab-case.ts`
+- Don't use `useMemo`/`useCallback`** - React 19.2.3 + Fiber handle most cases
+- Prefer `React.memo` over `useCallback`
+- Combine queries into cohesive hooks, extract query logic for reusability
+- Never manually manage `isLoading`/`error`/`isError`

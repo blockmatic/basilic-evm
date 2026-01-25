@@ -5,14 +5,14 @@
   "private": true,
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
     }
   },
   "scripts": {
     "build": "tsup",
     "checktypes": "tsgo --noEmit",
-    "dev": "node --import tsx scripts/wait-and-watch.mjs",
+    "dev": "tsup --watch",
     "lint:eslint": "eslint . --max-warnings 0",
     "lint:eslint:fix": "eslint . --fix --max-warnings 0",
     "lint:biome": "biome check .",
@@ -20,24 +20,21 @@
     "lint:fix": "pnpm run lint:eslint:fix && pnpm run lint:biome:fix",
     "prepack": "pnpm build && node ../../scripts/prepare-publish.mjs",
     "postpack": "node ../../scripts/restore-publish.mjs",
-    "generate": "openapi-ts",
     "test": "echo \"no test\""
   },
   "dependencies": {
-    "@repo/core": "workspace:*"
+    "@repo/core": "workspace:*",
+    "@repo/ui": "workspace:*",
+    "zod": "^4.3.5"
   },
   "devDependencies": {
-    "@hey-api/openapi-ts": "^0.90.8",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/utils": "workspace:*",
     "@tanstack/react-query": "^5.90.19",
     "@types/react": "*",
-    "chokidar-cli": "^3.0.0",
-    "concurrently": "^9.2.1",
     "eslint": "*",
     "tsup": "*",
-    "tsx": "^4.21.0",
     "@typescript/native-preview": "*"
   },
   "peerDependencies": {

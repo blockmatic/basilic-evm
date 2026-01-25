@@ -6,6 +6,7 @@ const root: FastifyPluginAsync = async (fastify, _opts): Promise<void> => {
     '/',
     {
       schema: {
+        hide: true,
         tags: ['public'],
         security: [],
       },

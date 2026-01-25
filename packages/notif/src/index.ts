@@ -69,14 +69,7 @@ type CreateInput<T extends keyof NotificationTypes> = {
   payload: NotificationTypes[T]
   options?: NotificationOptions
 }
-
-/**
- * Internal function to create a notification.
- *
- * Validates payload, creates activities, and optionally sends emails.
- *
- * @internal
- */
+/** Internal function to create a notification. Validates payload, creates activities, and optionally sends emails. */
 const create = async <T extends keyof NotificationTypes>({
   emailService,
   type,
@@ -99,7 +92,6 @@ const create = async <T extends keyof NotificationTypes>({
     }
 
     let activities = 0
-
     // Create activities if handler supports it
     if (handler.createActivity) {
       const activityInputs: CreateActivityInput[] = []
@@ -147,9 +139,7 @@ const create = async <T extends keyof NotificationTypes>({
         activities = activityInputs.length
       }
     }
-
     const sendEmail = options?.sendEmail ?? false
-
     if (!sendEmail || !handler.createEmail) {
       return {
         type: type as string,
@@ -160,9 +150,7 @@ const create = async <T extends keyof NotificationTypes>({
 
     const firstUser = validatedData.users[0]
     if (!firstUser) throw new Error('No users available for email context')
-
     // TODO: Fetch team name from team service/DAO using firstUser.team_id
-    // For now using fallback - team name should be fetched and set here
     const teamContext = {
       id: firstUser.team_id,
       name: 'Your Team', // Fallback - should be fetched from team service
@@ -188,11 +176,9 @@ const create = async <T extends keyof NotificationTypes>({
       })
     } else if (sampleEmail.emailType === 'owners') {
       const ownerUsers = validatedData.users.filter((user: UserData) => user.role === 'owner')
-
       const emailInputs = ownerUsers.map((user: UserData) =>
         createEmailInput({ type, handler, validatedData, user, teamContext, options }),
       )
-
       emails = await emailService.sendBulk({
         emails: emailInputs,
         notificationType: type as string,
@@ -242,12 +228,7 @@ const create = async <T extends keyof NotificationTypes>({
  * ```
  */
 export const createNotifications = (): {
-  /**
-   * Creates a notification of the specified type.
-   *
-   * @param input - Notification input with type, payload, and optional options
-   * @returns Promise resolving to notification result with activity and email statistics
-   */
+  /** Creates a notification of the specified type. */
   create: <T extends keyof NotificationTypes>(input: CreateInput<T>) => Promise<NotificationResult>
 } => {
   const emailService = createEmailService()
@@ -285,14 +266,7 @@ export class Notifications {
     this.#service = createNotifications()
   }
 
-  /**
-   * Creates a notification of the specified type.
-   *
-   * @param type - Notification type (e.g., 'login_notification', 'transactions_created')
-   * @param payload - Notification payload data (validated against type schema)
-   * @param options - Optional notification options (sendEmail, priority, etc.)
-   * @returns Promise resolving to notification result with activity and email statistics
-   */
+  /** Creates a notification of the specified type. */
   async create<T extends keyof NotificationTypes>(
     type: T,
     payload: NotificationTypes[T],
@@ -321,8 +295,5 @@ export {
   shouldShowInSettings,
 } from './notification-types'
 export type { NotificationTypes } from './schemas'
-// Export schemas and types
-export {
-  loginNotificationSchema,
-  transactionsCreatedSchema,
-} from './schemas'
+// Export schemas
+export { loginNotificationSchema, transactionsCreatedSchema } from './schemas'

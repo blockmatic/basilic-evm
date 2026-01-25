@@ -5,6 +5,14 @@ const nextConfig = {
   transpilePackages: ['@repo/ui', '@repo/core', '@repo/react', '@repo/error', '@repo/utils'],
   // Suppress OpenTelemetry/Sentry warnings about external packages
   serverExternalPackages: ['import-in-the-middle', 'require-in-the-middle'],
+  webpack: config => {
+    // Resolve .js imports to .ts files for transpiled packages
+    config.resolve.extensionAlias = {
+      '.js': ['.ts', '.tsx', '.js', '.jsx'],
+      '.jsx': ['.tsx', '.jsx'],
+    }
+    return config
+  },
 }
 
 // Only wrap with Sentry if DSN is configured

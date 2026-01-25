@@ -1,9 +1,9 @@
-// Export generated SDK
-
+// Export components
+export { LoginForm } from './components/login-form.js'
 export { useReactApiConfig } from './context.js'
-export * from './gen/index'
 // Export hooks
 export { useHealthCheck } from './hooks/use-health-check.js'
+export { useMagicLink } from './hooks/use-magic-link.js'
 // Export provider and context
 export { ReactApiProvider } from './provider.js'
 export type { ReactApiConfig } from './setup.js'

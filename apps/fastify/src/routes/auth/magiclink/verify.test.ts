@@ -89,18 +89,19 @@ describe('POST /auth/magiclink/verify', () => {
     const { token: jwtToken } = JSON.parse(verifyResponse.body)
     expect(jwtToken).toBeTruthy()
 
-    const walletsResponse = await fastify.inject({
+    const authedResponse = await fastify.inject({
       method: 'GET',
-      url: '/wallets',
+      url: '/test/authed',
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
     })
 
-    expect(walletsResponse.statusCode).toBe(200)
-    const walletsBody = JSON.parse(walletsResponse.body)
-    expect(walletsBody).toHaveProperty('wallets')
-    expect(Array.isArray(walletsBody.wallets)).toBe(true)
+    expect(authedResponse.statusCode).toBe(200)
+    const authedBody = JSON.parse(authedResponse.body)
+    expect(authedBody).toHaveProperty('user')
+    expect(authedBody.user).toHaveProperty('id')
+    expect(authedBody.user).toHaveProperty('email')
   })
 
   it('should complete full authentication flow: send -> verify -> access protected route', async () => {
@@ -137,13 +138,15 @@ describe('POST /auth/magiclink/verify', () => {
     const { token: jwtToken } = JSON.parse(verifyResponse.body)
     expect(jwtToken).toBeTruthy()
 
-    const walletsResponse = await fastify.inject({
+    const authedResponse = await fastify.inject({
       method: 'GET',
-      url: '/wallets',
+      url: '/test/authed',
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
     })
-    expect(walletsResponse.statusCode).toBe(200)
+    expect(authedResponse.statusCode).toBe(200)
+    const authedBody = JSON.parse(authedResponse.body)
+    expect(authedBody).toHaveProperty('user')
   })
 })

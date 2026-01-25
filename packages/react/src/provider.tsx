@@ -1,3 +1,5 @@
+'use client'
+
 import { type ReactNode, useMemo } from 'react'
 import { ReactApiContext } from './context.js'
 import type { ReactApiConfig } from './setup.js'

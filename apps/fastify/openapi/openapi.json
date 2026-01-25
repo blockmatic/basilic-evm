@@ -29,82 +29,13 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": ["ok", "dbReady", "now"],
+                  "required": ["ok", "dbReady"],
                   "properties": {
                     "ok": {
                       "type": "boolean"
                     },
                     "dbReady": {
                       "type": "boolean"
-                    },
-                    "now": {
-                      "format": "date-time",
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/": {
-      "get": {
-        "tags": ["public"],
-        "security": [],
-        "responses": {
-          "200": {
-            "description": "Default Response"
-          }
-        }
-      }
-    },
-    "/wallets": {
-      "get": {
-        "operationId": "getWallets",
-        "summary": "Get wallets",
-        "tags": ["wallets"],
-        "description": "Get user wallets (protected route for testing)",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Default Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": ["wallets"],
-                  "properties": {
-                    "wallets": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {}
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Default Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": ["code", "message"],
-                  "properties": {
-                    "code": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
                     }
                   }
                 }
@@ -544,6 +475,101 @@
                     },
                     "message": {
                       "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/test/authed/": {
+      "get": {
+        "operationId": "testAuthed",
+        "summary": "Test authenticated endpoint",
+        "tags": ["test"],
+        "description": "Dummy authenticated endpoint for testing (requires Bearer token)",
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["user"],
+                  "properties": {
+                    "user": {
+                      "type": "object",
+                      "required": ["id", "email"],
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["code", "message"],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/test/magic-link/last": {
+      "get": {
+        "operationId": "getLastMagicLinkToken",
+        "summary": "Get last magic link token",
+        "tags": ["test"],
+        "description": "Get last magic link token from fake email provider (test only)",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["token"],
+                  "properties": {
+                    "token": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
                     }
                   }
                 }
