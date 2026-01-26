@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import { createEnv } from '@t3-oss/env-core'
 import { z } from 'zod'
 
@@ -56,14 +57,8 @@ export const env = createEnv({
       .string()
       .length(64)
       .regex(/^[0-9a-fA-F]+$/, 'Must be a 32-byte hex string'),
-    // Auth configuration
-    BETTER_AUTH_SECRET: z.string().min(32),
     // JWT configuration
-    JWT_SECRET: z
-      .string()
-      .min(32)
-      .optional()
-      .transform(val => val ?? process.env.BETTER_AUTH_SECRET ?? ''),
+    JWT_SECRET: z.string().min(32),
     ACCESS_JWT_EXPIRES_IN_SECONDS: z.coerce.number().int().positive().default(900), // 15 minutes
     REFRESH_JWT_EXPIRES_IN_SECONDS: z.coerce.number().int().positive().default(604800), // 7 days
     JWT_ISSUER: z.string().default('api.yourapp.com'),
@@ -75,58 +70,6 @@ export const env = createEnv({
       .string()
       .optional()
       .transform(val => (val ? val.split(',').map(host => host.trim()) : undefined)),
-    BETTER_AUTH_URL: z
-      .string()
-      .optional()
-      .transform((val): string => {
-        // Use VERCEL_URL if available (Vercel deployments)
-        if (process.env.VERCEL_URL) {
-          return `https://${process.env.VERCEL_URL}`
-        }
-        // Fallback to explicit env var if set
-        if (val) {
-          return val
-        }
-        // For local development, Better Auth baseURL should be the frontend URL (port 3000)
-        // even though Fastify runs on port 3001, because auth endpoints are proxied through Next.js
-        // This ensures cookies are set for the correct domain
-        return 'http://localhost:3000'
-      })
-      .pipe(z.string().url()),
-    BETTER_AUTH_TRUSTED_ORIGINS: z
-      .string()
-      .default('')
-      .transform(val => {
-        const origins: string[] = []
-
-        // Include VERCEL_URL if available
-        if (process.env.VERCEL_URL) {
-          origins.push(`https://${process.env.VERCEL_URL}`)
-        }
-
-        // Include explicitly set origins from env var
-        const explicitOrigins = val
-          .split(',')
-          .map(origin => origin.trim())
-          .filter(Boolean)
-        origins.push(...explicitOrigins)
-
-        // For local development, include both frontend (3000) and backend (3001) origins
-        // Frontend origin is where auth endpoints are publicly accessible
-        // Backend origin is where Better Auth actually runs
-        const frontendOrigin = 'http://localhost:3000'
-        const backendPort = process.env.PORT || '3001'
-        const backendOrigin = `http://localhost:${backendPort}`
-
-        if (!origins.includes(frontendOrigin)) {
-          origins.push(frontendOrigin)
-        }
-        if (!origins.includes(backendOrigin)) {
-          origins.push(backendOrigin)
-        }
-
-        return origins
-      }),
     // Email configuration
     RESEND_API_KEY: z.string().min(1),
     EMAIL_FROM: z.string().email(),

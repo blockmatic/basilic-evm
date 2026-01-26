@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 import { initSentry } from '@repo/sentry/node'
 import { tryCatch } from '@repo/utils/error'

@@ -42,10 +42,7 @@
         "EMAIL_FROM",
         "APP_URL",
         "EMAIL_ASSETS_URL",
-        "ENCRYPTION_KEY",
-        "BETTER_AUTH_SECRET",
-        "BETTER_AUTH_URL",
-        "BETTER_AUTH_TRUSTED_ORIGINS"
+        "ENCRYPTION_KEY"
       ]
     },
     "lint": {},
@@ -65,9 +62,6 @@
         "VERCEL_GIT_COMMIT_REF",
         "APP_URL",
         "EMAIL_ASSETS_URL",
-        "BETTER_AUTH_SECRET",
-        "BETTER_AUTH_URL",
-        "BETTER_AUTH_TRUSTED_ORIGINS",
         "RESEND_API_KEY",
         "EMAIL_FROM",
         "EMAIL_FROM_NAME",
@@ -92,9 +86,6 @@
         "VERCEL_GIT_COMMIT_REF",
         "APP_URL",
         "EMAIL_ASSETS_URL",
-        "BETTER_AUTH_SECRET",
-        "BETTER_AUTH_URL",
-        "BETTER_AUTH_TRUSTED_ORIGINS",
         "RESEND_API_KEY",
         "EMAIL_FROM",
         "EMAIL_FROM_NAME",
@@ -102,15 +93,7 @@
       ]
     },
     "checktypes": {
-      "env": [
-        "NODE_ENV",
-        "RESEND_API_KEY",
-        "EMAIL_FROM",
-        "EMAIL_FROM_NAME",
-        "BETTER_AUTH_SECRET",
-        "BETTER_AUTH_URL",
-        "BETTER_AUTH_TRUSTED_ORIGINS"
-      ]
+      "env": ["NODE_ENV", "RESEND_API_KEY", "EMAIL_FROM", "EMAIL_FROM_NAME"]
     },
     "test": {
       "dependsOn": ["^build"],
@@ -124,9 +107,6 @@
         "RESEND_API_KEY",
         "EMAIL_FROM",
         "EMAIL_FROM_NAME",
-        "BETTER_AUTH_SECRET",
-        "BETTER_AUTH_URL",
-        "BETTER_AUTH_TRUSTED_ORIGINS",
         "VITEST_WORKER_ID",
         "USE_FAKE_EMAIL"
       ]
@@ -146,9 +126,6 @@
         "RESEND_API_KEY",
         "EMAIL_FROM",
         "EMAIL_FROM_NAME",
-        "BETTER_AUTH_SECRET",
-        "BETTER_AUTH_URL",
-        "BETTER_AUTH_TRUSTED_ORIGINS",
         "NEXT_PUBLIC_API_URL"
       ]
     },
@@ -180,10 +157,7 @@
         "NEXT_PUBLIC_LOG_LEVEL",
         "RESEND_API_KEY",
         "EMAIL_FROM",
-        "EMAIL_FROM_NAME",
-        "BETTER_AUTH_SECRET",
-        "BETTER_AUTH_URL",
-        "BETTER_AUTH_TRUSTED_ORIGINS"
+        "EMAIL_FROM_NAME"
       ]
     }
   }

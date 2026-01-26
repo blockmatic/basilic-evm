@@ -1,7 +1,7 @@
 import type { EmailProvider } from './email.js'
 
 declare global {
-  var __betterAuthTestEmailProvider: EmailProvider | null | undefined
+  var __testEmailProvider: EmailProvider | null | undefined
 }
 
 /**
@@ -10,6 +10,6 @@ declare global {
  */
 export function setTestEmailProvider(provider: EmailProvider | null) {
   if (typeof globalThis !== 'undefined') {
-    globalThis.__betterAuthTestEmailProvider = provider
+    globalThis.__testEmailProvider = provider
   }
 }

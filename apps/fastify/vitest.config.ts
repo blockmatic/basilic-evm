@@ -10,24 +10,11 @@ const configFile = fileURLToPath(import.meta.url)
 const configDir = dirname(configFile)
 const projectRoot = resolve(configDir)
 
-// Set required environment variables BEFORE loading .env file
-// This ensures env.ts validation passes when imported during test initialization
-// GitHub Actions sets DATABASE_URL at job level, but we need it before dotenv runs
-if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = 'test'
+// Load .env.test for tests (before env.ts validation runs)
+const envTestFile = resolve(projectRoot, '.env.test')
+if (existsSync(envTestFile)) {
+  config({ path: envTestFile })
 }
-if (!process.env.DATABASE_URL) {
-  process.env.DATABASE_URL = 'postgresql://localhost/test'
-}
-if (!process.env.ENCRYPTION_KEY) {
-  process.env.ENCRYPTION_KEY = '0000000000000000000000000000000000000000000000000000000000000000'
-}
-
-// Load .env file before any code runs
-// This ensures env vars are available when env.ts is imported
-// Note: For dev/prod, Node's --env-file is used in package.json scripts
-// For tests, we load it here since vitest doesn't support --env-file natively
-config({ path: resolve(projectRoot, '.env') })
 
 const resolveJsToTsPlugin = (): Plugin => ({
   name: 'resolve-js-to-ts',

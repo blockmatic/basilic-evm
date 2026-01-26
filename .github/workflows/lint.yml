@@ -13,9 +13,10 @@ jobs:
       ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
       DATABASE_URL: postgresql://localhost/test
       PGLITE: true
-      BETTER_AUTH_SECRET: test-secret-minimum-32-characters-long
+      JWT_SECRET: test-secret-key-that-is-at-least-32-characters-long
       RESEND_API_KEY: re_test_key
       EMAIL_FROM: test@example.com
+      EMAIL_FROM_NAME: Test App
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

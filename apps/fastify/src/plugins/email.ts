@@ -16,7 +16,7 @@ const resend = new Resend(env.RESEND_API_KEY)
 
 const emailPlugin: FastifyPluginAsync = async fastify => {
   const testProvider =
-    typeof globalThis !== 'undefined' ? (globalThis.__betterAuthTestEmailProvider ?? null) : null
+    typeof globalThis !== 'undefined' ? (globalThis.__testEmailProvider ?? null) : null
 
   fastify.decorate('emailProvider', testProvider ?? resend)
 

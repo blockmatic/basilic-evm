@@ -14,5 +14,5 @@ export type EmailProvider = {
 }
 
 declare global {
-  var __betterAuthTestEmailProvider: EmailProvider | null | undefined
+  var __testEmailProvider: EmailProvider | null | undefined
 }

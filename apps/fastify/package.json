@@ -14,7 +14,7 @@
     "test": "NODE_OPTIONS='--import tsx' vitest run",
     "test:watch": "NODE_OPTIONS='--import tsx' vitest",
     "test:cov": "NODE_OPTIONS='--import tsx' vitest run --coverage",
-    "start": "pnpm run build:ts && node --env-file=.env dist/app.js",
+    "start": "pnpm run build:ts && node dist/app.js",
     "build": "pnpm generate:openapi && pnpm db:migrate && tsgo",
     "build:ts": "tsgo",
     "watch:ts": "tsgo -w",
