@@ -20,36 +20,37 @@ async function extractToken(page: ReturnType<typeof test>['page']): Promise<stri
 }
 
 test.describe('Scalar UI Login Flow', () => {
-  test('should complete full login flow through Scalar UI', async ({ page, context }) => {
+  test('should complete full login flow through Scalar UI', async ({ page }) => {
     // Step 1: Navigate to Scalar UI
     await page.goto(`${API_URL}/reference`)
     await page.waitForLoadState('networkidle')
 
-    // Step 2: Verify login button is visible
-    const loginButton = page.locator('#login-button')
-    await expect(loginButton).toBeVisible()
+    // Step 2: Wait for Scalar UI to load and login button to be injected
+    const loginButton = page.locator('[data-login-link]')
+    await expect(loginButton).toBeVisible({ timeout: 10000 })
     await expect(loginButton).toHaveText('Login')
 
-    // Step 3: Click login button to open modal
+    // Step 3: Click login button to open dialog
     await loginButton.click()
 
-    // Step 4: Verify modal is visible
-    const modalOverlay = page.locator('#modal-overlay')
-    await expect(modalOverlay).toBeVisible()
+    // Step 4: Wait for modal to appear (vanilla modal)
+    const modalOverlay = page.locator('#modal-overlay.show')
+    await expect(modalOverlay).toBeVisible({ timeout: 5000 })
 
-    // Step 5: Enter email in modal
+    // Step 5: Enter email in the form
     const emailInput = page.locator('#email')
     await expect(emailInput).toBeVisible()
     await emailInput.fill(TEST_EMAIL)
 
     // Step 6: Submit form to request magic link
     const submitButton = page.locator('#submit-button')
+    await expect(submitButton).toBeVisible()
     await submitButton.click()
 
     // Step 7: Wait for success message
     const successMessage = page.locator('#email-success')
     await expect(successMessage).toBeVisible({ timeout: 10000 })
-    await expect(successMessage).toContainText('Check your email')
+    await expect(successMessage).toHaveText('Check your email for the magic link')
 
     // Step 8: Extract token from test endpoint
     const token = await extractToken(page)
@@ -60,34 +61,26 @@ test.describe('Scalar UI Login Flow', () => {
       throw new Error('Failed to extract magic link token')
     }
 
-    // Step 9: Set up message listener before opening callback (not used but kept for future enhancement)
+    // Step 9: Open callback URL in same window (for E2E testing)
+    const callbackUrl = `${API_URL}/reference?token=${token}`
+    await page.goto(callbackUrl)
+    await page.waitForLoadState('networkidle')
 
-    // Step 10: Open callback URL in new page to verify token
-    const callbackUrl = `${API_URL}/reference/callback?token=${token}`
-    const callbackPage = await context.newPage()
-    await callbackPage.goto(callbackUrl)
-    await callbackPage.waitForLoadState('networkidle')
+    // Step 10: Wait for callback page to process and clean URL
+    // The callback verifies token, sets JWT in Scalar state, and cleans URL to /reference
+    await page.waitForURL(/\/reference$/, { timeout: 5000 })
 
-    // Step 11: Wait for callback page to send postMessage
-    await callbackPage.waitForTimeout(2000)
-    await callbackPage.close()
-
-    // Step 12: Check that token is stored in localStorage of main page
+    // Step 11: Check that token is stored in localStorage
     const tokenInStorage = await page.evaluate(() => localStorage.getItem('scalar-token'))
     expect(tokenInStorage).toBeTruthy()
 
-    // Step 12: Verify login button text changed to "Logout"
-    await expect(loginButton).toHaveText('Logout', { timeout: 5000 })
+    // Step 12: Wait for page to reload and verify login button text changed to "Logout"
+    await page.waitForLoadState('networkidle')
+    const logoutButton = page.locator('[data-login-link]')
+    await expect(logoutButton).toBeVisible({ timeout: 10000 })
+    await expect(logoutButton).toHaveText('Logout', { timeout: 5000 })
 
-    // Step 13: Close callback page
-    await callbackPage.close()
-
-    // Step 14: Interact with authenticated endpoint through Scalar UI
-    // Find the test/authed endpoint in Scalar UI and try to execute it
-    // This is a bit tricky since we need to interact with Scalar's UI
-    // For now, we'll verify the token is set and can be used for API calls
-
-    // Step 15: Verify we can call the authenticated endpoint directly with the token
+    // Step 13: Verify we can call the authenticated endpoint directly with the token
     const authedResponse = await page.request.get(`${API_URL}/test/authed`, {
       headers: {
         authorization: `Bearer ${tokenInStorage}`,
@@ -105,8 +98,13 @@ test.describe('Scalar UI Login Flow', () => {
     await page.goto(`${API_URL}/reference`)
     await page.waitForLoadState('networkidle')
 
-    const loginButton = page.locator('#login-button')
+    const loginButton = page.locator('[data-login-link]')
+    await expect(loginButton).toBeVisible({ timeout: 10000 })
     await loginButton.click()
+
+    // Wait for modal
+    const modalOverlay = page.locator('#modal-overlay.show')
+    await expect(modalOverlay).toBeVisible({ timeout: 5000 })
 
     const emailInput = page.locator('#email')
     await emailInput.fill(TEST_EMAIL)
@@ -114,27 +112,27 @@ test.describe('Scalar UI Login Flow', () => {
     const submitButton = page.locator('#submit-button')
     await submitButton.click()
 
-    await page.waitForSelector('#email-success', { timeout: 10000 })
+    const successMessage = page.locator('#email-success')
+    await expect(successMessage).toBeVisible({ timeout: 10000 })
+    await expect(successMessage).toHaveText('Check your email for the magic link')
 
     const token = await extractToken(page)
     if (!token) {
       throw new Error('Failed to extract token')
     }
 
-    const callbackUrl = `${API_URL}/reference/callback?token=${token}`
-    const callbackPage = await page.context().newPage()
-    await callbackPage.goto(callbackUrl)
-    await callbackPage.waitForTimeout(2000)
-    await callbackPage.close()
-
-    // Wait for token to be set
-    await page.waitForTimeout(1000)
+    const callbackUrl = `${API_URL}/reference?token=${token}`
+    await page.goto(callbackUrl)
+    await page.waitForURL(/\/reference$/, { timeout: 5000 })
+    await page.waitForLoadState('networkidle')
 
     // Verify logged in state
-    await expect(loginButton).toHaveText('Logout')
+    const logoutButton = page.locator('[data-login-link]')
+    await expect(logoutButton).toBeVisible({ timeout: 10000 })
+    await expect(logoutButton).toHaveText('Logout', { timeout: 5000 })
 
     // Click logout
-    await loginButton.click()
+    await logoutButton.click()
 
     // Verify page reloads and token is cleared
     await page.waitForLoadState('networkidle')
@@ -142,7 +140,8 @@ test.describe('Scalar UI Login Flow', () => {
     expect(tokenAfterLogout).toBeNull()
 
     // Verify login button is back
-    const loginButtonAfterLogout = page.locator('#login-button')
+    const loginButtonAfterLogout = page.locator('[data-login-link]')
+    await expect(loginButtonAfterLogout).toBeVisible({ timeout: 10000 })
     await expect(loginButtonAfterLogout).toHaveText('Login')
   })
 })

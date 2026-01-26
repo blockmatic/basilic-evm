@@ -1,0 +1,3 @@
+{"location":"template.ts:42","message":"Script initialization started","data":{"apiUrl":"http://localhost","openApiUrl":"http://localhost/reference/openapi.json","callbackUrl":"http://localhost/reference/callback"},"timestamp":1769466268085,"sessionId":"debug-session","hypothesisId":"A,C"}
+{"location":"template.ts:54","message":"Before Scalar init","data":{"openApiUrl":"http://localhost/reference/openapi.json","scalarExists":true},"timestamp":1769466268087,"sessionId":"debug-session","hypothesisId":"C,D"}
+{"location":"template.ts:66","message":"Scalar init success","data":{"hasScalarRef":true},"timestamp":1769466268186,"sessionId":"debug-session","hypothesisId":"C"}

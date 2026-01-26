@@ -14,5 +14,5 @@
       "@repo/email/*": ["../../packages/email/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "api/**/*.ts"]
+  "include": ["src/**/*.ts", "api/**/*.ts"]
 }

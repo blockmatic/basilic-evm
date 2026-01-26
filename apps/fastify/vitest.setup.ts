@@ -2,7 +2,7 @@
  * Vitest Test Setup
  *
  * Runs before each test file in each worker.
- * Provides global setup for React Email components.
+ * Provides global setup for tests.
  *
  * ## Database Lifecycle
  *
@@ -11,16 +11,7 @@
  *
  * ## Important Notes
  *
- * - React global setup is kept here for React Email components
+ * - React is set up globally by @repo/email/render when React Email components are imported
  * - DB lifecycle moved to group entry files per testing strategy rules
  * - Each group entry file owns its Fastify + DB lifecycle
  */
-
-import React from 'react'
-
-// Make React available globally for React Email components
-// React Email components use JSX which requires React to be available at runtime
-// Even with the new JSX transform (react-jsx), React needs to be accessible when components execute
-if (typeof globalThis !== 'undefined') {
-  globalThis.React = React
-}
