@@ -1,7 +1,7 @@
 import type { MagiclinkRequestData, MagiclinkRequestResponse } from '@repo/core'
 import type { UseMutationOptions } from '@tanstack/react-query'
 import { useMutation } from '@tanstack/react-query'
-import { useReactApiConfig } from '../context.js'
+import { useReactApiConfig } from '../context'
 
 /**
  * React Query mutation hook for magic link request endpoint.

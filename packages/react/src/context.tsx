@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext } from 'react'
-import type { ReactApiConfigValue } from './setup.js'
+import type { ReactApiConfigValue } from './setup'
 
 /**
  * React context for API client and query configuration.

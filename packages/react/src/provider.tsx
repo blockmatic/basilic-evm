@@ -1,9 +1,9 @@
 'use client'
 
 import { type ReactNode, useMemo } from 'react'
-import { ReactApiContext } from './context.js'
-import type { ReactApiConfig } from './setup.js'
-import { createReactApiConfig } from './setup.js'
+import { ReactApiContext } from './context'
+import type { ReactApiConfig } from './setup'
+import { createReactApiConfig } from './setup'
 
 /**
  * Provider component that makes API client and query configuration available to child components.

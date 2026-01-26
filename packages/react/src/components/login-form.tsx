@@ -13,7 +13,7 @@ import { Input } from '@repo/ui/components/input'
 import { cn } from '@repo/ui/lib/utils'
 import { useEffect, useState } from 'react'
 import { z } from 'zod'
-import { useMagicLink } from '../hooks/use-magic-link.js'
+import { useMagicLink } from '../hooks/use-magic-link'
 
 const emailSchema = z
   .string()

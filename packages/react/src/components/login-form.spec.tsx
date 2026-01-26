@@ -5,12 +5,12 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import * as useMagicLinkModule from '../hooks/use-magic-link.js'
-import { ReactApiProvider } from '../provider.js'
-import { LoginForm } from './login-form.js'
+import * as useMagicLinkModule from '../hooks/use-magic-link'
+import { ReactApiProvider } from '../provider'
+import { LoginForm } from './login-form'
 
 // Mock the useMagicLink hook
-vi.mock('../hooks/use-magic-link.js', () => ({
+vi.mock('../hooks/use-magic-link', () => ({
   useMagicLink: vi.fn(),
 }))
 

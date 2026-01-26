@@ -1,7 +1,7 @@
 import type { HealthCheckData, HealthCheckResponse } from '@repo/core'
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { useQuery } from '@tanstack/react-query'
-import { useReactApiConfig } from '../context.js'
+import { useReactApiConfig } from '../context'
 
 /**
  * React Query hook for health check endpoint.
