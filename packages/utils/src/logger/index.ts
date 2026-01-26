@@ -3,5 +3,5 @@
 
 // Re-export logger value for TypeScript - actual implementation comes from conditional exports
 // Runtime resolves to either client.ts (browser) or server.ts (node)
-export { logger } from './client'
-export type { Logger, LogLevel } from './types'
+export { logger } from './client.js'
+export type { Logger, LogLevel } from './types.js'
