@@ -6,6 +6,7 @@ const nextConfig = {
   // Suppress OpenTelemetry/Sentry warnings about external packages
   serverExternalPackages: ['import-in-the-middle', 'require-in-the-middle'],
   // @/ alias is automatically resolved from tsconfig.json paths
+  // Webpack config forces Next.js to use webpack instead of Turbopack
   webpack: config => {
     // Resolve .js imports to .ts files for transpiled packages
     // Merge with existing extensionAlias if present to preserve Next.js defaults
