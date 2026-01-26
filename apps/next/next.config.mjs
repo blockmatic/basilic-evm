@@ -1,15 +1,25 @@
+import { dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { withSentryConfig } from '@sentry/nextjs'
+
+const configFileUrl = fileURLToPath(import.meta.url)
+const configDir = dirname(configFileUrl)
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: ['@repo/ui', '@repo/core', '@repo/react', '@repo/error', '@repo/utils'],
   // Suppress OpenTelemetry/Sentry warnings about external packages
   serverExternalPackages: ['import-in-the-middle', 'require-in-the-middle'],
-  webpack: config => {
+  webpack: (config, { dir }) => {
     // Resolve .js imports to .ts files for transpiled packages
     config.resolve.extensionAlias = {
       '.js': ['.ts', '.tsx', '.js', '.jsx'],
       '.jsx': ['.tsx', '.jsx'],
+    }
+    // Resolve @/ alias to the app directory (use dir from Next.js context, fallback to configDir)
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': dir || configDir,
     }
     return config
   },
