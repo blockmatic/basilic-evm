@@ -1,3 +1,3 @@
-export * from './use-devtools'
-export * from './use-nuqs-debug'
-export * from './use-vconsole'
+export * from './use-devtools.js'
+export * from './use-nuqs-debug.js'
+export * from './use-vconsole.js'

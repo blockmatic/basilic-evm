@@ -1,4 +1,4 @@
-import { getChainMetadata } from './index'
+import { getChainMetadata } from './index.js'
 
 // EVM ChainId -> Alchemy network slug mapping
 const ALCHEMY_EVM_SLUGS: Record<number, string> = {

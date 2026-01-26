@@ -13,11 +13,11 @@ import {
   polygonAmoy,
   sepolia,
 } from 'viem/chains'
-import type { ChainType } from './chain-type'
+import type { ChainType } from './chain-type.js'
 
 export type { ChainType }
-export * from './alchemy'
-export { chainTypeSchema } from './chain-type'
+export * from './alchemy.js'
+export { chainTypeSchema } from './chain-type.js'
 
 /**
  * Metadata for a blockchain network.

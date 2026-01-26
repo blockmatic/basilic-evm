@@ -1,6 +1,6 @@
 import pino from 'pino'
-import type { Logger } from './types'
-import { normalizeLevel, parseBool } from './types'
+import type { Logger } from './types.js'
+import { normalizeLevel, parseBool } from './types.js'
 
 const enabled = parseBool(process.env.LOG_ENABLED, true)
 const level = enabled ? normalizeLevel(process.env.LOG_LEVEL) : 'silent'
