@@ -1,9 +1,4 @@
-import { dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { withSentryConfig } from '@sentry/nextjs'
-
-const configFileUrl = fileURLToPath(import.meta.url)
-const configDir = dirname(configFileUrl)
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
