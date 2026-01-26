@@ -8,7 +8,10 @@ const nextConfig = {
   // @/ alias is automatically resolved from tsconfig.json paths
   webpack: config => {
     // Resolve .js imports to .ts files for transpiled packages
+    // Merge with existing extensionAlias if present to preserve Next.js defaults
+    const existingExtensionAlias = config.resolve.extensionAlias || {}
     config.resolve.extensionAlias = {
+      ...existingExtensionAlias,
       '.js': ['.ts', '.tsx', '.js', '.jsx'],
       '.jsx': ['.tsx', '.jsx'],
     }
