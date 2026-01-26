@@ -47,6 +47,6 @@
     "@types/react": "*",
     "eslint": "*",
     "react": "^19.2.3",
-    "@typescript/native-preview": "*"
+    "@typescript/native-preview": "7.0.0-dev.20260124.1"
   }
 }

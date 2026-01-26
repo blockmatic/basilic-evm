@@ -35,7 +35,7 @@
     "@types/react": "*",
     "eslint": "*",
     "tsup": "*",
-    "@typescript/native-preview": "*"
+    "@typescript/native-preview": "7.0.0-dev.20260124.1"
   },
   "peerDependencies": {
     "@tanstack/react-query": "^5.90.17",
