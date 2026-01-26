@@ -13,6 +13,9 @@ const nextConfig = {
     }
     return config
   },
+  // Empty turbopack config to silence Next.js 16 warning
+  // We use --webpack flag in build script to ensure webpack is used for extension alias resolution
+  turbopack: {},
 }
 
 // Only wrap with Sentry if DSN is configured
