@@ -1,8 +1,8 @@
-import { api } from './api-wrapper.gen.js'
-import type { CoreClientOptions } from './config.js'
-import { ApiError } from './errors.js'
-import { createConfig, createClient as createHeyApiClient } from './gen/client/index.js'
-import * as gen from './gen/index.js'
+import { api } from './api-wrapper.gen'
+import type { CoreClientOptions } from './config'
+import { ApiError } from './errors'
+import { createConfig, createClient as createHeyApiClient } from './gen/client/index'
+import * as gen from './gen/index'
 
 // Lock to prevent multiple concurrent refresh attempts
 let refreshLock: Promise<{ token: string; refreshToken: string } | null> | null = null

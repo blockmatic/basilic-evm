@@ -1,5 +1,5 @@
-import type { Logger, LogLevel } from './types.js'
-import { normalizeLevel, parseBool } from './types.js'
+import type { Logger, LogLevel } from './types'
+import { normalizeLevel, parseBool } from './types'
 
 // Off by default in production browser builds
 const enabledDefault = process.env.NODE_ENV !== 'production'

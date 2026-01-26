@@ -1,7 +1,7 @@
-import type { CoreClientOptions } from './config.js'
-import { ApiError } from './errors.js'
-import { createClient, createConfig } from './gen/client/index.js'
-import * as gen from './gen/index.js'
+import type { CoreClientOptions } from './config'
+import { ApiError } from './errors'
+import { createClient, createConfig } from './gen/client/index'
+import * as gen from './gen/index'
 
 /**
  * Creates a hey-api client instance with base URL configuration.
@@ -76,4 +76,4 @@ export function createApi(options: CoreClientOptions) {
 }
 
 // Export types from generated code
-export type { HealthCheckResponse } from './gen/types.gen.js'
+export type { HealthCheckResponse } from './gen/types.gen'

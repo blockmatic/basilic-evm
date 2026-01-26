@@ -1,4 +1,4 @@
-import type { ErrorWithMessage, Result } from './types.js'
+import type { ErrorWithMessage, Result } from './types'
 
 /**
  * Wraps a promise or async function in a try-catch and returns a Result type.
@@ -73,4 +73,4 @@ export function getErrorMessage(error: unknown): string {
 }
 
 // Re-export types
-export type { ErrorWithMessage } from './types.js'
+export type { ErrorWithMessage } from './types'

@@ -10,7 +10,7 @@ import { useLocalStorageState } from 'ahooks'
 import { useQueryState } from 'nuqs'
 import { useEffect, useRef } from 'react'
 import VConsole from 'vconsole'
-import { logger } from '../logger/client.js'
+import { logger } from '../logger/client'
 
 export function useVConsole() {
   const [debugQuery, setDebugQuery] = useQueryState('debug')
