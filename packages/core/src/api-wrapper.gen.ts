@@ -1,6 +1,6 @@
 // This file is auto-generated. Do not edit manually.
 
-import * as gen from './gen/index.js'
+import * as gen from './gen/index'
 
 export const api = {
 healthCheck: gen.healthCheck,

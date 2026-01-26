@@ -103,7 +103,7 @@ for (const [path, methods] of Object.entries(paths)) {
 const nestedObjectLines = generateNestedObject(nestedStructure)
 const output = `// This file is auto-generated. Do not edit manually.
 
-import * as gen from './gen/index.js'
+import * as gen from './gen/index'
 
 export const api = {
 ${nestedObjectLines.join('\n')}
