@@ -10,22 +10,12 @@ const nextConfig = {
   transpilePackages: ['@repo/ui', '@repo/core', '@repo/react', '@repo/error', '@repo/utils'],
   // Suppress OpenTelemetry/Sentry warnings about external packages
   serverExternalPackages: ['import-in-the-middle', 'require-in-the-middle'],
-  webpack: (config, { dir }) => {
-    // Resolve .js imports to .ts files for transpiled packages
-    config.resolve.extensionAlias = {
-      '.js': ['.ts', '.tsx', '.js', '.jsx'],
-      '.jsx': ['.tsx', '.jsx'],
-    }
-    // Resolve @/ alias to the app directory (use dir from Next.js context, fallback to configDir)
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': dir || configDir,
-    }
-    return config
+  // Turbopack configuration (default bundler in Next.js 16)
+  // @/ alias is automatically resolved from tsconfig.json paths
+  turbopack: {
+    // Resolve .js imports to .ts files for transpiled packages (same as webpack extensionAlias)
+    resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json'],
   },
-  // Empty turbopack config to silence Next.js 16 warning
-  // We use --webpack flag in build script to ensure webpack is used for extension alias resolution
-  turbopack: {},
 }
 
 // Only wrap with Sentry if DSN is configured
