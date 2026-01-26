@@ -5,11 +5,14 @@ const nextConfig = {
   transpilePackages: ['@repo/ui', '@repo/core', '@repo/react', '@repo/error', '@repo/utils'],
   // Suppress OpenTelemetry/Sentry warnings about external packages
   serverExternalPackages: ['import-in-the-middle', 'require-in-the-middle'],
-  // Turbopack configuration (default bundler in Next.js 16)
   // @/ alias is automatically resolved from tsconfig.json paths
-  turbopack: {
-    // Resolve .js imports to .ts files for transpiled packages (same as webpack extensionAlias)
-    resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json'],
+  webpack: config => {
+    // Resolve .js imports to .ts files for transpiled packages
+    config.resolve.extensionAlias = {
+      '.js': ['.ts', '.tsx', '.js', '.jsx'],
+      '.jsx': ['.tsx', '.jsx'],
+    }
+    return config
   },
 }
 
