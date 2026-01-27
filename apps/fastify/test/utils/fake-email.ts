@@ -8,6 +8,28 @@ type Email = {
   from?: string
 }
 
+const htmlEntityMap: Record<string, string> = {
+  amp: '&',
+  quot: '"',
+  apos: "'",
+  lt: '<',
+  gt: '>',
+}
+
+function decodeHtmlEntities(value: string): string {
+  return value.replace(/&(#\d+|#x[\da-fA-F]+|amp|quot|apos|lt|gt);/g, (match, entity) => {
+    if (entity.startsWith('#x')) {
+      const codePoint = Number.parseInt(entity.slice(2), 16)
+      return Number.isNaN(codePoint) ? match : String.fromCodePoint(codePoint)
+    }
+    if (entity.startsWith('#')) {
+      const codePoint = Number.parseInt(entity.slice(1), 10)
+      return Number.isNaN(codePoint) ? match : String.fromCodePoint(codePoint)
+    }
+    return htmlEntityMap[entity] ?? match
+  })
+}
+
 export class FakeEmailProvider implements EmailProvider {
   private outbox: Email[] = []
 
@@ -49,8 +71,10 @@ export class FakeEmailProvider implements EmailProvider {
     const targetEmail = email ?? this.last()
     if (!targetEmail) return null
 
-    // Try to extract from HTML first
-    const htmlMatch = targetEmail.html.match(/href=["']([^"']*magic-link[^"']*)["']/i)
+    const decodedHtml = decodeHtmlEntities(targetEmail.html)
+
+    // Try to extract from HTML first - look for links with "magic-link" in URL
+    const htmlMatch = decodedHtml.match(/href=["']([^"']*magic-link[^"']*)["']/i)
     const htmlLink = htmlMatch?.[1]
     if (htmlLink) {
       return htmlLink
@@ -65,11 +89,19 @@ export class FakeEmailProvider implements EmailProvider {
       }
     }
 
-    // Fallback: look for any URL with token parameter
-    const urlMatch = targetEmail.html.match(/href=["']([^"']*\?token=[^"']*)["']/i)
+    // Fallback: look for any URL with token parameter (more flexible regex)
+    // Handles both ?token= and &token= patterns, and various quote styles
+    const urlMatch = decodedHtml.match(/href\s*=\s*["']([^"']*[?&]token=[^"'&]*)["']/i)
     const urlLink = urlMatch?.[1]
     if (urlLink) {
       return urlLink
+    }
+
+    // Additional fallback: look for token parameter anywhere in HTML (not just in href)
+    const tokenMatch = decodedHtml.match(/(https?:\/\/[^\s"']*[?&]token=[^\s"']*)/i)
+    const tokenLink = tokenMatch?.[1]
+    if (tokenLink) {
+      return tokenLink
     }
 
     return null

@@ -12,6 +12,7 @@
     "lint:eslint:fix": "turbo run lint:eslint:fix",
     "lint:fix": "pnpm run lint:eslint:fix && pnpm run lint:biome:fix",
     "test": "turbo run test --filter='!./contracts/**'",
+    "test:e2e": "pnpm --filter @repo/fastify test:e2e && pnpm --filter @repo/next test:e2e",
     "format": "biome format . --write",
     "hooks:pre-commit": "pnpm run hooks:security && biome check --write --staged --no-errors-on-unmatched && git update-index --again",
     "hooks:security": "node scripts/block-secret-files.mjs && node scripts/scan-secrets-staged.mjs && node scripts/scan-osv.mjs",

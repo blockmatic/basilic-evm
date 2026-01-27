@@ -6,11 +6,14 @@ export type AuthProxyOptions = {
 }
 
 export const buildFastifyUrl = ({ pathSegments, request }: AuthProxyOptions) => {
-  const path = pathSegments.join('/')
+  let path = pathSegments.join('/')
+  // Map Next.js API path format to Fastify route format
+  // magic-link -> magiclink
+  path = path.replace(/magic-link/g, 'magiclink')
   const requestUrl = new URL(request.url)
   return {
     path,
-    targetUrl: `${env.NEXT_PUBLIC_API_URL}/api/auth/${path}${requestUrl.search}`,
+    targetUrl: `${env.NEXT_PUBLIC_API_URL}/auth/${path}${requestUrl.search}`,
   }
 }
 

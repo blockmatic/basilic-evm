@@ -20,6 +20,8 @@ async function extractToken(page: ReturnType<typeof test>['page']): Promise<stri
 }
 
 test.describe('Scalar UI Login Flow', () => {
+  test.describe.configure({ mode: 'serial' })
+
   test('should complete full login flow through Scalar UI', async ({ page }) => {
     // Step 1: Navigate to Scalar UI
     await page.goto(`${API_URL}/reference`)

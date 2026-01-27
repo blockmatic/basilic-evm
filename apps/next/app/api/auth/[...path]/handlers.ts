@@ -4,7 +4,6 @@ import {
   clearServerRefreshToken,
   getServerAuthToken,
 } from '@/lib/auth-server'
-import { env } from '@/lib/env'
 import { handleMagicLinkVerify } from './handlers/magic-link'
 import { handleGetSession, handleUpdateTokens } from './handlers/session'
 import type { AuthProxyOptions } from './handlers/utils'
@@ -13,7 +12,7 @@ import { buildFastifyUrl, getForwardedHeaders, getRequestBody } from './handlers
 export const proxyRequest = async ({ pathSegments, request }: AuthProxyOptions) => {
   const { path, targetUrl } = buildFastifyUrl({ pathSegments, request })
 
-  if (path === 'magic-link/verify') {
+  if (path === 'magiclink/verify') {
     return handleMagicLinkVerify({ request })
   }
 
@@ -43,7 +42,7 @@ export const proxyRequest = async ({ pathSegments, request }: AuthProxyOptions) 
     }
 
     const { headers } = getForwardedHeaders({ request, token })
-    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/auth/session/user`, {
+    const response = await fetch(targetUrl, {
       method: 'GET',
       headers,
     })

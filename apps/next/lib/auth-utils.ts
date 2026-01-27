@@ -52,7 +52,7 @@ export async function getUserInfo() {
   if (!token) return null
 
   try {
-    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/auth/session/user`, {
+    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/auth/session/user`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
