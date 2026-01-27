@@ -21,7 +21,7 @@ export default defineConfig({
   webServer: [
     {
       command: process.env.CI
-        ? 'pnpm --filter @repo/fastify start'
+        ? 'pnpm --filter @repo/fastify start:ci'
         : 'pnpm --filter @repo/fastify dev',
       url: 'http://localhost:3001/health',
       reuseExistingServer: !process.env.CI,

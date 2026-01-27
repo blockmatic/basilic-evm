@@ -16,6 +16,7 @@
     "test:cov": "NODE_OPTIONS='--import tsx' vitest run --coverage",
     "test:e2e": "playwright test",
     "start": "pnpm run build:ts && node dist/server.js",
+    "start:ci": "NODE_ENV=test USE_FAKE_EMAIL=true node --import tsx server.ts",
     "build": "pnpm generate:openapi && pnpm db:migrate && tsgo",
     "build:ts": "tsgo",
     "watch:ts": "tsgo -w",
