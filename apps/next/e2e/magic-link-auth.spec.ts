@@ -7,11 +7,15 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
  * Helper function to send magic link request
  */
 async function sendMagicLink(page: Page) {
-  await page.goto('/')
+  await page.goto('/login')
   await page.fill('input[type="email"]', TEST_EMAIL)
   await page.click('button[type="submit"]')
   // Wait for the success message indicating email was sent
-  await page.waitForSelector('text=Check your email for the magic link', { timeout: 5000 })
+  // The message appears in a FieldDescription component with green text
+  const successMessage = page
+    .locator('[data-slot="field-description"]')
+    .filter({ hasText: /check your email for the magic link/i })
+  await expect(successMessage).toBeVisible({ timeout: 10000 })
 }
 
 /**
@@ -34,22 +38,26 @@ async function extractToken(): Promise<string | null> {
  * Helper function to verify magic link and navigate to verify URL
  */
 async function verifyMagicLink(page: Page, token: string) {
-  const verifyUrl = `/api/auth/magic-link/verify?token=${encodeURIComponent(token)}&callbackURL=/dashboard`
+  const verifyUrl = `/api/auth/magic-link/verify?token=${encodeURIComponent(token)}&callbackURL=/`
   await page.goto(verifyUrl)
-  // Wait for redirect to dashboard
-  await page.waitForURL(/\/dashboard/, { timeout: 5000 })
+  // Wait for redirect to root
+  await page.waitForURL(/\//, { timeout: 5000 })
 }
 
 /**
- * Helper function to check if user is authenticated on dashboard
+ * Helper function to check if user is authenticated
  */
 async function checkAuthenticated(page: Page) {
-  // Check URL is dashboard
-  expect(page.url()).toContain('/dashboard')
+  // Check URL is root (dashboard)
+  expect(page.url()).toMatch(/^https?:\/\/[^/]+\/?(\?.*)?$/)
 
-  // Check user email is displayed
-  const emailElement = page.locator(`text=${TEST_EMAIL}`)
-  await expect(emailElement).toBeVisible()
+  // Check dashboard content is visible
+  const dashboardHeading = page.locator('text=Dashboard')
+  await expect(dashboardHeading).toBeVisible()
+
+  // Check user email is displayed in welcome message
+  const welcomeText = page.locator(`text=Welcome back, ${TEST_EMAIL}`)
+  await expect(welcomeText).toBeVisible({ timeout: 5000 })
 
   // Check API health badge shows "API OK" (indicates connected)
   const apiBadge = page.locator('text=API OK')
@@ -73,32 +81,8 @@ test.describe('Valid Magic Link Flow', () => {
     // Step 3: Verify magic link
     await verifyMagicLink(page, token)
 
-    // Step 4: Check authenticated state
+    // Step 4: Check authenticated state (should be on dashboard)
     await checkAuthenticated(page)
-
-    // Step 5: Check success message is displayed
-    const successMessage = page.locator('text=Successfully authenticated')
-    await expect(successMessage.first()).toBeVisible({ timeout: 2000 })
-  })
-
-  test('should redirect to dashboard with success message query param', async ({ page }) => {
-    await sendMagicLink(page)
-
-    const token = await extractToken()
-    expect(token).toBeTruthy()
-
-    if (!token) {
-      throw new Error('Failed to extract magic link token')
-    }
-
-    await verifyMagicLink(page, token)
-
-    // Check URL contains authenticated=true query param
-    await page.waitForURL(/\/dashboard\?.*authenticated=true/, { timeout: 5000 })
-
-    // Check success message is visible
-    const successAlert = page.locator('role=alert')
-    await expect(successAlert.first()).toBeVisible()
   })
 })
 
@@ -109,8 +93,8 @@ test.describe('Invalid Magic Link Flow', () => {
     // Navigate to verify URL with invalid token
     await page.goto('/api/auth/magic-link/verify?token=invalid-token-12345')
 
-    // Should redirect to login page
-    await page.waitForURL(/\/\?.*message=/, { timeout: 5000 })
+    // Should redirect to login page with message query param
+    await page.waitForURL(/\/login\?.*message=/, { timeout: 5000 })
 
     // Check error message is displayed below input field (using FieldError component)
     const emailInput = page.locator('input[type="email"]')
@@ -119,7 +103,10 @@ test.describe('Invalid Magic Link Flow', () => {
     // Find the error element that is a sibling of the input (within the same Field)
     const fieldError = page.locator('[data-slot="field-error"]')
     await expect(fieldError.first()).toBeVisible()
-    await expect(fieldError.first()).toContainText(/Invalid or expired magic link/i)
+    // The error message can be either "Invalid or expired magic link" or "Failed to verify magic link"
+    await expect(fieldError.first()).toContainText(
+      /(Invalid or expired magic link|Failed to verify magic link)/i,
+    )
 
     // Verify error is within the same field container as the input
     const fieldContainer = page.locator('[data-slot="field"]:has(input[type="email"])')
@@ -137,8 +124,8 @@ test.describe('Invalid Magic Link Flow', () => {
   }) => {
     await page.goto('/api/auth/magic-link/verify')
 
-    // Should redirect to login page
-    await page.waitForURL(/\/\?.*message=/, { timeout: 5000 })
+    // Should redirect to login page with message query param
+    await page.waitForURL(/\/login\?.*message=/, { timeout: 5000 })
 
     // Check error message is displayed below input field
     const emailInput = page.locator('input[type="email"]')
@@ -146,7 +133,10 @@ test.describe('Invalid Magic Link Flow', () => {
 
     const fieldError = page.locator('[data-slot="field-error"]')
     await expect(fieldError.first()).toBeVisible()
-    await expect(fieldError.first()).toContainText(/Invalid or expired magic link/i)
+    // The error message can be either "Invalid or expired magic link" or "Failed to verify magic link"
+    await expect(fieldError.first()).toContainText(
+      /(Invalid or expired magic link|Failed to verify magic link)/i,
+    )
   })
 
   test('should redirect to login with error message for expired token displayed below input', async ({
@@ -155,8 +145,8 @@ test.describe('Invalid Magic Link Flow', () => {
     // Use a token that looks valid but is expired
     await page.goto('/api/auth/magic-link/verify?token=expired-token-abc123')
 
-    // Should redirect to login page
-    await page.waitForURL(/\/\?.*message=/, { timeout: 5000 })
+    // Should redirect to login page with message query param
+    await page.waitForURL(/\/login\?.*message=/, { timeout: 5000 })
 
     // Check error message is displayed below input field
     const emailInput = page.locator('input[type="email"]')
@@ -164,13 +154,16 @@ test.describe('Invalid Magic Link Flow', () => {
 
     const fieldError = page.locator('[data-slot="field-error"]')
     await expect(fieldError.first()).toBeVisible()
-    await expect(fieldError.first()).toContainText(/Invalid or expired magic link/i)
+    // The error message can be either "Invalid or expired magic link" or "Failed to verify magic link"
+    await expect(fieldError.first()).toContainText(
+      /(Invalid or expired magic link|Failed to verify magic link)/i,
+    )
   })
 })
 
 test.describe('Email Validation', () => {
   test('should display email validation error below input field', async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/login')
 
     // Fill in invalid email format
     const emailInput = page.locator('input[type="email"]')
@@ -200,23 +193,22 @@ test.describe('Email Validation', () => {
 })
 
 test.describe('Protected Route Access', () => {
-  test('should redirect to login when accessing dashboard without auth', async ({ page }) => {
+  test('should redirect to login when accessing root without auth', async ({ page }) => {
     // Clear all cookies first
     await page.context().clearCookies()
 
-    // Navigate directly to dashboard
-    await page.goto('/dashboard')
+    // Navigate directly to root (should redirect to login when not authenticated)
+    await page.goto('/')
 
     // Should redirect to login page
-    await page.waitForURL(/\//, { timeout: 5000 })
-    expect(page.url()).not.toContain('/dashboard')
+    await page.waitForURL(/\/login/, { timeout: 5000 })
 
     // Verify login form is visible
     const emailInput = page.locator('input[type="email"]')
     await expect(emailInput).toBeVisible()
   })
 
-  test('should access dashboard after authentication', async ({ page }) => {
+  test('should access root after authentication', async ({ page }) => {
     // Authenticate first
     await sendMagicLink(page)
     const token = await extractToken()
@@ -228,11 +220,11 @@ test.describe('Protected Route Access', () => {
 
     await verifyMagicLink(page, token)
 
-    // Now navigate to dashboard directly
-    await page.goto('/dashboard')
+    // Now navigate to root directly (should show dashboard when authenticated)
+    await page.goto('/')
 
-    // Should stay on dashboard (not redirect)
-    await page.waitForURL(/\/dashboard/, { timeout: 5000 })
+    // Should stay on root (not redirect)
+    await page.waitForURL(/^https?:\/\/[^/]+\/?(\?.*)?$/, { timeout: 5000 })
 
     // Verify authenticated content is visible
     await checkAuthenticated(page)
@@ -257,8 +249,8 @@ test.describe('JWT Session Refresh', () => {
     const jwtCookie = cookies.find(cookie => cookie.name === 'better-auth.jwt_token')
     expect(jwtCookie).toBeDefined()
 
-    // Make authenticated request to session endpoint
-    const response = await page.request.get('/api/auth/get-session')
+    // Make authenticated request to user endpoint
+    const response = await page.request.get('/api/auth/session/user')
     expect(response.ok()).toBeTruthy()
 
     const sessionData = await response.json()

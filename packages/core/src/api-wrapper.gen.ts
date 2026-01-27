@@ -15,6 +15,7 @@ auth: {
   session: {
     logout: gen.logout,
     refresh: gen.refresh,
+    user: gen.getUser,
   },
 },
 test: {

@@ -11,7 +11,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "NODE_OPTIONS='--import tsx' vitest run",
+    "test": "pnpm test:unit",
+    "test:unit": "NODE_OPTIONS='--import tsx' vitest run",
     "test:watch": "NODE_OPTIONS='--import tsx' vitest",
     "test:cov": "NODE_OPTIONS='--import tsx' vitest run --coverage",
     "test:e2e": "playwright test",

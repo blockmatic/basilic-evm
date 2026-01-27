@@ -33,7 +33,8 @@
     "dev": "tsup --watch",
     "lint:eslint": "eslint . --max-warnings 0",
     "lint:eslint:fix": "eslint . --fix --max-warnings 0",
-    "test": "vitest run",
+    "test": "pnpm test:unit",
+    "test:unit": "vitest run",
     "test:types": "tsgo --noEmit src/__tests__/types.test-d.ts",
     "prepack": "pnpm build && node ../../scripts/prepare-publish.mjs",
     "postpack": "node ../../scripts/restore-publish.mjs"

@@ -223,6 +223,41 @@ export type RefreshResponses = {
 
 export type RefreshResponse = RefreshResponses[keyof RefreshResponses];
 
+export type GetUserData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/auth/session/user';
+};
+
+export type GetUserErrors = {
+    /**
+     * Default Response
+     */
+    401: {
+        code: string;
+        message: string;
+    };
+};
+
+export type GetUserError = GetUserErrors[keyof GetUserErrors];
+
+export type GetUserResponses = {
+    /**
+     * Default Response
+     */
+    200: {
+        user: {
+            id: string;
+            email: string | unknown;
+            name: string | unknown;
+            emailVerified: boolean | unknown;
+        };
+    };
+};
+
+export type GetUserResponse = GetUserResponses[keyof GetUserResponses];
+
 export type TestAuthedData = {
     body?: never;
     path?: never;

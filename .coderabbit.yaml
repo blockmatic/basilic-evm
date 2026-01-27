@@ -71,9 +71,7 @@ reviews:
         - Ensure no server-only code leaks into client bundles
         - Follow all coding standards defined in:
           - .cursor/rules/base/typescript.mdc
-          - .cursor/rules/base/error-handling.mdc
-          - .cursor/rules/base/logging.mdc
-          - .cursor/rules/base/environment.mdc
+          - .cursor/rules/base/general.mdc
     
     - path: "packages/ui/**"
       instructions: |
@@ -92,8 +90,7 @@ reviews:
           - .cursor/rules/frontend/react-hooks.mdc
           - .cursor/rules/frontend/mobile-first.mdc
           - .cursor/rules/base/typescript.mdc
-          - .cursor/rules/base/error-handling.mdc
-          - .cursor/rules/base/logging.mdc
+          - .cursor/rules/base/general.mdc
     
     - path: "apps/docu/**"
       instructions: |
@@ -102,7 +99,7 @@ reviews:
         - Follow all coding standards defined in:
           - .cursor/rules/frontend/nextjs.mdc
           - .cursor/rules/frontend/react.mdc
-          - .cursor/rules/base/documentation.mdc
+          - .cursor/rules/base/docs.mdc
           - .cursor/rules/base/typescript.mdc
     
     - path: "apps/fastify/**"
@@ -110,18 +107,15 @@ reviews:
         - Verify Fastify functional patterns and TypeBox schema usage
         - Follow all coding standards defined in:
           - .cursor/rules/backend/fastify.mdc
-          - .cursor/rules/backend/testing.mdc
-          - .cursor/rules/base/environment.mdc
-          - .cursor/rules/base/error-handling.mdc
-          - .cursor/rules/base/logging.mdc
           - .cursor/rules/base/typescript.mdc
+          - .cursor/rules/base/general.mdc
     
     - path: "scripts/**"
       instructions: |
         - Verify Node.js/ESM patterns and script organization
         - Follow all coding standards defined in:
           - .cursor/rules/base/typescript.mdc
-          - .cursor/rules/base/environment.mdc
+          - .cursor/rules/base/general.mdc
     
     - path: "contracts/**"
       instructions: |
@@ -129,32 +123,28 @@ reviews:
         - Follow all coding standards defined in:
           - .cursor/rules/web3/solidity.mdc
           - .cursor/rules/web3/solana.mdc
-          - .cursor/rules/base/security.mdc
-          - .cursor/rules/base/testing.mdc
+          - .cursor/rules/base/general.mdc
     
     - path: "**/*.{ts,tsx}"
       instructions: |
         - Verify TypeScript patterns and code style
         - Follow all coding standards defined in:
           - .cursor/rules/base/typescript.mdc
-          - .cursor/rules/base/error-handling.mdc
-          - .cursor/rules/base/logging.mdc
-          - .cursor/rules/base/linting.mdc
+          - .cursor/rules/base/general.mdc
     
     - path: "**/*.{test.ts,test.tsx,spec.ts,spec.tsx,e2e-spec.ts}"
       instructions: |
         - CRITICAL: Integration tests must use real APIs with real API keys - NO MOCKS for core functionality
         - UI-only tests may mock API calls for performance, but integration tests must use real APIs
         - Follow all coding standards defined in:
-          - .cursor/rules/base/testing.mdc
-          - .cursor/rules/frontend/testing.mdc
-          - .cursor/rules/backend/testing.mdc
+          - .cursor/rules/base/typescript.mdc
+          - .cursor/rules/base/general.mdc
     
     - path: "**/*.mdx"
       instructions: |
         - Verify MDX content follows documentation standards
         - Follow all coding standards defined in:
-          - .cursor/rules/base/documentation.mdc
+          - .cursor/rules/base/docs.mdc
     
     - path: ".cursor/**"
       instructions: |
@@ -163,9 +153,9 @@ reviews:
         - Check documentation is up to date
         - Verify cross-references use @ syntax correctly
         - Follow all coding standards defined in:
-          - .cursor/rules/base/rules.mdc
-          - .cursor/rules/base/skills.mdc
-          - .cursor/rules/base/documentation.mdc
+          - .cursor/rules/cursor/rules.mdc
+          - .cursor/rules/cursor/skills.mdc
+          - .cursor/rules/base/docs.mdc
     
     - path: "**/*.{ts,tsx,js,jsx}"
       instructions: |
@@ -175,8 +165,8 @@ reviews:
         - LINTING: Code must pass both Biome (formatting/style) and ESLint (correctness) before merge
         - LINTING: File size limit is 300 lines (exempt: test files and UI components)
         - Follow all coding standards defined in:
-          - .cursor/rules/base/security.mdc
-          - .cursor/rules/base/linting.mdc
+          - .cursor/rules/base/general.mdc
+          - .cursor/rules/base/typescript.mdc
 
 # Chat configuration
 chat:

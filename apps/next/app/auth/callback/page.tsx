@@ -16,14 +16,14 @@ export default async function AuthCallbackPage({ searchParams }: AuthCallbackPag
   const error = params.error || params.message
 
   if (error) {
-    redirect(`/?message=${encodeURIComponent(error)}`)
+    redirect(`/login?message=${encodeURIComponent(error)}`)
   }
 
   if (!token) {
-    redirect('/?message=Invalid or expired magic link')
+    redirect('/login?message=Invalid or expired magic link')
   }
 
-  const callbackURL = params.callbackURL?.startsWith('/') ? params.callbackURL : '/dashboard'
+  const callbackURL = params.callbackURL?.startsWith('/') ? params.callbackURL : '/'
   const verifyUrl = `/api/auth/magic-link/verify?token=${encodeURIComponent(token)}&format=jwt&callbackURL=${encodeURIComponent(
     callbackURL,
   )}`

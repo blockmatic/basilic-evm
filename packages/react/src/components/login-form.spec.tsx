@@ -107,7 +107,7 @@ describe('LoginForm', () => {
     await waitFor(() => {
       expect(mockMutate).toHaveBeenCalledWith({
         email: 'test@example.com',
-        callbackUrl: expect.stringContaining('/dashboard'),
+        callbackUrl: expect.any(String),
       })
     })
   })

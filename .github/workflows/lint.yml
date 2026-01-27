@@ -21,6 +21,7 @@ jobs:
       RESEND_API_KEY: re_test_key
       EMAIL_FROM: test@example.com
       EMAIL_FROM_NAME: Test App
+      PLAYWRIGHT_HTML_REPORT_OPEN: never
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

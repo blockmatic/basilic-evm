@@ -2,6 +2,7 @@ import { cookies } from 'next/headers'
 import { env } from '@/lib/env'
 
 const authCookieName = 'better-auth.jwt_token'
+const authRefreshCookieName = 'better-auth.refresh_token'
 
 type AuthCookieOptions = {
   maxAge?: number
@@ -29,5 +30,22 @@ export async function setServerAuthToken({ token }: { token: string }) {
 export async function clearServerAuthToken() {
   const cookieStore = await cookies()
   cookieStore.set(authCookieName, '', getAuthCookieOptions({ maxAge: 0 }))
+  return { cleared: true }
+}
+
+export async function getServerRefreshToken() {
+  const cookieStore = await cookies()
+  return { refreshToken: cookieStore.get(authRefreshCookieName)?.value ?? null }
+}
+
+export async function setServerRefreshToken({ refreshToken }: { refreshToken: string }) {
+  const cookieStore = await cookies()
+  cookieStore.set(authRefreshCookieName, refreshToken, getAuthCookieOptions({}))
+  return { refreshToken }
+}
+
+export async function clearServerRefreshToken() {
+  const cookieStore = await cookies()
+  cookieStore.set(authRefreshCookieName, '', getAuthCookieOptions({ maxAge: 0 }))
   return { cleared: true }
 }

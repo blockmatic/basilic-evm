@@ -20,7 +20,8 @@
     "lint:fix": "pnpm run lint:eslint:fix && pnpm run lint:biome:fix",
     "prepack": "pnpm build && node ../../scripts/prepare-publish.mjs",
     "postpack": "node ../../scripts/restore-publish.mjs",
-    "test": "echo \"no test\""
+    "test": "pnpm test:unit",
+    "test:unit": "vitest run"
   },
   "dependencies": {
     "@repo/core": "workspace:*",
@@ -32,9 +33,16 @@
     "@repo/typescript-config": "workspace:*",
     "@repo/utils": "workspace:*",
     "@tanstack/react-query": "^5.90.19",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/react": "*",
     "eslint": "*",
+    "jsdom": "^27.4.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "tsup": "*",
+    "vitest": "*",
     "@typescript/native-preview": "7.0.0-dev.20260124.1"
   },
   "peerDependencies": {

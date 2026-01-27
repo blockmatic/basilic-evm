@@ -94,9 +94,6 @@ pnpm build
 
 Optional environment variables (see `.env-example`):
 
-- `NEXT_PUBLIC_SENTRY_DSN` - Sentry DSN for error tracking
-- `NEXT_PUBLIC_SENTRY_ENVIRONMENT` - Sentry environment name
-
 ## Project Structure
 
 ```

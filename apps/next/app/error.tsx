@@ -1,26 +1,12 @@
 'use client'
 
-import { captureError } from '@repo/sentry/nextjs'
-
 // eslint-disable-next-line import/no-default-export -- Next.js requires default export for error.tsx
 export default function ErrorPage({
-  error,
   reset,
 }: {
   error: Error & { digest?: string }
   reset: () => void
 }) {
-  // Report to Sentry
-  captureError({
-    code: 'UNEXPECTED_ERROR',
-    error,
-    label: 'Next.js Error Page',
-    tags: { app: 'web', module: 'error-page' },
-    data: {
-      digest: error.digest,
-    },
-  })
-
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4">
       <div className="max-w-md space-y-4 text-center">

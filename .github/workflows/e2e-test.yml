@@ -38,6 +38,7 @@ jobs:
       EMAIL_FROM: test@example.com
       EMAIL_FROM_NAME: Test App
       NEXT_PUBLIC_API_URL: http://localhost:3001
+      PLAYWRIGHT_HTML_REPORT_OPEN: never
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -69,18 +70,31 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: pnpm --filter @repo/next exec playwright install chromium --with-deps
+        run: |
+          pnpm --filter @repo/next exec playwright install chromium --with-deps
+          pnpm --filter @repo/fastify exec playwright install chromium --with-deps
 
       - name: Build applications
         run: pnpm turbo run build --filter @repo/next --filter @repo/fastify
 
-      - name: Run E2E tests
+      - name: Run Next.js E2E tests
         run: pnpm --filter @repo/next test:e2e
 
-      - name: Upload Playwright report
+      - name: Run Fastify E2E tests (Scalar UI)
+        run: pnpm --filter @repo/fastify test:e2e
+
+      - name: Upload Next.js Playwright report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-nextjs
           path: apps/next/playwright-report/
+          retention-days: 30
+
+      - name: Upload Fastify Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-fastify
+          path: apps/fastify/playwright-report/
           retention-days: 30

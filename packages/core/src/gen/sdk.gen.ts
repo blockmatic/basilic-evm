@@ -2,7 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { ChatData, ChatErrors, ChatResponses, GetLastMagicLinkTokenData, GetLastMagicLinkTokenResponses, HealthCheckData, HealthCheckResponses, LogoutData, LogoutErrors, LogoutResponses, MagiclinkRequestData, MagiclinkRequestErrors, MagiclinkRequestResponses, MagiclinkVerifyData, MagiclinkVerifyErrors, MagiclinkVerifyResponses, RefreshData, RefreshErrors, RefreshResponses, TestAuthedData, TestAuthedErrors, TestAuthedResponses } from './types.gen';
+import type { ChatData, ChatErrors, ChatResponses, GetLastMagicLinkTokenData, GetLastMagicLinkTokenResponses, GetUserData, GetUserErrors, GetUserResponses, HealthCheckData, HealthCheckResponses, LogoutData, LogoutErrors, LogoutResponses, MagiclinkRequestData, MagiclinkRequestErrors, MagiclinkRequestResponses, MagiclinkVerifyData, MagiclinkVerifyErrors, MagiclinkVerifyResponses, RefreshData, RefreshErrors, RefreshResponses, TestAuthedData, TestAuthedErrors, TestAuthedResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -91,6 +91,17 @@ export const refresh = <ThrowOnError extends boolean = false>(options: Options<R
         'Content-Type': 'application/json',
         ...options.headers
     }
+});
+
+/**
+ * Get user
+ *
+ * Get current user information
+ */
+export const getUser = <ThrowOnError extends boolean = false>(options?: Options<GetUserData, ThrowOnError>) => (options?.client ?? client).get<GetUserResponses, GetUserErrors, ThrowOnError>({
+    security: [{ scheme: 'bearer', type: 'http' }],
+    url: '/auth/session/user',
+    ...options
 });
 
 /**

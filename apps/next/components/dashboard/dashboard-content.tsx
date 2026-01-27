@@ -1,5 +1,3 @@
-import { Alert, AlertDescription } from '@repo/ui/components/alert'
-import { CheckCircle2 } from 'lucide-react'
 import { ApiHealthBadge } from '@/components/api-health-badge'
 import { SignOutButton } from './sign-out-button'
 
@@ -11,21 +9,12 @@ type User = {
 
 type DashboardContentProps = {
   user: User
-  showSuccessMessage: boolean
 }
 
-export function DashboardContent({ user, showSuccessMessage }: DashboardContentProps) {
+export function DashboardContent({ user }: DashboardContentProps) {
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="mx-auto max-w-4xl space-y-8">
-        {showSuccessMessage && (
-          <Alert className="border-green-500/50 bg-green-500/10">
-            <CheckCircle2 className="text-green-600 dark:text-green-400" />
-            <AlertDescription className="text-green-700 dark:text-green-300">
-              Successfully authenticated! You have been logged in successfully.
-            </AlertDescription>
-          </Alert>
-        )}
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold">Dashboard</h1>
