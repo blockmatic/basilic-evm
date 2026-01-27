@@ -19,7 +19,7 @@ async function sendMagicLink(page: Page) {
  */
 async function extractToken(): Promise<string | null> {
   try {
-    const response = await fetch(`${API_URL}/api/test/last-magic-link`)
+    const response = await fetch(`${API_URL}/test/magic-link/last`)
     if (!response.ok) {
       return null
     }
@@ -122,7 +122,7 @@ test.describe('Invalid Magic Link Flow', () => {
     await expect(fieldError.first()).toContainText(/Invalid or expired magic link/i)
 
     // Verify error is within the same field container as the input
-    const fieldContainer = emailInput.locator('..').locator('[data-slot="field"]')
+    const fieldContainer = page.locator('[data-slot="field"]:has(input[type="email"])')
     const errorInField = fieldContainer.locator('[data-slot="field-error"]')
     await expect(errorInField).toBeVisible()
 
@@ -188,7 +188,7 @@ test.describe('Email Validation', () => {
     await expect(fieldError.first()).toBeVisible({ timeout: 5000 })
 
     // Verify error is within the same field container as the input
-    const fieldContainer = emailInput.locator('..').locator('[data-slot="field"]')
+    const fieldContainer = page.locator('[data-slot="field"]:has(input[type="email"])')
     const errorInField = fieldContainer.locator('[data-slot="field-error"]')
     await expect(errorInField).toBeVisible()
 

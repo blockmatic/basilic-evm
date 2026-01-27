@@ -12,7 +12,7 @@ export async function GET(): Promise<Response> {
 
   try {
     // Call Fastify test endpoint to get last magic link token
-    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/test/last-magic-link`, {
+    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/test/magic-link/last`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
