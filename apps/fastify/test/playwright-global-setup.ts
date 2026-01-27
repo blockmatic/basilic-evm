@@ -3,7 +3,7 @@ import { promisify } from 'node:util'
 
 const execAsync = promisify(exec)
 
-async function killPort(port: number) {
+async function _killPort(port: number) {
   try {
     // Try ss first (modern Linux)
     const { stdout: ssOutput } = await execAsync(`ss -tlnp 2>/dev/null | grep :${port} || true`)

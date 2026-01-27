@@ -74,14 +74,8 @@ jobs:
           pnpm --filter @repo/next exec playwright install chromium --with-deps
           pnpm --filter @repo/fastify exec playwright install chromium --with-deps
 
-      - name: Build applications
-        run: pnpm turbo run build --filter @repo/next --filter @repo/fastify
-
-      - name: Run Next.js E2E tests
-        run: pnpm --filter @repo/next test:e2e
-
-      - name: Run Fastify E2E tests (Scalar UI)
-        run: pnpm --filter @repo/fastify test:e2e
+      - name: Run E2E tests (sequential, root script)
+        run: pnpm test:e2e
 
       - name: Upload Next.js Playwright report
         if: always()
