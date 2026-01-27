@@ -13,8 +13,8 @@ jobs:
     name: Lint Code
     runs-on: ubuntu-latest
     env:
-      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY || 'sk-test-dummy-key-for-openapi' }}
-      ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY || '0000000000000000000000000000000000000000000000000000000000000000' }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY != '' && secrets.OPENAI_API_KEY || 'sk-test-dummy-key-for-openapi' }}
+      ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY != '' && secrets.ENCRYPTION_KEY || '0000000000000000000000000000000000000000000000000000000000000000' }}
       DATABASE_URL: postgresql://localhost/test
       PGLITE: true
       JWT_SECRET: test-secret-key-that-is-at-least-32-characters-long
