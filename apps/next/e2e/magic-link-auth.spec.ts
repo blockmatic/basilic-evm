@@ -34,7 +34,7 @@ async function extractToken(): Promise<string | null> {
  * Helper function to verify magic link and navigate to verify URL
  */
 async function verifyMagicLink(page: Page, token: string) {
-  const verifyUrl = `/api/auth/magic-link/verify?token=${token}&callbackURL=/dashboard`
+  const verifyUrl = `/api/auth/magic-link/verify?token=${encodeURIComponent(token)}&callbackURL=/dashboard`
   await page.goto(verifyUrl)
   // Wait for redirect to dashboard
   await page.waitForURL(/\/dashboard/, { timeout: 5000 })
