@@ -17,39 +17,29 @@ on:
       - 'pnpm-lock.yaml'
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   fastify-tests:
     name: API Tests
     runs-on: ubuntu-latest
     env:
-      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY || 'sk-test-dummy-key-for-openapi' }}
+      ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY || '0000000000000000000000000000000000000000000000000000000000000000' }}
       # DATABASE_URL will be set by vitest.setup.ts to use PGLite
       # This fallback ensures env validation passes before tests run
       DATABASE_URL: postgresql://localhost/test
       # JWT configuration
-      JWT_SECRET: test-secret-key-that-is-at-least-32-characters-long
+      JWT_SECRET: ${{ secrets.JWT_SECRET || 'test-secret-key-that-is-at-least-32-characters-long' }}
       # Email configuration
-      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-      EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY || 're_test_key' }}
+      EMAIL_FROM: ${{ secrets.EMAIL_FROM || 'test@example.com' }}
       EMAIL_FROM_NAME: Test App
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set test environment variables with fallbacks
-        run: |
-          if [ -z "$RESEND_API_KEY" ]; then
-            echo "RESEND_API_KEY=re_test_key" >> $GITHUB_ENV
-          fi
-          if [ -z "$EMAIL_FROM" ]; then
-            echo "EMAIL_FROM=test@example.com" >> $GITHUB_ENV
-          fi
-          if [ -z "$EMAIL_FROM_NAME" ]; then
-            echo "EMAIL_FROM_NAME=Test App" >> $GITHUB_ENV
-          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

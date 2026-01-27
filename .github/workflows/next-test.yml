@@ -17,18 +17,20 @@ on:
       - 'pnpm-lock.yaml'
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   next-tests:
     name: Web Tests
     runs-on: ubuntu-latest
     env:
-      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-      ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY || 'sk-test-dummy-key-for-openapi' }}
+      ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY || '0000000000000000000000000000000000000000000000000000000000000000' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
