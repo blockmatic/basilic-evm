@@ -93,6 +93,6 @@ captureError({ error, label: 'Checkout', tags: { app: 'web' } })
 
 ## See also
 
-- [Error Handling Guide](@apps/docu/content/docs/architecture/error-handling.mdx)
-- [Logging Guide](@apps/docu/content/docs/architecture/logging.mdx)
-- [Security Guide](@apps/docu/content/docs/security/index.mdx)
+- [Error Handling Guide](/docs/architecture/error-handling)
+- [Logging Guide](/docs/architecture/logging)
+- [Security Guide](/docs/security)
