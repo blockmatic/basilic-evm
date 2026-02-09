@@ -65,5 +65,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build
+        run: pnpm turbo run build --filter='!./contracts/**'
+
       - name: Run all unit tests
         run: pnpm turbo run test:unit --filter '!./contracts/**'
