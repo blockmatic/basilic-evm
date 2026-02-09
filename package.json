@@ -30,7 +30,7 @@
     "setup:evm": "node scripts/setup-evm-tools.mjs",
     "setup:solana": "node scripts/setup-solana-tools.mjs",
     "setup:database": "node scripts/setup-database.mjs",
-    "qa": "pnpm i --no-frozen-lockfile && pnpm lint:fix && turbo run checktypes test --concurrency=100% --filter='!./contracts/**'",
+    "qa": "pnpm i --no-frozen-lockfile && turbo run checktypes --concurrency=100% && pnpm run lint:fix && pnpm build && turbo run test --concurrency=100% --filter='!./contracts/**'",
     "update-deps": "pnpm self-update && pnpm update --latest --recursive"
   },
   "devDependencies": {
