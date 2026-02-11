@@ -2,17 +2,9 @@
 
 TypeScript monorepo with REST API architecture.
 
-## Requirements
 
-- **Node.js**: `22.x`
-- **pnpm**: `10.28.0`
 
-### Node.js Setup
 
-Install and set Node.js 22 as default using nvm:
-
-```bash
-nvm install 22 && nvm alias default 22
 ```
 
 ## Quick Start
@@ -28,6 +20,7 @@ pnpm dev
 - `pnpm dev` - Start all apps in development mode (see [Development Workflow](#development-workflow))
 - `pnpm build` - Build all apps and packages
 - `pnpm lint` - Lint all code (Biome + ESLint)
+- `pnpm lint:fix` - Auto-fix lint issues (Biome + ESLint)
 - `pnpm format` - Format all code (Biome)
 - `pnpm checktypes` - Type check all TypeScript
 - `pnpm test` - Run all tests
@@ -55,7 +48,7 @@ pnpm dev
 This runs:
 - **`@repo/core`** - Watches for OpenAPI changes and regenerates API client
 - **`@repo/react`** - Watches for OpenAPI changes and regenerates React hooks, watches TypeScript for rebuilds
-- **`@repo/error`** - Watches TypeScript for rebuilds
+- **`@repo/sentry`** - Watches TypeScript for rebuilds
 - **`@repo/utils`** - Watches TypeScript for rebuilds
 - **`@repo/fastify`** - Starts Fastify API server with OpenAPI generation watcher
 - **`@repo/next`** - Starts Next.js development server
@@ -75,8 +68,10 @@ pnpm qa
 
 This executes:
 1. **`pnpm i`** - Install/update dependencies
-2. **`pnpm lint:fix`** - Auto-fix linting issues (ESLint + Biome)
-3. **`turbo run checktypes build test`** - Type-check, build, and test all packages (excluding contracts)
+2. **`turbo run checktypes`** - Type-check all packages
+3. **`pnpm lint:fix`** - Auto-fix linting (ESLint + Biome)
+4. **`pnpm build`** - Build all packages (excluding contracts)
+5. **`turbo run test`** - Test all packages (excluding contracts)
 
 **Use Cases:**
 - Before committing changes
@@ -90,7 +85,7 @@ You can run individual apps directly, but remember to build dependencies first:
 
 ```bash
 # Build required packages
-pnpm build --filter=@repo/core --filter=@repo/react --filter=@repo/error --filter=@repo/utils
+pnpm build --filter=@repo/core --filter=@repo/react --filter=@repo/sentry --filter=@repo/utils
 
 # Then run the app
 cd apps/next
@@ -130,7 +125,7 @@ See [Security Guide](@apps/docu/content/docs/security/index.mdx) for complete de
 
 - **`apps/`** - Applications (API, Web, Docs)
 - **`packages/`** - Shared packages (core, react, ui, utils)
-- **`devtools/`** - Shared development tooling (eslint, react, typescript configs)
+- **`tools/`** - Shared development tooling (eslint, typescript configs)
 
 ## Documentation
 
