@@ -32,7 +32,7 @@ flowchart TB
     Core["core<br/>(Hey API client + types)"]
     React["react<br/>(TanStack Query hooks)"]
     UI["ui<br/>(Shadcn components)"]
-    Sentry["sentry<br/>(Error handling)"]
+    Error["error<br/>(Error handling utilities with Sentry integration)"]
     Utils["utils<br/>(Logger, async, web3)"]
     Email["email<br/>(React Email templates)"]
   end
@@ -50,7 +50,7 @@ flowchart TB
   UI --> Next
   UI --> Docu
   UI --> Email
-  Sentry --> Fastify
+  Error --> Fastify
   Utils --> Fastify
   Email --> Fastify
   Utils --> Next

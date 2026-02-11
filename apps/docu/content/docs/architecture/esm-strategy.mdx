@@ -151,7 +151,7 @@ Node.js apps use native ESM and typically run TypeScript in development via `tsx
 
 **What is tsgo?**
 
-`tsgo` is the **TypeScript Go compiler**. We use it because it’s fast and works well as the default tool for monorepo **compilation** and `--noEmit` **typechecks**.
+`tsgo` is the **TypeScript Go compiler** (preview tool as of 2025). We use it because it’s fast and works well as the default tool for monorepo **compilation** and `--noEmit` **typechecks**. Known limitations: incomplete declaration (`.d.ts`) emit, gaps with some downlevel emit targets, watch-mode caveats (`watch:ts`), and incompatibility with the legacy TypeScript compiler API. The scripts `build:ts`, `watch:ts`, and `checktypes` are affected. Contributors should avoid relying on unsupported emit modes or legacy-API tooling integrations until these gaps are resolved.
 
 **TypeScript config (Node ESM):**
 ```json
@@ -171,16 +171,16 @@ Node.js apps use native ESM and typically run TypeScript in development via `tsx
 
 ## Import Extension Rules
 
-**ESM requires explicit extensions** at runtime, but TypeScript can resolve extensionless imports in source.
+Extensionless imports (`import "./utils/delay"`) work only when using `moduleResolution: "bundler"` (e.g., Next.js) or tooling that supports extensionless resolution. With `moduleResolution: "NodeNext"` (used for Fastify/Node ESM), Node requires **explicit `.js` extensions** for relative imports.
 
 **In TypeScript source:**
-- ✅ `import { delay } from "./utils/delay"` (no extension)
-- ✅ `import { delay } from "./utils/delay.js"` (explicit `.js` for ESM compatibility)
+- ✅ `import { delay } from "./utils/delay.js"` (required for NodeNext/strict ESM)
+- ✅ `import { delay } from "./utils/delay"` (bundler environments only—Next.js, etc.)
 - ❌ `import { delay } from "./utils/delay.ts"` (don't use `.ts` extension)
 
 **Best Practice:**
-- Omit extensions in TypeScript when the runtime/tooling supports it
-- Use `.js` extensions when targeting strict ESM environments
+- Use `.js` extensions for NodeNext/strict ESM (Fastify, Node apps)
+- Omit extensions only in bundler-based setups (`moduleResolution: "bundler"`)
 - Never use `.ts` extensions in imports
 
 ## TypeScript Strategy
@@ -240,5 +240,5 @@ Key effects:
 ## Related Documentation
 
 - [Package Conventions](/docs/architecture/package-conventions) - Package organization and naming
-- [Packages Reference](/docs/core-concepts/packages) - Complete package API reference
-- [Monorepo Structure](/docs/core-concepts/monorepo-structure) - Overall monorepo architecture
+- [Packages Reference](/docs/development/packages) - Complete package API reference
+- [Monorepo Structure](/docs/architecture/monorepo) - Overall monorepo architecture

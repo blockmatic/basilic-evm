@@ -47,7 +47,7 @@ export async function userRoutes(fastify: FastifyInstance) {
 
     try {
       const user = await getUserById(id)
-      request.log.info({ userId: id, email: user.email }, 'User fetched')
+      request.log.info({ userId: id }, 'User fetched')
       return reply.send(user)
     } catch (error) {
       request.log.error({ error, userId: id }, 'Failed to fetch user')
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
   })
 
   try {
-    requestLogger.info('Processing request')
+    requestLogger.info({}, 'Processing request')
     const users = await getUsers()
     requestLogger.debug({ count: users.length }, 'Users fetched')
     return NextResponse.json(users)
@@ -266,5 +266,5 @@ fastify.setErrorHandler((error, request, reply) => {
 
 ## Related Documentation
 
-- [Installation](/docs/getting-started/installation) - Environment variable configuration
+- [Installation](/docs/development) - Environment variable configuration
 - [Error Handling](/docs/architecture/error-handling) - Error logging with `@repo/sentry`

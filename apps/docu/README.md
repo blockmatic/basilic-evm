@@ -27,10 +27,8 @@ Documentation content in `content/docs/`:
 
 - `adrs/` - Architecture Decision Records documenting key technical decisions
 - `architecture/` - Package architecture, patterns, and technology choices
-- `getting-started/` - Quick start guides and setup instructions
-- `core-concepts/` - Monorepo structure, API architecture, OpenAPI generation, packages reference
+- `development/` - Quick start, setup, tooling, and AI-assisted development
 - `deployment/` - Deployment options, GitHub Actions, publishing, Vercel
-- `security/` - Security baseline and vulnerability management
 - `testing/` - Testing patterns and frontend testing
 - `blockchain/` - EVM and Solana contract development
 
@@ -43,7 +41,7 @@ Live site: [https://basilic-docs.vercel.app/docs](https://basilic-docs.vercel.ap
 - **[Security Guide](@apps/docu/content/docs/security/index.mdx)** - Security baseline, secret scanning, and vulnerability management
 - **[Deployment Guide](@apps/docu/content/docs/deployment/index.mdx)** - Deployment options and strategies for all applications
 - **[Publishing Guide](@apps/docu/content/docs/deployment/publishing.mdx)** - Publishing packages to npm using dual-mode exports
-- **[Environment Setup](@apps/docu/content/docs/getting-started/installation.mdx)** - Configuring environment variables
+- **[Environment Setup](@apps/docu/content/docs/development/index.mdx)** - Configuring environment variables
 
 ### Architecture
 

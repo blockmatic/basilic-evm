@@ -132,24 +132,23 @@ See [Security Guide](@apps/docu/content/docs/security/index.mdx) for complete de
 Full documentation: [https://basilic-docs.vercel.app/docs](https://basilic-docs.vercel.app/docs)
 
 ### Get Started
-- [Getting Started](@apps/docu/content/docs/getting-started/index.mdx) - 15-minute setup guide
-- [AI-Driven Development](@apps/docu/content/docs/getting-started/ai-workflow.mdx) - Recommended workflow with Cursor
+- [Getting Started](@apps/docu/content/docs/development/index.mdx) - 15-minute setup guide
+- [AI-Driven Development](@apps/docu/content/docs/development/ai-workflow.mdx) - Recommended workflow with Cursor
 
-### Core Concepts
-- [Monorepo Structure](@apps/docu/content/docs/core-concepts/monorepo-structure.mdx) - Package organization
-- [API Development](@apps/docu/content/docs/core-concepts/api-architecture.mdx) - REST API with OpenAPI and client generation
+### Architecture
+- [Monorepo Structure](@apps/docu/content/docs/architecture/monorepo.mdx) - Package organization
+- [API Development](@apps/docu/content/docs/architecture/api.mdx) - REST API with OpenAPI and client generation
 - [Portability Strategy](@apps/docu/content/docs/architecture/portability.mdx) - Zero vendor lock-in
 
 ### Guides
-- [Development Tooling](@apps/docu/content/docs/architecture/dev-tooling.mdx) - Turborepo setup, pnpm dev, and pnpm qa workflows
-- [Security Guide](@apps/docu/content/docs/security/index.mdx) - Security baseline and secret scanning
+- [Development Tooling](@apps/docu/content/docs/development/dev-tooling.mdx) - Turborepo setup, pnpm dev, and pnpm qa workflows
+- [Security Guide](@apps/docu/content/docs/architecture/security.mdx) - Security baseline and secret scanning
 - [Error Handling Guide](@apps/docu/content/docs/architecture/error-handling.mdx) - Error handling with Sentry integration
 - [Deployment Guide](@apps/docu/content/docs/deployment/index.mdx) - Deployment options and strategies
 - [Publishing Guide](@apps/docu/content/docs/deployment/publishing.mdx) - Publishing packages to npm
 
 ### Cursor Setup
-- [Cursor Setup Guide](@apps/docu/content/docs/getting-started/cursor-setup.mdx) - Configure IDE and MCP servers
-- [Cursor Rules](@apps/docu/content/docs/core-concepts/cursor-rules.mdx) - Coding standards
+- [Cursor Setup Guide](@apps/docu/content/docs/development/cursor-setup.mdx) - Configure IDE and MCP servers
 
 ### Deep Dives
 - [Architecture](@apps/docu/content/docs/architecture/index.mdx) - Architecture overview

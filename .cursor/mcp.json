@@ -51,7 +51,7 @@
     },
     "next": {
       "url": "https://mcp.vercel.com/gaboesquivel/basilic-next",
-      "description": "Vercel Next API package context"
+      "description": "Next.js web application context"
     }
   }
 }

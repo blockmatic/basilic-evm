@@ -10,7 +10,7 @@ description: "Get up and running with this project in under 15 minutes. Perfect 
 Install and set Node.js 22 as default using nvm:
 
 ```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
@@ -49,7 +49,7 @@ pnpm --version
 ```bash
 git clone <repository-url>
 cd <project-name>
-pnpm setup
+pnpm run setup
 ```
 
 The setup script runs, in order:
@@ -66,8 +66,6 @@ Together this brings the monorepo to a working dev environment with security too
 ### 2. Environment variables
 
 - copy fastify/.env-sample over to fastify/.env and update the values
-- 
-
 
 ### 3. Explore the Running Apps 
 
@@ -109,17 +107,17 @@ flowchart TB
 ## Next Steps
 
 **Continue your AI-assisted development setup:**
-- [Installation](/docs/getting-started/installation) - Environment variables and optional database setup
-- [AI Workflow](/docs/getting-started/ai-workflow) - Recommended development workflow
-- [Cursor Setup](/docs/getting-started/cursor-setup) - Configure your IDE
+- [Installation](/docs/development) - Environment variables and optional database setup
+- [AI Workflow](/docs/development/ai-workflow) - Recommended development workflow
+- [Cursor Setup](/docs/development/cursor-setup) - Configure your IDE
 
 **Understand Core Concepts:**
-- [Core Concepts](/docs/core-concepts) - Fundamental concepts like monorepo structure, API architecture, and OpenAPI generation
+- [Architecture](/docs/architecture) - Monorepo structure, API architecture, and OpenAPI generation
 - [Architecture](/docs/architecture) - Deep technical details and design decisions
 
 **Optional Setup:**
 
-For database features, you'll need PostgreSQL. See [Installation](/docs/getting-started/installation).
+For database features, you'll need PostgreSQL. See [Installation](/docs/development).
 
 For EVM contract development, install Foundry. See [EVM Contracts](/docs/blockchain/evm-contracts).
 For Solana contract development, install Anchor. See [Solana Contracts](/docs/blockchain/solana-contracts).

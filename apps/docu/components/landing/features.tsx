@@ -64,7 +64,7 @@ const features = [
     icon: BookOpen,
     title: 'Consistent Conventions',
     description:
-      'Cursor rules and skills for frontend, backend, and tooling. Centralized error handling with @repo/error and Pino logging, plus shared TypeScript and style conventions.',
+      'Cursor rules and skills for frontend, backend, and tooling. Centralized error handling with `@repo/sentry` and Pino logging, plus shared TypeScript and style conventions.',
   },
 ]
 

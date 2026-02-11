@@ -329,4 +329,4 @@ Hooks provide sensible default query keys (e.g., `['healthCheck', params]`) but 
 - Override capability enables advanced use cases (shared queries, custom invalidation, etc.)
 - Query keys are fully typed and can include params for automatic cache differentiation
 
-See [API Development](https://basilic-docs.vercel.app/docs/core-concepts/api-architecture#client-consumption) for full integration guide.
+See [API Development](https://basilic-docs.vercel.app/docs/architecture/api#client-consumption) for full integration guide.
