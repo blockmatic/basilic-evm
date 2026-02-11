@@ -26,7 +26,8 @@
       "!.pnp.js",
       "!.DS_Store",
       "!*.pem",
-      "!**/.react-email"
+      "!**/.react-email",
+      "!**/__dev"
     ],
     "maxSize": 1048576
   },

@@ -6,7 +6,7 @@ export function baseOptions(): BaseLayoutProps {
       enabled: true,
     },
     nav: {
-      title: 'Documentation',
+      title: 'Basilic',
     },
   }
 }
